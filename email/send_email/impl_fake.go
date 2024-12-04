@@ -13,3 +13,5 @@ func (f *FakeSendEmail) SendEmail(to string, subject string, body string) error 
 	time.Sleep(time.Second)
 	return nil
 }
+
+var _ SendEmail = (*FakeSendEmail)(nil)

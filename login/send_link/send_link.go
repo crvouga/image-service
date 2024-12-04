@@ -5,7 +5,6 @@ import (
 	"image-resizer-service/email"
 	"image-resizer-service/login/login_page"
 	"image-resizer-service/login/login_routes"
-
 	"net/http"
 	"strings"
 )
