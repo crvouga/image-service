@@ -24,32 +24,38 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 			return
 		}
 
-		emailValue := strings.TrimSpace(r.FormValue("email"))
+		email_input := strings.TrimSpace(r.FormValue("email"))
 
-		emailErr := email.Validate(emailValue)
+		err_send := send_link(d, email_input)
 
-		if emailErr != nil {
+		if err_send != nil {
 			login_page.RedirectError(w, r, login_page.RedirectErrorArgs{
-				Email:      emailValue,
-				EmailError: emailErr.Error(),
-			})
-			return
-		}
-
-		err := d.SendEmail.SendEmail(
-			emailValue,
-			"Login link",
-			"Click here to login: http://localhost:8080/login/sent-link",
-		)
-
-		if err != nil {
-			login_page.RedirectError(w, r, login_page.RedirectErrorArgs{
-				Email:      emailValue,
-				EmailError: "Unable to send email",
+				Email:      email_input,
+				EmailError: err_send.Error(),
 			})
 			return
 		}
 
 		http.Redirect(w, r, login_routes.SentLinkPage, http.StatusSeeOther)
 	}
+}
+
+func send_link(d *deps.Deps, email_input string) error {
+	email_err := email.Validate(email_input)
+
+	if email_err != nil {
+		return email_err
+	}
+
+	err := d.SendEmail.SendEmail(
+		email_input,
+		"Login link",
+		"Click here to login: http://localhost:8080/login/sent-link",
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
