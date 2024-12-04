@@ -3,7 +3,7 @@ package main
 import (
 	"image-resizer-service/deps"
 	"image-resizer-service/email/send_email"
-	login_page "image-resizer-service/login"
+	"image-resizer-service/login"
 	"log"
 	"net/http"
 )
@@ -19,9 +19,9 @@ func main() {
 		SendEmail: &send_email.FakeSendEmail{},
 	}
 
-	mux.HandleFunc("/login", login_page.RespondLoginPage)
-	mux.HandleFunc("/login/send-link", login_page.RespondSendLink(&d))
-	mux.HandleFunc("/login/sent-link", login_page.RespondSentLinkPage)
+	mux.HandleFunc("/login", login.RespondLoginPage)
+	mux.HandleFunc("/login/send-link", login.RespondSendLink(&d))
+	mux.HandleFunc("/login/sent-link", login.RespondSentLinkPage)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/login", http.StatusSeeOther)

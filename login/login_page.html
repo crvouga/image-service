@@ -5,33 +5,56 @@
 <main>
   <section>
     <h2>Login with your email</h1>
-    <script>
-        function onSubmit(event) {
-            const form = event.target
-            const submitButton = form.querySelector('button[type=submit]')
-            const inputs = form.querySelectorAll('input, button')
-            submitButton.setAttribute('aria-busy', 'true');
-            inputs.forEach(input => input.setAttribute('disabled', 'true'))
-        }
-    </script>
-    <form method="POST" action="/login/send-link" onsubmit="onSubmit(event)">
-      <fieldset>
-        <label>
-          Email
-          <input
-            type="email"
-            name="email"
-            required
-            placeholder="Email"
-            autocomplete="email"
-          />
-        </label>
-      </fieldset>
+      <script>
+        const emailError = signal("{{.EmailError | js}}");
 
-      <button type="submit">
-        Send link
-      </button>
-    </form>
+        document.addEventListener('DOMContentLoaded', () => {
+          emailError.subscribe(() => {
+            const emailInput = document.querySelector('input[name=email]');
+            const emailInputHelper = document.getElementById('email-error');
+            const value = emailError.get();
+            if (typeof value === 'string' && value.length > 0) {
+              emailInput.setAttribute('aria-invalid', 'true');
+              emailInput.setAttribute('aria-describedby', 'email-error');
+              emailInputHelper.style.display = 'block';
+              emailInputHelper.textContent = value;
+              emailInput.addEventListener('input', function () {
+                emailError.set('');
+                emailInput.removeEventListener('input', this);
+              });
+              return
+            }
+
+            emailInput.removeAttribute('aria-invalid');
+            emailInput.removeAttribute('aria-describedby');
+            emailInputHelper.style.display = 'none';
+            emailInputHelper.textContent = '';
+          })
+        });
+
+        function onSubmit(event) {
+          const form = event.target
+          const submitButton = form.querySelector('button[type=submit]')
+          const inputs = form.querySelectorAll('input, button')
+          submitButton.setAttribute('aria-busy', 'true');
+          inputs.forEach(input => input.setAttribute('disabled', 'true'))
+        }
+      </script>
+      <form method="POST" action="{{.Action}}" onsubmit="onSubmit(event)">
+        <fieldset>
+          <label>
+            Email
+
+            <input type="email" name="email" required placeholder="Email" autocomplete="email" />
+
+            <small id="email-error" role="alert"></span>
+          </label>
+        </fieldset>
+
+        <button type="submit">
+          Send link
+        </button>
+      </form>
   </section>
 </main>
 {{end}}

@@ -5,15 +5,21 @@ import (
 	"image-resizer-service/page"
 	"net/http"
 	"strings"
-	"time"
 )
 
 type LoginPageData struct {
-	Action string
+	Action     string
+	EmailError string
 }
 
 func RespondLoginPage(w http.ResponseWriter, r *http.Request) {
-	page.Handler("./login/login_page.html", nil)(w, r)
+	errorEmail := r.URL.Query().Get("errorEmail")
+
+	pageData := LoginPageData{
+		Action:     "/login/send-link",
+		EmailError: errorEmail,
+	}
+	page.Handler("./login/login_page.html", pageData)(w, r)
 }
 
 func RespondSentLinkPage(w http.ResponseWriter, r *http.Request) {
@@ -22,13 +28,16 @@ func RespondSentLinkPage(w http.ResponseWriter, r *http.Request) {
 
 func RespondSendLink(d *deps.Deps) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(time.Second)
-		time.Sleep(time.Second)
-		email := r.FormValue("email")
-		email = strings.TrimSpace(email)
+
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "Unable to parse form", http.StatusBadRequest)
+			return
+		}
+
+		email := strings.TrimSpace(r.FormValue("email"))
 
 		if email == "" {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			http.Redirect(w, r, "/login?errorEmail=Email+is+required", http.StatusSeeOther)
 			return
 		}
 
