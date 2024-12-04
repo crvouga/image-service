@@ -1,8 +1,10 @@
 package login
 
 import (
+	"image-resizer-service/deps"
 	"image-resizer-service/page"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -10,19 +12,37 @@ type LoginPageData struct {
 	Action string
 }
 
-func HandlerSendLoginLink(w http.ResponseWriter, r *http.Request) {
-
-	time.Sleep(time.Second)
-	time.Sleep(time.Second)
-
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+func RespondLoginPage(w http.ResponseWriter, r *http.Request) {
+	page.Handler("./login/login_page.html", nil)(w, r)
 }
 
-func Routes() *http.ServeMux {
-	mux := http.NewServeMux()
+func RespondSentLinkPage(w http.ResponseWriter, r *http.Request) {
+	page.Handler("./login/sent_link.html", nil)(w, r)
+}
 
-	mux.HandleFunc("/", page.Handler("./login/login_page.html", nil))
-	mux.HandleFunc("/send-login-link", HandlerSendLoginLink)
+func RespondSendLink(d *deps.Deps) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(time.Second)
+		time.Sleep(time.Second)
+		email := r.FormValue("email")
+		email = strings.TrimSpace(email)
 
-	return mux
+		if email == "" {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		err := d.SendEmail.SendEmail(
+			email,
+			"Login link",
+			"Click here to login: http://localhost:8080/login/sent-link",
+		)
+
+		if err != nil {
+			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			return
+		}
+
+		http.Redirect(w, r, "/login/sent-link", http.StatusSeeOther)
+	}
 }
