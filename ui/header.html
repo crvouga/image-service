@@ -1,0 +1,27 @@
+{{define "header"}}
+<header>
+    <nav>
+        <ul>
+            <li>{{template "icon-image" }}</li>
+            <li><strong>Image Resizer Service</strong></li>
+        </ul>
+    </nav>
+</header>
+<style>
+    header > nav > ul {
+        display: flex; 
+        align-items: center; 
+        justify-content: flex-start; 
+        font-size: 1.5rem;
+    }
+    header > nav > ul > li {
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+    }
+    header > nav > ul > li > svg {
+        width: 1.5em;
+        height: 1.5em;
+    }
+</style>
+{{end}}

@@ -4,6 +4,7 @@ import (
 	"image-resizer-service/deps"
 	"image-resizer-service/email/send_email"
 	"image-resizer-service/login"
+	"image-resizer-service/login/login_routes"
 	"log"
 	"net/http"
 )
@@ -19,12 +20,11 @@ func main() {
 		SendEmail: &send_email.FakeSendEmail{},
 	}
 
-	mux.HandleFunc("/login", login.RespondLoginPage)
-	mux.HandleFunc("/login/send-link", login.RespondSendLink(&d))
-	mux.HandleFunc("/login/sent-link", login.RespondSentLinkPage)
+	mux.Handle(login_routes.Prefix, login.Router(d))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "/login", http.StatusSeeOther)
+		log.Println(r.URL.Path)
+		http.Redirect(w, r, login_routes.Prefix, http.StatusSeeOther)
 	})
 
 	port := "8080"

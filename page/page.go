@@ -5,17 +5,19 @@ import (
 	"net/http"
 )
 
-func Handler(pageTemplatePath string, pageData any) http.HandlerFunc {
+func Respond(pageTemplatePath string, pageData any) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpl, err := template.ParseFiles("./page/page.html", pageTemplatePath)
+		tmpl, err := template.ParseFiles("./page/page.html", "./ui/icons.html", "./ui/header.html", pageTemplatePath)
 
 		if err != nil {
-			http.Error(w, "Failed to load template", http.StatusInternalServerError)
+			err_str := err.Error()
+			http.Error(w, err_str, http.StatusInternalServerError)
 			return
 		}
 
 		if err := tmpl.Execute(w, pageData); err != nil {
-			http.Error(w, "Failed to render template", http.StatusInternalServerError)
+			err_str := err.Error()
+			http.Error(w, err_str, http.StatusInternalServerError)
 		}
 	}
 }

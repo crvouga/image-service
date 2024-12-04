@@ -1,0 +1,57 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+  <section>
+    <h2>Login with your email</h1>
+    <form method="POST" action="{{.Action}}" onsubmit="onSubmit(event)">
+      <fieldset>
+        <label>
+          Email
+
+          <input type="email" name="email" required placeholder="Email" autocomplete="email" />
+
+          <small id="email-error" role="alert"></span>
+        </label>
+      </fieldset>
+
+      <button type="submit">
+        Send link
+      </button>
+    </form>
+  </section>
+</main>
+<script>
+  const signalEmailError = signal("{{.EmailError | js}}");
+  document.addEventListener('DOMContentLoaded', () => signalEmailError.set(signalEmailError.get()));
+
+  signalEmailError.subscribe(() => {
+    const nodeEmailInput = document.querySelector('input[name=email]');
+    const nodeEmailInputSmall = document.getElementById('email-error');
+
+    const value = signalEmailError.get();
+
+    if (typeof value === 'string' && value.length > 0) {
+      nodeEmailInput.setAttribute('aria-invalid', 'true');
+      nodeEmailInput.setAttribute('aria-describedby', 'email-error');
+      nodeEmailInputSmall.style.display = 'block';
+      nodeEmailInputSmall.textContent = value;
+      nodeEmailInput.addEventListener('input', function () {
+        signalEmailError.set('');
+        nodeEmailInput.removeEventListener('input', this);
+      });
+      return
+    }
+
+    nodeEmailInput.removeAttribute('aria-invalid');
+    nodeEmailInput.removeAttribute('aria-describedby');
+    nodeEmailInputSmall.style.display = 'none';
+    nodeEmailInputSmall.textContent = '';
+  });
+
+  function onSubmit(event) {
+    const nodeForm = event.target
+    const nodeSubmitButton = nodeForm.querySelector('button[type=submit]')
+    nodeSubmitButton.setAttribute('aria-busy', 'true');
+  }
+</script>
+{{end}}

@@ -1,0 +1,14 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+  <section aria-labelledby="email-notification">
+    <h1 id="email-notification">Login Link Sent</h1>
+    <p>
+      We have sent a login link to <strong>{{.Email}}</strong>. Please check your email to log in.
+    </p>
+    <a href="{{.SendAnotherLink}}" aria-label="Send another login link">
+        Send another link
+    </a>  
+  </section>
+</main>
+{{end}}
