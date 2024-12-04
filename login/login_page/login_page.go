@@ -5,32 +5,40 @@ import (
 	"image-resizer-service/page"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
 type Data struct {
 	Action     string
 	EmailError string
+	Email      string
+}
+
+func Router(mux *http.ServeMux) {
+	mux.HandleFunc(login_routes.LoginPage, Respond())
 }
 
 func Respond() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		errorEmail := r.URL.Query().Get("errorEmail")
-
 		data := Data{
 			Action:     login_routes.SendLink,
-			EmailError: errorEmail,
+			Email:      r.URL.Query().Get("Email"),
+			EmailError: r.URL.Query().Get("ErrorEmail"),
 		}
 
 		page.Respond("./login/login_page/login_page.html", data)(w, r)
 	}
 }
 
-func RedirectError(w http.ResponseWriter, r *http.Request, errorEmail string) {
-	cleaned := strings.ReplaceAll(strings.TrimSpace(errorEmail), " ", "+")
+type RedirectErrorArgs struct {
+	Email      string
+	EmailError string
+}
+
+func RedirectError(w http.ResponseWriter, r *http.Request, args RedirectErrorArgs) {
 	u, _ := url.Parse(login_routes.LoginPage)
 	q := u.Query()
-	q.Set("errorEmail", cleaned)
+	q.Set("Email", args.Email)
+	q.Set("ErrorEmail", args.EmailError)
 	u.RawQuery = q.Encode()
 	http.Redirect(w, r, u.String(), http.StatusSeeOther)
 }

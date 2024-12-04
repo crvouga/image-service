@@ -2,6 +2,7 @@ package send_link
 
 import (
 	"image-resizer-service/deps"
+	"image-resizer-service/email"
 	"image-resizer-service/login/login_page"
 	"image-resizer-service/login/login_routes"
 
@@ -9,29 +10,44 @@ import (
 	"strings"
 )
 
+func Router(mux *http.ServeMux, d *deps.Deps) {
+	mux.HandleFunc(login_routes.SendLink, Respond(d))
+}
+
 func Respond(d *deps.Deps) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		if err := r.ParseForm(); err != nil {
-			http.Error(w, "Unable to parse form", http.StatusBadRequest)
+			login_page.RedirectError(w, r, login_page.RedirectErrorArgs{
+				Email:      "",
+				EmailError: "Unable to parse form",
+			})
 			return
 		}
 
-		email := strings.TrimSpace(r.FormValue("email"))
+		emailValue := strings.TrimSpace(r.FormValue("email"))
 
-		if email == "" {
-			login_page.RedirectError(w, r, "Email is required")
+		emailErr := email.Validate(emailValue)
+
+		if emailErr != nil {
+			login_page.RedirectError(w, r, login_page.RedirectErrorArgs{
+				Email:      emailValue,
+				EmailError: emailErr.Error(),
+			})
 			return
 		}
 
 		err := d.SendEmail.SendEmail(
-			email,
+			emailValue,
 			"Login link",
 			"Click here to login: http://localhost:8080/login/sent-link",
 		)
 
 		if err != nil {
-			login_page.RedirectError(w, r, "Unable to send email")
+			login_page.RedirectError(w, r, login_page.RedirectErrorArgs{
+				Email:      emailValue,
+				EmailError: "Unable to send email",
+			})
 			return
 		}
 

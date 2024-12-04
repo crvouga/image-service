@@ -11,6 +11,10 @@ type Data struct {
 	Email           string
 }
 
+func Router(mux *http.ServeMux) {
+	mux.HandleFunc(login_routes.SentLinkPage, Respond())
+}
+
 func Respond() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{

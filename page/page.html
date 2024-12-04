@@ -7,28 +7,6 @@
   <title>Image Resizer Service</title>
   <meta name="description" content="Resize your images for free" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css" />
-  <script>
-    function signal(initialValue) {
-      let value = initialValue;
-      const subscribers = new Set();
-      return {
-        get() {
-          return value;
-        },
-        set(newValue) {
-          if (value !== newValue) {
-            value = newValue;
-            subscribers.forEach((callback) => callback(value));
-          }
-        },
-        subscribe(callback) {
-          subscribers.add(callback);
-          callback(value);
-          return () => subscribers.delete(callback);
-        },
-      };
-    }
-  </script>
 </head>
 
 <body>
