@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login into your account</title>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@latest/css/pico.min.css">
+</head>
+
+<body>
+    <main>
+        <section>
+            <h1>Hello {{.Name}},</h1>
+            <p>
+                Click the button below to log in to your account:
+            </p>
+            <p>
+                <a role="button" href="{{.LoginLink}}" class="btn">Log In</a>
+            </p>
+            <p>
+                If you did not request this login, please ignore this email.
+            </p>
+            <p>Thank you!</p>
+        </section>
+    </main>
+</body>
+
+</html>
