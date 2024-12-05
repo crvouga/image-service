@@ -1,13 +1,14 @@
 package main
 
 import (
-	"image-resizer-service/deps"
-	"image-resizer-service/email/send_email"
-	"image-resizer-service/login"
-	"image-resizer-service/login/login_routes"
-	"image-resizer-service/static"
 	"log"
 	"net/http"
+
+	"imageresizerservice.com/deps"
+	"imageresizerservice.com/email/send_email"
+	"imageresizerservice.com/login"
+	"imageresizerservice.com/login/login_routes"
+	"imageresizerservice.com/static"
 )
 
 func main() {

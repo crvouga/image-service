@@ -1,12 +1,13 @@
 package send_link
 
 import (
-	"image-resizer-service/deps"
-	"image-resizer-service/email"
-	"image-resizer-service/login/login_page"
-	"image-resizer-service/login/login_routes"
 	"net/http"
 	"strings"
+
+	"imageresizerservice.com/deps"
+	"imageresizerservice.com/email"
+	"imageresizerservice.com/login/login_page"
+	"imageresizerservice.com/login/login_routes"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {

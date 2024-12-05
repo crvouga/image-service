@@ -1,7 +1,7 @@
 package user_session_db
 
 import (
-	"image-resizer-service/login/user_session"
+	"imageresizerservice.com/login/user_session"
 )
 
 type UserSessionDb interface {

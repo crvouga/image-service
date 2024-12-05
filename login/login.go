@@ -1,13 +1,14 @@
 package login
 
 import (
-	"image-resizer-service/deps"
-	"image-resizer-service/login/login_page"
-	"image-resizer-service/login/login_routes"
-	"image-resizer-service/login/send_link"
-	"image-resizer-service/login/sent_link_page"
-	"image-resizer-service/static"
 	"net/http"
+
+	"imageresizerservice.com/deps"
+	"imageresizerservice.com/login/login_page"
+	"imageresizerservice.com/login/login_routes"
+	"imageresizerservice.com/login/send_link"
+	"imageresizerservice.com/login/sent_link_page"
+	"imageresizerservice.com/static"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {

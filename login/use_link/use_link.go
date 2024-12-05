@@ -2,9 +2,10 @@ package use_link
 
 import (
 	"errors"
-	"image-resizer-service/deps"
-	"image-resizer-service/login/login_link"
-	"image-resizer-service/login/login_routes"
+
+	"imageresizerservice.com/deps"
+	"imageresizerservice.com/login/login_link"
+	"imageresizerservice.com/login/login_routes"
 
 	"net/http"
 	"strings"

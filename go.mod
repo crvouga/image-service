@@ -1,3 +1,3 @@
-module image-resizer-service
+module imageresizerservice.com
 
 go 1.22.5

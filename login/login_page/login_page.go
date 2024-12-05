@@ -1,10 +1,11 @@
 package login_page
 
 import (
-	"image-resizer-service/login/login_routes"
-	"image-resizer-service/page"
 	"net/http"
 	"net/url"
+
+	"imageresizerservice.com/login/login_routes"
+	"imageresizerservice.com/page"
 )
 
 type Data struct {

@@ -1,9 +1,10 @@
 package sent_link_page
 
 import (
-	"image-resizer-service/login/login_routes"
-	"image-resizer-service/page"
 	"net/http"
+
+	"imageresizerservice.com/login/login_routes"
+	"imageresizerservice.com/page"
 )
 
 type Data struct {
