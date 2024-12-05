@@ -8,6 +8,7 @@ import (
 	"imageresizerservice.com/email"
 	"imageresizerservice.com/login/login_page"
 	"imageresizerservice.com/login/login_routes"
+	"imageresizerservice.com/login/sent_link_page"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
@@ -37,7 +38,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 			return
 		}
 
-		http.Redirect(w, r, login_routes.SentLinkPage, http.StatusSeeOther)
+		sent_link_page.Redirect(w, r, email_input)
 	}
 }
 
