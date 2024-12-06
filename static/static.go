@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -50,4 +51,9 @@ func ServeStaticAssets(w http.ResponseWriter, r *http.Request) error {
 
 	http.ServeFile(w, r, filePath)
 	return nil
+}
+
+func GetSiblingPath(filename string) string {
+	_, file, _, _ := runtime.Caller(1)
+	return filepath.Join(filepath.Dir(file), filename)
 }

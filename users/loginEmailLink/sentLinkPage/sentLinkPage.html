@@ -2,7 +2,7 @@
 {{ template "header" . }}
 <main>
   <section aria-labelledby="email-notification">
-    {{template "icon-circle-check" . }}  
+    {{template "icon-circle-check" . }}
     <style>
       .icon-circle-check {
         width: 4rem;
@@ -17,7 +17,7 @@
       We have sent a login link to <strong>{{.Email}}</strong>. Please check your email to log in.
     </p>
     <a href="{{.SendAnotherLink}}" aria-label="Send another login link">
-      {{template "icon-arrow-left" . }}  
+      {{template "icon-arrow-left" . }}
       <style>
         .icon-arrow-left {
           width: 1rem;
@@ -25,8 +25,8 @@
           margin-right: 0.25rem;
         }
       </style>
-        Send another link
-    </a>  
+      Send another link
+    </a>
   </section>
 </main>
 {{end}}

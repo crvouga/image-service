@@ -1,25 +1,25 @@
-package send_link
+package sendLink
 
 import (
 	"net/http"
 	"strings"
 
-	"imageresizerservice.com/deps"
-	"imageresizerservice.com/email"
-	"imageresizerservice.com/login/login_page"
-	"imageresizerservice.com/login/login_routes"
-	"imageresizerservice.com/login/sent_link_page"
+	"imageresizerservice/deps"
+	"imageresizerservice/email"
+	"imageresizerservice/users/loginEmailLink/loginPage"
+	"imageresizerservice/users/loginEmailLink/routes"
+	"imageresizerservice/users/loginEmailLink/sentLinkPage"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
-	mux.HandleFunc(login_routes.SendLink, Respond(d))
+	mux.HandleFunc(routes.SendLink, Respond(d))
 }
 
 func Respond(d *deps.Deps) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		if err := r.ParseForm(); err != nil {
-			login_page.RedirectError(w, r, login_page.RedirectErrorArgs{
+			loginPage.RedirectError(w, r, loginPage.RedirectErrorArgs{
 				Email:      "",
 				EmailError: "Unable to parse form",
 			})
@@ -31,14 +31,14 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 		err_send := send_link(d, email_input)
 
 		if err_send != nil {
-			login_page.RedirectError(w, r, login_page.RedirectErrorArgs{
+			loginPage.RedirectError(w, r, loginPage.RedirectErrorArgs{
 				Email:      email_input,
 				EmailError: err_send.Error(),
 			})
 			return
 		}
 
-		sent_link_page.Redirect(w, r, email_input)
+		sentLinkPage.Redirect(w, r, email_input)
 	}
 }
 
@@ -52,7 +52,7 @@ func send_link(d *deps.Deps, email_input string) error {
 	err := d.SendEmail.SendEmail(
 		email_input,
 		"Login link",
-		"Click here to login: http://localhost:8080/login/sent-link",
+		"Click here to login: http://localhost:8080/login-with-email-link/sent-link",
 	)
 
 	if err != nil {

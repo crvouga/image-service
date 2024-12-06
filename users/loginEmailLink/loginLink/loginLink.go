@@ -1,9 +1,9 @@
-package login_link
+package loginLink
 
 import (
 	"time"
 
-	"imageresizerservice.com/id"
+	"imageresizerservice/id"
 )
 
 type LoginLink struct {

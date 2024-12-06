@@ -1,4 +1,4 @@
-package user_session
+package userSession
 
 import "time"
 

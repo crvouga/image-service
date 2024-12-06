@@ -1,24 +1,23 @@
-package user_session_db
+package userSessionDb
 
 import (
+	"imageresizerservice/users/userSession"
 	"time"
-
-	"imageresizerservice.com/login/user_session"
 )
 
 type ImplHashMap struct {
-	UserSessions map[string]user_session.UserSession
+	UserSessions map[string]userSession.UserSession
 }
 
 func NewImplHashMap() ImplHashMap {
 	return ImplHashMap{
-		UserSessions: make(map[string]user_session.UserSession),
+		UserSessions: make(map[string]userSession.UserSession),
 	}
 }
 
 var _ UserSessionDb = ImplHashMap{}
 
-func (db ImplHashMap) GetById(id string) (*user_session.UserSession, error) {
+func (db ImplHashMap) GetById(id string) (*userSession.UserSession, error) {
 	time.Sleep(time.Second)
 
 	found, ok := db.UserSessions[id]
@@ -28,7 +27,7 @@ func (db ImplHashMap) GetById(id string) (*user_session.UserSession, error) {
 	return &found, nil
 }
 
-func (db ImplHashMap) Upsert(l user_session.UserSession) error {
+func (db ImplHashMap) Upsert(l userSession.UserSession) error {
 	time.Sleep(time.Second)
 
 	db.UserSessions[l.Id] = l

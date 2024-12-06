@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 
-	"imageresizerservice.com/deps"
-	"imageresizerservice.com/email/send_email"
-	"imageresizerservice.com/login"
-	"imageresizerservice.com/login/login_routes"
-	"imageresizerservice.com/static"
+	"imageresizerservice/deps"
+	"imageresizerservice/email/sendEmail"
+	"imageresizerservice/static"
+	"imageresizerservice/users/loginEmailLink"
+	"imageresizerservice/users/loginEmailLink/routes"
 )
 
 func main() {
@@ -19,16 +19,16 @@ func main() {
 	})
 
 	d := deps.Deps{
-		SendEmail: &send_email.FakeSendEmail{},
+		SendEmail: &sendEmail.FakeSendEmail{},
 	}
 
-	login.Router(mux, &d)
+	loginEmailLink.Router(mux, &d)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Println(r.URL.Path)
 		err := static.ServeStaticAssets(w, r)
 		if err != nil {
-			http.Redirect(w, r, login_routes.Prefix, http.StatusSeeOther)
+			http.Redirect(w, r, routes.Prefix, http.StatusSeeOther)
 		}
 	})
 

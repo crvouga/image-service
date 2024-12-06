@@ -1,4 +1,4 @@
-package send_email
+package sendEmail
 
 import (
 	"log"

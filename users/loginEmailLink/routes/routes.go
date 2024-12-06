@@ -1,7 +1,7 @@
-package login_routes
+package routes
 
 const (
-	Prefix       = "/login/"
+	Prefix       = "/login-with-email-link/"
 	LoginPage    = Prefix + "login-page"
 	SendLink     = Prefix + "send-link"
 	SentLinkPage = Prefix + "sent-link-page"
