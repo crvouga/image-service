@@ -1,4 +1,4 @@
-package use_link
+package useLink
 
 import (
 	"errors"
@@ -17,9 +17,9 @@ func Router(mux *http.ServeMux, d *deps.Deps) {
 func Respond(d *deps.Deps) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		loginLink_id := strings.TrimSpace(r.URL.Query().Get("loginLinkId"))
+		loginLinkId := strings.TrimSpace(r.URL.Query().Get("loginLinkId"))
 
-		err := useLoginLink(d, loginLink_id)
+		err := useLoginLink(d, loginLinkId)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -31,8 +31,8 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 	}
 }
 
-func useLoginLink(d *deps.Deps, loginLink_id string) error {
-	cleaned := strings.TrimSpace(loginLink_id)
+func useLoginLink(d *deps.Deps, loginLinkId string) error {
+	cleaned := strings.TrimSpace(loginLinkId)
 
 	if cleaned == "" {
 		return errors.New("login link id is required")

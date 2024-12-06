@@ -10,14 +10,14 @@ func Respond(pageTemplatePath string, pageData any) http.HandlerFunc {
 		tmpl, err := template.ParseFiles("./page/page.html", "./ui/icons.html", "./ui/header.html", pageTemplatePath)
 
 		if err != nil {
-			err_str := err.Error()
-			http.Error(w, err_str, http.StatusInternalServerError)
+			errStr := err.Error()
+			http.Error(w, errStr, http.StatusInternalServerError)
 			return
 		}
 
 		if err := tmpl.Execute(w, pageData); err != nil {
-			err_str := err.Error()
-			http.Error(w, err_str, http.StatusInternalServerError)
+			errStr := err.Error()
+			http.Error(w, errStr, http.StatusInternalServerError)
 		}
 	}
 }
