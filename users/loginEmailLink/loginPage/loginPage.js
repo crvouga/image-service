@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     input.setSelectionRange(input.value.length, input.value.length);
   }
 
-  input.addEventListener("input", (e) => {
+  input.addEventListener("input", () => {
     input.removeAttribute("aria-invalid");
     input.removeAttribute("aria-describedby");
     const emailHelper = input
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     emailHelper.textContent = "";
   });
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", () => {
     submitButton.setAttribute("aria-busy", "true");
   });
 });
