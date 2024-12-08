@@ -8,6 +8,7 @@ import (
 	"imageresizerservice/email/sendEmail"
 	"imageresizerservice/static"
 	"imageresizerservice/users/loginEmailLink"
+	"imageresizerservice/users/loginEmailLink/loginLink/loginLinkDb"
 	"imageresizerservice/users/loginEmailLink/routes"
 )
 
@@ -19,7 +20,8 @@ func main() {
 	})
 
 	d := deps.Deps{
-		SendEmail: &sendEmail.FakeSendEmail{},
+		SendEmail:   &sendEmail.FakeSendEmail{},
+		LoginLinkDb: &loginLinkDb.ImplHashMap{},
 	}
 
 	loginEmailLink.Router(mux, &d)
