@@ -6,7 +6,7 @@ import (
 
 	"imageresizerservice/page"
 	"imageresizerservice/static"
-	"imageresizerservice/users/loginEmailLink/routes"
+	"imageresizerservice/users/loginWithEmailLink/routes"
 )
 
 type Data struct {
@@ -22,11 +22,10 @@ func Router(mux *http.ServeMux) {
 
 func Respond() http.HandlerFunc {
 	htmlPath := static.GetSiblingPath("sendLinkPage.html")
-	jsPath := static.GetSiblingRelativePath("sendLinkPage.js")
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			Action:     routes.SendLinkAction,
-			JsPath:     jsPath,
 			Email:      r.URL.Query().Get("Email"),
 			EmailError: r.URL.Query().Get("ErrorEmail"),
 		}

@@ -1,4 +1,4 @@
-package loginLink
+package link
 
 import (
 	"time"
@@ -6,26 +6,26 @@ import (
 	"imageresizerservice/id"
 )
 
-type LoginLink struct {
+type Link struct {
 	Id           string
 	EmailAddress string
 	CreatedAt    time.Time
 	UsedAt       time.Time
 }
 
-func New(email string) LoginLink {
-	return LoginLink{
+func New(email string) Link {
+	return Link{
 		Id:           id.Gen(),
 		EmailAddress: email,
 		CreatedAt:    time.Now(),
 	}
 }
 
-func MarkAsUsed(l LoginLink) LoginLink {
+func MarkAsUsed(l Link) Link {
 	l.UsedAt = time.Now()
 	return l
 }
 
-func WasUsed(l *LoginLink) bool {
+func WasUsed(l *Link) bool {
 	return !l.UsedAt.IsZero()
 }

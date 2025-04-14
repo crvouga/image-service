@@ -2,10 +2,10 @@ package users
 
 import (
 	"imageresizerservice/deps"
-	"imageresizerservice/users/loginEmailLink"
+	"imageresizerservice/users/loginWithEmailLink"
 	"net/http"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
-	loginEmailLink.Router(mux, d)
+	loginWithEmailLink.Router(mux, d)
 }

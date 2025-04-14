@@ -1,0 +1,62 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+  <section>
+    <h1>Login with your email</h1>
+    <form method="POST" action="{{.Action}}">
+      <fieldset>
+        <label>
+          Email
+          <input name="email" placeholder="Email" autocomplete="email" value="{{.Email}}" />
+          <small role="alert">{{.EmailError}}</small>
+        </label>
+      </fieldset>
+
+      <button type="submit">
+        Send link
+      </button>
+    </form>
+  </section>
+</main>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const input = document.querySelector("input[name=email]");
+    const inputHelper = input.closest("label").querySelector("small[role=alert]");
+    const form = document.querySelector("form");
+    const submitButton = document.querySelector("button[type=submit]");
+
+    if (
+      !(
+        input instanceof HTMLInputElement &&
+        inputHelper instanceof HTMLElement &&
+        form instanceof HTMLFormElement &&
+        submitButton instanceof HTMLButtonElement
+      )
+    ) {
+      return;
+    }
+
+    if (inputHelper.textContent.length > 0) {
+      input.setAttribute("aria-invalid", "true");
+      inputHelper.id = "helper";
+      input.setAttribute("aria-describedby", inputHelper.id);
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    }
+
+    input.addEventListener("input", () => {
+      input.removeAttribute("aria-invalid");
+      input.removeAttribute("aria-describedby");
+      const emailHelper = input
+        .closest("label")
+        .querySelector("small[role=alert]");
+
+      emailHelper.textContent = "";
+    });
+
+    form.addEventListener("submit", () => {
+      submitButton.setAttribute("aria-busy", "true");
+    });
+  });
+</script>
+{{end}}

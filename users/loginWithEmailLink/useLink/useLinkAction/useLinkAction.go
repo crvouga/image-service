@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"imageresizerservice/users/loginEmailLink/loginLink"
-	"imageresizerservice/users/loginEmailLink/routes"
+	"imageresizerservice/users/loginWithEmailLink/link"
+	"imageresizerservice/users/loginWithEmailLink/routes"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
@@ -17,9 +17,9 @@ func Router(mux *http.ServeMux, d *deps.Deps) {
 func Respond(d *deps.Deps) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		loginLinkId := strings.TrimSpace(r.URL.Query().Get("loginLinkId"))
+		linkId := strings.TrimSpace(r.URL.Query().Get("linkId"))
 
-		err := useLoginLink(d, loginLinkId)
+		err := UseLink(d, linkId)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -31,14 +31,14 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 	}
 }
 
-func useLoginLink(d *deps.Deps, loginLinkId string) error {
-	cleaned := strings.TrimSpace(loginLinkId)
+func UseLink(d *deps.Deps, linkId string) error {
+	cleaned := strings.TrimSpace(linkId)
 
 	if cleaned == "" {
 		return errors.New("login link id is required")
 	}
 
-	found, err := d.LoginLinkDb.GetById(cleaned)
+	found, err := d.LinkDb.GetById(cleaned)
 
 	if err != nil {
 		return err
@@ -48,7 +48,7 @@ func useLoginLink(d *deps.Deps, loginLinkId string) error {
 		return errors.New("no record of login link found")
 	}
 
-	if loginLink.WasUsed(found) {
+	if link.WasUsed(found) {
 		return errors.New("login link has already been used")
 	}
 

@@ -1,4 +1,4 @@
-package sentLinkPage
+package sendLinkSuccessPage
 
 import (
 	"net/http"
@@ -6,7 +6,7 @@ import (
 
 	"imageresizerservice/page"
 	"imageresizerservice/static"
-	"imageresizerservice/users/loginEmailLink/routes"
+	"imageresizerservice/users/loginWithEmailLink/routes"
 )
 
 type Data struct {
@@ -15,11 +15,11 @@ type Data struct {
 }
 
 func Router(mux *http.ServeMux) {
-	mux.HandleFunc(routes.SentLinkPage, Respond())
+	mux.HandleFunc(routes.SendLinkSuccessPage, Respond())
 }
 
 func Respond() http.HandlerFunc {
-	htmlPath := static.GetSiblingPath("sentLinkPage.html")
+	htmlPath := static.GetSiblingPath("sendLinkSuccessPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			SendAnotherLink: routes.SendLinkPage,
@@ -31,7 +31,7 @@ func Respond() http.HandlerFunc {
 }
 
 func Redirect(w http.ResponseWriter, r *http.Request, email string) {
-	u, _ := url.Parse(routes.SentLinkPage)
+	u, _ := url.Parse(routes.SendLinkSuccessPage)
 	q := u.Query()
 	q.Set("Email", email)
 	u.RawQuery = q.Encode()

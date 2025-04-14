@@ -6,10 +6,10 @@ import (
 
 	"imageresizerservice/deps"
 	"imageresizerservice/email/email"
-	"imageresizerservice/users/loginEmailLink/loginLink"
-	"imageresizerservice/users/loginEmailLink/routes"
-	"imageresizerservice/users/loginEmailLink/sendLink/sendLinkPage"
-	"imageresizerservice/users/loginEmailLink/sendLink/sentLinkPage"
+	"imageresizerservice/users/loginWithEmailLink/link"
+	"imageresizerservice/users/loginWithEmailLink/routes"
+	"imageresizerservice/users/loginWithEmailLink/sendLink/sendLinkPage"
+	"imageresizerservice/users/loginWithEmailLink/sendLink/sendLinkSuccessPage"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
@@ -43,7 +43,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 			return
 		}
 
-		sentLinkPage.Redirect(w, r, emailInput)
+		sendLinkSuccessPage.Redirect(w, r, emailInput)
 	}
 }
 
@@ -60,9 +60,9 @@ func SendLink(d *deps.Deps, emailAddressInput string) error {
 
 	defer uow.Rollback()
 
-	loginLinkNew := loginLink.New(emailAddressInput)
+	linkNew := link.New(emailAddressInput)
 
-	if err := d.LoginLinkDb.Upsert(uow, loginLinkNew); err != nil {
+	if err := d.LinkDb.Upsert(uow, linkNew); err != nil {
 		return err
 	}
 
@@ -70,7 +70,7 @@ func SendLink(d *deps.Deps, emailAddressInput string) error {
 		To:      emailAddressInput,
 		From:    "noreply@imageresizer.com",
 		Subject: "Login link",
-		Body:    "Click here to login: http://localhost:8080/login-with-email-link/use-link-page?loginLinkId=" + loginLinkNew.Id,
+		Body:    "Click here to login: http://localhost:8080/login-with-email-link/use-link-page?linkId=" + linkNew.Id,
 	}
 
 	if err := d.EmailOutbox.Add(uow, email); err != nil {

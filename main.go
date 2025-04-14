@@ -14,7 +14,7 @@ import (
 	"imageresizerservice/static"
 	"imageresizerservice/uow"
 	"imageresizerservice/users"
-	"imageresizerservice/users/loginEmailLink/loginLink/loginLinkDb"
+	"imageresizerservice/users/loginWithEmailLink/link/linkDb"
 )
 
 func main() {
@@ -30,7 +30,7 @@ func main() {
 
 	d := deps.Deps{
 		SendEmail:   &sendEmail.ImplFake{},
-		LoginLinkDb: &loginLinkDb.ImplHashMap{},
+		LinkDb:      &linkDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
 		UowFactory:  uow.UowFactory{Db: db},
 		KeyValueDb:  &keyValueDbHashMap,
 		EmailOutbox: &emailOutbox.ImplKeyValueDb{Db: &keyValueDbHashMap},
