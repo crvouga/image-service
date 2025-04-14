@@ -26,7 +26,6 @@ func Start(d *deps.Deps, sleepTime time.Duration) chan bool {
 
 	return stopChan
 }
-
 func processEmails(d *deps.Deps, sleepTime time.Duration) {
 	log.Println("Getting unsent emails")
 	emails, err := d.EmailOutbox.GetUnsentEmails()
@@ -45,6 +44,23 @@ func processEmails(d *deps.Deps, sleepTime time.Duration) {
 			time.Sleep(sleepTime)
 			continue
 		}
+
+		// Mark email as sent after successful sending
+		uow, err := d.UowFactory.Begin()
+		if err != nil {
+			log.Printf("Error beginning unit of work: %v", err)
+			time.Sleep(sleepTime)
+			continue
+		}
+		defer uow.Rollback()
+
+		err = d.EmailOutbox.MarkAsSent(uow, email)
+		if err != nil {
+			log.Printf("Error marking email as sent: %v", err)
+			uow.Rollback()
+			continue
+		}
+		uow.Commit()
 
 		log.Printf("Email sent: %v", email)
 	}
