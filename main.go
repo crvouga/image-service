@@ -15,6 +15,7 @@ import (
 	"imageresizerservice/uow"
 	"imageresizerservice/users"
 	"imageresizerservice/users/loginWithEmailLink/link/linkDb"
+	"imageresizerservice/users/loginWithEmailLink/routes"
 )
 
 func main() {
@@ -47,7 +48,7 @@ func main() {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := static.ServeStaticAssets(w, r)
 		if err != nil {
-			http.Redirect(w, r, "/login-with-email-link/login-page", http.StatusSeeOther)
+			http.Redirect(w, r, routes.SendLinkPage, http.StatusSeeOther)
 		}
 	})
 
