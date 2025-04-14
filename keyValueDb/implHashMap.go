@@ -36,6 +36,11 @@ func (db *ImplHashMap) Put(uow *uow.Uow, key string, value string) error {
 	db.mutex.Lock()
 	defer db.mutex.Unlock()
 
+	// Initialize the map if it's nil
+	if db.data == nil {
+		db.data = make(map[string]string)
+	}
+
 	db.data[key] = value
 	return nil
 }
@@ -45,7 +50,12 @@ func (db *ImplHashMap) Zap(uow *uow.Uow, key string) error {
 	db.mutex.Lock()
 	defer db.mutex.Unlock()
 
-	if _, exists := db.data[key]; !exists {
+	if db.data == nil {
+		return errors.New("key not found")
+	}
+
+	_, exists := db.data[key]
+	if !exists {
 		return errors.New("key not found")
 	}
 

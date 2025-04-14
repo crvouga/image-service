@@ -1,20 +1,20 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
 
 	"imageresizerservice/deps"
+	"imageresizerservice/sqlite"
 	"imageresizerservice/static"
 	"imageresizerservice/users"
 	"imageresizerservice/users/loginWithEmailLink/routes"
 )
 
 func main() {
-	db := newDb()
+	db := sqlite.New()
 
 	defer db.Close()
 
@@ -29,16 +29,6 @@ func main() {
 	log.Printf("Server live here http://localhost%s/ \n", addr)
 
 	http.ListenAndServe(addr, mux)
-}
-
-func newDb() *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-
-	if err != nil {
-		panic(err)
-	}
-
-	return db
 }
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
