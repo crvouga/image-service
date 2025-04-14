@@ -1,7 +1,6 @@
-package loginPage
+package sendLinkPage
 
 import (
-	"log"
 	"net/http"
 	"net/url"
 
@@ -14,20 +13,20 @@ type Data struct {
 	Action     string
 	EmailError string
 	Email      string
+	JsPath     string
 }
 
 func Router(mux *http.ServeMux) {
-	mux.HandleFunc(routes.LoginPage, Respond())
+	mux.HandleFunc(routes.SendLinkPage, Respond())
 }
 
 func Respond() http.HandlerFunc {
-	htmlPath := static.GetSiblingPath("loginPage.html")
-	log.Println("htmlPath", htmlPath)
-	jsPath := static.GetSiblingPath("loginPage.js")
-	log.Println("jsPath", jsPath)
+	htmlPath := static.GetSiblingPath("sendLinkPage.html")
+	jsPath := static.GetSiblingRelativePath("sendLinkPage.js")
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			Action:     routes.SendLink,
+			JsPath:     jsPath,
 			Email:      r.URL.Query().Get("Email"),
 			EmailError: r.URL.Query().Get("ErrorEmail"),
 		}
@@ -42,7 +41,7 @@ type RedirectErrorArgs struct {
 }
 
 func RedirectError(w http.ResponseWriter, r *http.Request, args RedirectErrorArgs) {
-	u, _ := url.Parse(routes.LoginPage)
+	u, _ := url.Parse(routes.SendLinkPage)
 	q := u.Query()
 	q.Set("Email", args.Email)
 	q.Set("ErrorEmail", args.EmailError)
@@ -51,5 +50,5 @@ func RedirectError(w http.ResponseWriter, r *http.Request, args RedirectErrorArg
 }
 
 func Redirect(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, routes.LoginPage, http.StatusSeeOther)
+	http.Redirect(w, r, routes.SendLinkPage, http.StatusSeeOther)
 }

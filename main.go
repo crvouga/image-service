@@ -7,30 +7,28 @@ import (
 	"imageresizerservice/deps"
 	"imageresizerservice/email/sendEmail"
 	"imageresizerservice/static"
-	"imageresizerservice/users/loginEmailLink"
+	"imageresizerservice/users"
 	"imageresizerservice/users/loginEmailLink/loginLink/loginLinkDb"
-	"imageresizerservice/users/loginEmailLink/routes"
 )
 
 func main() {
+	d := deps.Deps{
+		SendEmail:   &sendEmail.FakeSendEmail{},
+		LoginLinkDb: &loginLinkDb.ImplHashMap{},
+	}
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("User-agent: *\nAllow: /"))
 	})
 
-	d := deps.Deps{
-		SendEmail:   &sendEmail.FakeSendEmail{},
-		LoginLinkDb: &loginLinkDb.ImplHashMap{},
-	}
-
-	loginEmailLink.Router(mux, &d)
+	users.Router(mux, &d)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Println(r.URL.Path)
 		err := static.ServeStaticAssets(w, r)
 		if err != nil {
-			http.Redirect(w, r, routes.Prefix, http.StatusSeeOther)
+			http.Redirect(w, r, "/login-with-email-link/login-page", http.StatusSeeOther)
 		}
 	})
 

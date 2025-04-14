@@ -26,7 +26,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 			return
 		}
 
-		http.Redirect(w, r, routes.LoginPage, http.StatusSeeOther)
+		http.Redirect(w, r, routes.SendLinkPage, http.StatusSeeOther)
 
 	}
 }

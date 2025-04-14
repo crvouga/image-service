@@ -6,9 +6,9 @@ import (
 
 	"imageresizerservice/deps"
 	"imageresizerservice/email"
-	"imageresizerservice/users/loginEmailLink/loginPage"
 	"imageresizerservice/users/loginEmailLink/routes"
-	"imageresizerservice/users/loginEmailLink/sentLinkPage"
+	"imageresizerservice/users/loginEmailLink/sendLink/sendLinkPage"
+	"imageresizerservice/users/loginEmailLink/sendLink/sentLinkPage"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
@@ -19,7 +19,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		if err := r.ParseForm(); err != nil {
-			loginPage.RedirectError(w, r, loginPage.RedirectErrorArgs{
+			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
 				Email:      "",
 				EmailError: "Unable to parse form",
 			})
@@ -31,7 +31,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 		errSent := sendLink(d, emailInput)
 
 		if errSent != nil {
-			loginPage.RedirectError(w, r, loginPage.RedirectErrorArgs{
+			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
 				Email:      emailInput,
 				EmailError: errSent.Error(),
 			})
