@@ -1,6 +1,7 @@
 package loginLinkDb
 
 import (
+	"imageresizerservice/uow"
 	"imageresizerservice/users/loginEmailLink/loginLink"
 	"time"
 )
@@ -27,9 +28,13 @@ func (db ImplHashMap) GetById(id string) (*loginLink.LoginLink, error) {
 	return &found, nil
 }
 
-func (db ImplHashMap) Upsert(l loginLink.LoginLink) error {
+func (db ImplHashMap) Upsert(uow *uow.Uow, l loginLink.LoginLink) error {
 	time.Sleep(time.Second)
 
-	db.LoginLinks[l.Id] = l
+	uow.InMemory.Add(func() error {
+		db.LoginLinks[l.Id] = l
+		return nil
+	})
+
 	return nil
 }

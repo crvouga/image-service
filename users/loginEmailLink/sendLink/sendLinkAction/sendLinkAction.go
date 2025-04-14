@@ -52,9 +52,14 @@ func SendLink(d *deps.Deps, emailAddressInput string) error {
 		return err
 	}
 
+	uow, err := d.UowFactory.Begin()
+	if err != nil {
+		return err
+	}
+
 	loginLinkNew := loginLink.New(emailAddressInput)
 
-	if err := d.LoginLinkDb.Upsert(loginLinkNew); err != nil {
+	if err := d.LoginLinkDb.Upsert(uow, loginLinkNew); err != nil {
 		return err
 	}
 

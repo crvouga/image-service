@@ -1,8 +1,11 @@
 package loginLinkDb
 
-import "imageresizerservice/users/loginEmailLink/loginLink"
+import (
+	"imageresizerservice/uow"
+	"imageresizerservice/users/loginEmailLink/loginLink"
+)
 
 type LoginLinkDb interface {
 	GetById(id string) (*loginLink.LoginLink, error)
-	Upsert(loginLink.LoginLink) error
+	Upsert(uow *uow.Uow, link loginLink.LoginLink) error
 }
