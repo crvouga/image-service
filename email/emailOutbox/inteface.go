@@ -1,9 +1,12 @@
 package emailOutbox
 
-import "imageresizerservice/email/email"
+import (
+	"imageresizerservice/email/email"
+	"imageresizerservice/uow"
+)
 
 type EmailOutbox interface {
-	Add(email email.Email) error
+	Add(uow *uow.Uow, email email.Email) error
 	GetUnsentEmails() ([]email.Email, error)
-	MarkAsSent(email email.Email) error
+	MarkAsSent(uow *uow.Uow, email email.Email) error
 }

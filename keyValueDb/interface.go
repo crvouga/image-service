@@ -1,7 +1,9 @@
 package keyValueDb
 
+import "imageresizerservice/uow"
+
 type KeyValueDb interface {
 	Get(key string) (string, error)
-	Put(value string) error
-	Zap(key string) error
+	Put(uow *uow.Uow, key string, value string) error
+	Zap(uow *uow.Uow, key string) error
 }

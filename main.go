@@ -8,7 +8,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"imageresizerservice/deps"
+	"imageresizerservice/email/emailOutbox"
 	"imageresizerservice/email/sendEmail"
+	"imageresizerservice/keyValueDb"
 	"imageresizerservice/static"
 	"imageresizerservice/uow"
 	"imageresizerservice/users"
@@ -24,10 +26,14 @@ func main() {
 
 	defer db.Close()
 
+	keyValueDbHashMap := keyValueDb.ImplHashMap{}
+
 	d := deps.Deps{
 		SendEmail:   &sendEmail.ImplFake{},
 		LoginLinkDb: &loginLinkDb.ImplHashMap{},
 		UowFactory:  uow.UowFactory{Db: db},
+		KeyValueDb:  &keyValueDbHashMap,
+		EmailOutbox: &emailOutbox.ImplKeyValueDb{Db: &keyValueDbHashMap},
 	}
 
 	mux := http.NewServeMux()

@@ -53,9 +53,12 @@ func SendLink(d *deps.Deps, emailAddressInput string) error {
 	}
 
 	uow, err := d.UowFactory.Begin()
+
 	if err != nil {
 		return err
 	}
+
+	defer uow.Rollback()
 
 	loginLinkNew := loginLink.New(emailAddressInput)
 
@@ -70,7 +73,11 @@ func SendLink(d *deps.Deps, emailAddressInput string) error {
 		Body:    "Click here to login: http://localhost:8080/login-with-email-link/use-link-page?loginLinkId=" + loginLinkNew.Id,
 	}
 
-	if err := d.SendEmail.SendEmail(email); err != nil {
+	if err := d.EmailOutbox.Add(uow, email); err != nil {
+		return err
+	}
+
+	if err := uow.Commit(); err != nil {
 		return err
 	}
 
