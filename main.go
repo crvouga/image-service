@@ -8,42 +8,46 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"imageresizerservice/deps"
-	"imageresizerservice/email/emailOutbox"
-	"imageresizerservice/email/sendEmail"
-	"imageresizerservice/keyValueDb"
 	"imageresizerservice/static"
-	"imageresizerservice/uow"
 	"imageresizerservice/users"
-	"imageresizerservice/users/loginWithEmailLink/link/linkDb"
 	"imageresizerservice/users/loginWithEmailLink/routes"
 )
 
 func main() {
-	db, err := sql.Open("sqlite3", ":memory:")
-
-	if err != nil {
-		log.Fatalf("Failed to open in-memory SQLite database: %v", err)
-	}
+	db := newDb()
 
 	defer db.Close()
 
-	keyValueDbHashMap := keyValueDb.ImplHashMap{}
-
-	d := deps.Deps{
-		SendEmail:   &sendEmail.ImplFake{},
-		LinkDb:      &linkDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
-		UowFactory:  uow.UowFactory{Db: db},
-		KeyValueDb:  &keyValueDbHashMap,
-		EmailOutbox: &emailOutbox.ImplKeyValueDb{Db: &keyValueDbHashMap},
-	}
+	d := deps.New(db)
 
 	mux := http.NewServeMux()
+
+	Router(mux, &d)
+
+	addr := ":8080"
+
+	log.Printf("Server live here http://localhost%s/ \n", addr)
+
+	http.ListenAndServe(addr, mux)
+}
+
+func newDb() *sql.DB {
+	db, err := sql.Open("sqlite3", ":memory:")
+
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+
+func Router(mux *http.ServeMux, d *deps.Deps) {
 
 	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("User-agent: *\nAllow: /"))
 	})
 
-	users.Router(mux, &d)
+	users.Router(mux, d)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := static.ServeStaticAssets(w, r)
@@ -51,12 +55,4 @@ func main() {
 			http.Redirect(w, r, routes.SendLinkPage, http.StatusSeeOther)
 		}
 	})
-
-	port := "8080"
-
-	log.Printf("Server live here http://localhost:%s/ \n", port)
-
-	http.ListenAndServe(":8080", mux)
-
-	// emailOutboxWorker.Start(&d, 10*time.Second)
 }
