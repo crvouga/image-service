@@ -6,15 +6,16 @@ import (
 	"imageresizerservice/deps"
 	"imageresizerservice/static"
 	"imageresizerservice/users/loginEmailLink/routes"
-	"imageresizerservice/users/loginEmailLink/sendLink/sendLink"
+	"imageresizerservice/users/loginEmailLink/sendLink/sendLinkAction"
 	"imageresizerservice/users/loginEmailLink/sendLink/sendLinkPage"
 	"imageresizerservice/users/loginEmailLink/sendLink/sentLinkPage"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
 	sendLinkPage.Router(mux)
-	sendLink.Router(mux, d)
+	sendLinkAction.Router(mux, d)
 	sentLinkPage.Router(mux)
+
 	mux.HandleFunc(removeTrailingSlash(routes.Prefix), respondNotFound)
 	mux.HandleFunc(routes.Prefix, respondNotFound)
 }

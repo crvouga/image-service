@@ -1,5 +1,7 @@
 package sendEmail
 
+import "imageresizerservice/email/email"
+
 type SendEmail interface {
-	SendEmail(to string, subject string, body string) error
+	SendEmail(email email.Email) error
 }

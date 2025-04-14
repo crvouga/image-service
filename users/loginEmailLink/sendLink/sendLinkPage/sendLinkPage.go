@@ -25,7 +25,7 @@ func Respond() http.HandlerFunc {
 	jsPath := static.GetSiblingRelativePath("sendLinkPage.js")
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			Action:     routes.SendLink,
+			Action:     routes.SendLinkAction,
 			JsPath:     jsPath,
 			Email:      r.URL.Query().Get("Email"),
 			EmailError: r.URL.Query().Get("ErrorEmail"),

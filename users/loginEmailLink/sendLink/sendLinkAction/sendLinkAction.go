@@ -1,22 +1,27 @@
-package sendLink
+package sendLinkAction
 
 import (
 	"net/http"
 	"strings"
 
 	"imageresizerservice/deps"
-	"imageresizerservice/email"
+	"imageresizerservice/email/email"
+	"imageresizerservice/users/loginEmailLink/loginLink"
 	"imageresizerservice/users/loginEmailLink/routes"
 	"imageresizerservice/users/loginEmailLink/sendLink/sendLinkPage"
 	"imageresizerservice/users/loginEmailLink/sendLink/sentLinkPage"
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
-	mux.HandleFunc(routes.SendLink, Respond(d))
+	mux.HandleFunc(routes.SendLinkAction, Respond(d))
 }
 
 func Respond(d *deps.Deps) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 
 		if err := r.ParseForm(); err != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
@@ -28,7 +33,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 
 		emailInput := strings.TrimSpace(r.FormValue("email"))
 
-		errSent := sendLink(d, emailInput)
+		errSent := SendLink(d, emailInput)
 
 		if errSent != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
@@ -42,20 +47,25 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 	}
 }
 
-func sendLink(d *deps.Deps, emailInput string) error {
-	emailErr := email.Validate(emailInput)
-
-	if emailErr != nil {
-		return emailErr
+func SendLink(d *deps.Deps, emailAddressInput string) error {
+	if err := email.ValidateEmailAddress(emailAddressInput); err != nil {
+		return err
 	}
 
-	err := d.SendEmail.SendEmail(
-		emailInput,
-		"Login link",
-		"Click here to login: http://localhost:8080/login-with-email-link/sent-link",
-	)
+	loginLinkNew := loginLink.New(emailAddressInput)
 
-	if err != nil {
+	if err := d.LoginLinkDb.Upsert(loginLinkNew); err != nil {
+		return err
+	}
+
+	email := email.Email{
+		To:      emailAddressInput,
+		From:    "noreply@imageresizer.com",
+		Subject: "Login link",
+		Body:    "Click here to login: http://localhost:8080/login-with-email-link/use-link-page?loginLinkId=" + loginLinkNew.Id,
+	}
+
+	if err := d.SendEmail.SendEmail(email); err != nil {
 		return err
 	}
 

@@ -1,4 +1,4 @@
-package useLink
+package useLinkAction
 
 import (
 	"errors"
@@ -11,7 +11,7 @@ import (
 )
 
 func Router(mux *http.ServeMux, d *deps.Deps) {
-	mux.HandleFunc(routes.UseLink, Respond(d))
+	mux.HandleFunc(routes.UseLinkAction, Respond(d))
 }
 
 func Respond(d *deps.Deps) http.HandlerFunc {

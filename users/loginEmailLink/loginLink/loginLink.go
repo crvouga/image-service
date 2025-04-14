@@ -7,17 +7,17 @@ import (
 )
 
 type LoginLink struct {
-	Id        string
-	Email     string
-	CreatedAt time.Time
-	UsedAt    time.Time
+	Id           string
+	EmailAddress string
+	CreatedAt    time.Time
+	UsedAt       time.Time
 }
 
 func New(email string) LoginLink {
 	return LoginLink{
-		Id:        id.Gen(),
-		Email:     email,
-		CreatedAt: time.Now(),
+		Id:           id.Gen(),
+		EmailAddress: email,
+		CreatedAt:    time.Now(),
 	}
 }
 
@@ -27,6 +27,5 @@ func MarkAsUsed(l LoginLink) LoginLink {
 }
 
 func WasUsed(l *LoginLink) bool {
-
 	return !l.UsedAt.IsZero()
 }
