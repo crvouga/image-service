@@ -57,4 +57,5 @@ func main() {
 
 	http.ListenAndServe(":8080", mux)
 
+	// emailOutboxWorker.Start(&d, 10*time.Second)
 }
