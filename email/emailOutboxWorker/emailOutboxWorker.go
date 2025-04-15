@@ -38,13 +38,6 @@ func processEmails(d *deps.Deps, sleepTime time.Duration) {
 
 	for _, email := range emails {
 		log.Printf("Sending email: %v", email)
-		err := d.SendEmail.SendEmail(email)
-		if err != nil {
-			log.Printf("Error sending email: %v", err)
-			time.Sleep(sleepTime)
-			continue
-		}
-
 		// Mark email as sent after successful sending
 		uow, err := d.UowFactory.Begin()
 		if err != nil {
@@ -52,6 +45,13 @@ func processEmails(d *deps.Deps, sleepTime time.Duration) {
 			time.Sleep(sleepTime)
 			continue
 		}
+		err = d.SendEmail.SendEmail(uow, email)
+		if err != nil {
+			log.Printf("Error sending email: %v", err)
+			time.Sleep(sleepTime)
+			continue
+		}
+
 		defer uow.Rollback()
 
 		err = d.EmailOutbox.MarkAsSent(uow, email)

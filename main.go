@@ -18,15 +18,17 @@ func main() {
 
 	defer db.Close()
 
-	d := deps.New(db)
+	addr := ":8080"
+
+	baseUrl := "http://localhost" + addr
+
+	d := deps.New(db, baseUrl)
 
 	mux := http.NewServeMux()
 
 	Router(mux, &d)
 
-	addr := ":8080"
-
-	log.Printf("Server live here http://localhost%s/ \n", addr)
+	log.Printf("Server live here %s/ \n", baseUrl)
 
 	http.ListenAndServe(addr, mux)
 }

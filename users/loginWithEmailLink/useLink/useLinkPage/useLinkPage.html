@@ -1,0 +1,16 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <h1>
+            Use login link
+        </h1>
+        <form method="POST" action="{{.Action}}">
+            <input type="hidden" name="linkId" value="{{.LinkId}}">
+            <button type="submit">
+                Use
+            </button>
+        </form>
+    </section>
+</main>
+{{end}}

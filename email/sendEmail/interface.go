@@ -1,7 +1,10 @@
 package sendEmail
 
-import "imageresizerservice/email/email"
+import (
+	"imageresizerservice/email/email"
+	"imageresizerservice/uow"
+)
 
 type SendEmail interface {
-	SendEmail(email email.Email) error
+	SendEmail(uow *uow.Uow, email email.Email) error
 }
