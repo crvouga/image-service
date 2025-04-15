@@ -3,6 +3,7 @@ package linkDb
 import (
 	"encoding/json"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
+	"imageresizerservice/app/users/loginWithEmailLink/link/linkID"
 	"imageresizerservice/library/keyValueDb"
 	"imageresizerservice/library/uow"
 )
@@ -13,8 +14,8 @@ type ImplKeyValueDb struct {
 
 var _ LinkDb = ImplKeyValueDb{}
 
-func (db ImplKeyValueDb) GetById(id string) (*link.Link, error) {
-	value, err := db.Db.Get(id)
+func (db ImplKeyValueDb) GetById(id linkID.LinkID) (*link.Link, error) {
+	value, err := db.Db.Get(string(id))
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +38,7 @@ func (db ImplKeyValueDb) Upsert(uow *uow.Uow, l link.Link) error {
 		return err
 	}
 
-	return db.Db.Put(uow, l.Id, string(jsonData))
+	return db.Db.Put(uow, string(l.ID), string(jsonData))
 }
 
 var _ LinkDb = (*ImplKeyValueDb)(nil)

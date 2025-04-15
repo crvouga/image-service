@@ -3,12 +3,12 @@ package link
 import (
 	"time"
 
+	"imageresizerservice/app/users/loginWithEmailLink/link/linkID"
 	"imageresizerservice/library/email/emailAddress"
-	"imageresizerservice/library/id"
 )
 
 type Link struct {
-	Id           string
+	ID           linkID.LinkID
 	EmailAddress emailAddress.EmailAddress
 	CreatedAt    time.Time
 	UsedAt       time.Time
@@ -16,7 +16,7 @@ type Link struct {
 
 func New(emailAddress emailAddress.EmailAddress) Link {
 	return Link{
-		Id:           id.Gen(),
+		ID:           linkID.Gen(),
 		EmailAddress: emailAddress,
 		CreatedAt:    time.Now(),
 	}
@@ -24,7 +24,7 @@ func New(emailAddress emailAddress.EmailAddress) Link {
 
 func MarkAsUsed(l Link) Link {
 	return Link{
-		Id:           l.Id,
+		ID:           l.ID,
 		EmailAddress: l.EmailAddress,
 		CreatedAt:    l.CreatedAt,
 		UsedAt:       time.Now(),

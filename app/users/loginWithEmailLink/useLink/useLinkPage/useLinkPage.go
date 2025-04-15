@@ -3,6 +3,7 @@ package useLinkPage
 import (
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/users/loginWithEmailLink/link/linkID"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -15,7 +16,7 @@ func Router(mux *http.ServeMux) {
 
 type Data struct {
 	Action string
-	LinkId string
+	LinkId linkID.LinkID
 }
 
 func Respond() http.HandlerFunc {
@@ -23,23 +24,23 @@ func Respond() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			Action: routes.UseLinkAction,
-			LinkId: r.URL.Query().Get("linkId"),
+			LinkId: linkID.New(r.URL.Query().Get("linkId")),
 		}
 
 		page.Respond(htmlPath, data)(w, r)
 	}
 }
 
-func ToUrl(reqCtx *reqCtx.ReqCtx, linkId string) string {
+func ToUrl(reqCtx *reqCtx.ReqCtx, linkId linkID.LinkID) string {
 	path := ToPath(linkId)
 	u, _ := url.Parse(reqCtx.BaseURL + path)
 	return u.String()
 }
 
-func ToPath(linkId string) string {
+func ToPath(linkId linkID.LinkID) string {
 	u, _ := url.Parse(routes.UseLinkPage)
 	q := u.Query()
-	q.Set("linkId", linkId)
+	q.Set("linkId", string(linkId))
 	u.RawQuery = q.Encode()
 	return u.String()
 }

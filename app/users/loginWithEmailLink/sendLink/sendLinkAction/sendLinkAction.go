@@ -7,6 +7,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
+	"imageresizerservice/app/users/loginWithEmailLink/link/linkID"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/app/users/loginWithEmailLink/sendLink/sendLinkPage"
 	"imageresizerservice/app/users/loginWithEmailLink/sendLink/sendLinkSuccessPage"
@@ -72,7 +73,7 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 		return err
 	}
 
-	email := toLoginEmail(reqCtx, emailAddress, linkNew.Id)
+	email := toLoginEmail(reqCtx, emailAddress, linkNew.ID)
 
 	if err := appCtx.SendEmail.SendEmail(uow, email); err != nil {
 		return err
@@ -84,7 +85,7 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 
 	return nil
 }
-func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkId string) email.Email {
+func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkId linkID.LinkID) email.Email {
 	return email.Email{
 		To:      emailAddress,
 		Subject: "Login link",

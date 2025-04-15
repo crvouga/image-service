@@ -1,14 +1,18 @@
 package project
 
-import "time"
-
-type ProjectID string
+import (
+	"imageresizerservice/app/projects/project/projectID"
+	"imageresizerservice/app/projects/project/projectName"
+	"imageresizerservice/app/users/userID"
+	"net/url"
+	"time"
+)
 
 type Project struct {
-	ID              ProjectID
-	CreatedByUserID string
+	ID              projectID.ProjectID
+	CreatedByUserID userID.UserID
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
-	Name            string
-	AllowedDomains  []string
+	Name            projectName.ProjectName
+	AllowedDomains  []url.URL
 }

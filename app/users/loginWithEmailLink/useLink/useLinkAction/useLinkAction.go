@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
+	"imageresizerservice/app/users/loginWithEmailLink/link/linkID"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkErrorPage"
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkSuccessPage"
@@ -44,12 +45,12 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	}
 }
 
-func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, linkId string) error {
+func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) error {
 	logger := reqCtx.Logger.With(slog.String("operation", "UseLink"))
 
-	logger.Info("Starting login with email link process", "linkId", linkId)
+	logger.Info("Starting login with email link process", "linkId", maybeLinkID)
 
-	cleaned := strings.TrimSpace(linkId)
+	cleaned := strings.TrimSpace(maybeLinkID)
 
 	if cleaned == "" {
 		logger.Warn("Empty link ID provided")
@@ -57,7 +58,10 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, linkId string) error 
 	}
 
 	logger.Info("Fetching link from database", "linkId", cleaned)
-	found, err := appCtx.LinkDb.GetById(cleaned)
+
+	linkId := linkID.New(cleaned)
+
+	found, err := appCtx.LinkDb.GetById(linkId)
 
 	if err != nil {
 		logger.Error("Error fetching link", "error", err.Error())
