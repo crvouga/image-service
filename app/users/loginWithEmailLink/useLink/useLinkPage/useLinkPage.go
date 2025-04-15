@@ -1,7 +1,7 @@
 package useLinkPage
 
 import (
-	"imageresizerservice/app/ctx"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/library/static"
@@ -30,7 +30,7 @@ func Respond() http.HandlerFunc {
 	}
 }
 
-func ToUrl(appCtx *ctx.AppCtx, linkId string) string {
+func ToUrl(appCtx *appCtx.AppCtx, linkId string) string {
 	path := ToPath(linkId)
 	u, _ := url.Parse(appCtx.BaseUrl + path)
 	return u.String()

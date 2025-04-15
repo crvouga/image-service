@@ -1,4 +1,4 @@
-package ctx
+package appCtx
 
 import (
 	"database/sql"

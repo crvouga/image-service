@@ -5,18 +5,18 @@ import (
 	"net/http"
 	"strings"
 
-	"imageresizerservice/app/ctx"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkErrorPage"
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkSuccessPage"
 )
 
-func Router(mux *http.ServeMux, appCtx *ctx.AppCtx) {
+func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 	mux.HandleFunc(routes.UseLinkAction, Respond(appCtx))
 }
 
-func Respond(appCtx *ctx.AppCtx) http.HandlerFunc {
+func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		if err := r.ParseForm(); err != nil {
@@ -38,7 +38,7 @@ func Respond(appCtx *ctx.AppCtx) http.HandlerFunc {
 	}
 }
 
-func UseLink(ctx *ctx.AppCtx, linkId string) error {
+func UseLink(ctx *appCtx.AppCtx, linkId string) error {
 	cleaned := strings.TrimSpace(linkId)
 
 	if cleaned == "" {
