@@ -7,6 +7,6 @@ import (
 )
 
 type LinkDb interface {
-	GetById(id linkID.LinkID) (*link.Link, error)
+	GetByLinkID(id linkID.LinkID) (*link.Link, error)
 	Upsert(uow *uow.Uow, link link.Link) error
 }

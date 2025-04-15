@@ -14,7 +14,7 @@ type ImplKeyValueDb struct {
 
 var _ UserSessionDb = ImplKeyValueDb{}
 
-func (db ImplKeyValueDb) GetById(id sessionID.SessionID) (*userSession.UserSession, error) {
+func (db ImplKeyValueDb) GetBySessionID(id sessionID.SessionID) (*userSession.UserSession, error) {
 	value, err := db.Db.Get(string(id))
 	if err != nil {
 		return nil, err

@@ -7,6 +7,6 @@ import (
 )
 
 type UserSessionDb interface {
-	GetById(id sessionID.SessionID) (*userSession.UserSession, error)
+	GetBySessionID(id sessionID.SessionID) (*userSession.UserSession, error)
 	Upsert(uow *uow.Uow, userSession userSession.UserSession) error
 }

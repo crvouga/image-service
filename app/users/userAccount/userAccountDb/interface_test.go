@@ -26,7 +26,7 @@ func newFixture() *Fixture {
 	}
 }
 
-func Test_GetById(t *testing.T) {
+func Test_GetByID(t *testing.T) {
 	f := newFixture()
 	uow, _ := f.UowFactory.Begin()
 
@@ -45,7 +45,7 @@ func Test_GetById(t *testing.T) {
 	}
 
 	// Get the session
-	retrieved, err := f.Db.GetById(account.ID)
+	retrieved, err := f.Db.GetByUserID(account.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -55,7 +55,7 @@ func Test_GetById(t *testing.T) {
 	}
 
 	if retrieved.ID != account.ID {
-		t.Errorf("Expected Id to be %s, got %s", account.ID, retrieved.ID)
+		t.Errorf("Expected ID to be %s, got %s", account.ID, retrieved.ID)
 	}
 
 	if retrieved.EmailAddress != account.EmailAddress {
@@ -65,11 +65,11 @@ func Test_GetById(t *testing.T) {
 	uow.Commit()
 }
 
-func Test_GetByIdNonExistent(t *testing.T) {
+func Test_GetByIDNonExistent(t *testing.T) {
 	f := newFixture()
 
 	// Try to get a session that doesn't exist
-	retrieved, err := f.Db.GetById("nonexistent")
+	retrieved, err := f.Db.GetByUserID("nonexistent")
 
 	if err != nil {
 		t.Errorf("Expected no error for nonexistent session, got %v", err)
@@ -99,7 +99,7 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	// Verify it exists
-	retrieved, err := f.Db.GetById(account.ID)
+	retrieved, err := f.Db.GetByUserID(account.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -109,7 +109,7 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	if retrieved.ID != account.ID {
-		t.Errorf("Expected Id to be %s, got %s", account.ID, retrieved.ID)
+		t.Errorf("Expected ID to be %s, got %s", account.ID, retrieved.ID)
 	}
 
 	uow.Commit()
@@ -148,7 +148,7 @@ func Test_UpsertUpdateSession(t *testing.T) {
 	}
 
 	// Verify it was updated
-	retrieved, err := f.Db.GetById("update-session")
+	retrieved, err := f.Db.GetByUserID("update-session")
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -193,7 +193,7 @@ func Test_GetByEmailAddress(t *testing.T) {
 	}
 
 	if retrieved.ID != account.ID {
-		t.Errorf("Expected Id to be %s, got %s", account.ID, retrieved.ID)
+		t.Errorf("Expected ID to be %s, got %s", account.ID, retrieved.ID)
 	}
 
 	uow.Commit()

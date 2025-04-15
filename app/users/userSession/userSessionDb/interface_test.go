@@ -24,7 +24,7 @@ func newFixture() *Fixture {
 	}
 }
 
-func Test_GetById(t *testing.T) {
+func Test_GetByID(t *testing.T) {
 	f := newFixture()
 	uow, _ := f.UowFactory.Begin()
 
@@ -43,7 +43,7 @@ func Test_GetById(t *testing.T) {
 	}
 
 	// Get the session
-	retrieved, err := f.SessionDb.GetById("test-id")
+	retrieved, err := f.SessionDb.GetBySessionID("test-id")
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -53,21 +53,21 @@ func Test_GetById(t *testing.T) {
 	}
 
 	if retrieved.ID != session.ID {
-		t.Errorf("Expected Id to be %s, got %s", session.ID, retrieved.ID)
+		t.Errorf("Expected ID to be %s, got %s", session.ID, retrieved.ID)
 	}
 
 	if retrieved.UserID != session.UserID {
-		t.Errorf("Expected UserId to be %s, got %s", session.UserID, retrieved.UserID)
+		t.Errorf("Expected UserID to be %s, got %s", session.UserID, retrieved.UserID)
 	}
 
 	uow.Commit()
 }
 
-func Test_GetByIdNonExistent(t *testing.T) {
+func Test_GetByIDNonExistent(t *testing.T) {
 	f := newFixture()
 
 	// Try to get a session that doesn't exist
-	retrieved, err := f.SessionDb.GetById("nonexistent")
+	retrieved, err := f.SessionDb.GetBySessionID("nonexistent")
 
 	if err != nil {
 		t.Errorf("Expected no error for nonexistent session, got %v", err)
@@ -97,7 +97,7 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	// Verify it exists
-	retrieved, err := f.SessionDb.GetById("new-session")
+	retrieved, err := f.SessionDb.GetBySessionID("new-session")
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -107,7 +107,7 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	if retrieved.ID != session.ID {
-		t.Errorf("Expected Id to be %s, got %s", session.ID, retrieved.ID)
+		t.Errorf("Expected ID to be %s, got %s", session.ID, retrieved.ID)
 	}
 
 	uow.Commit()
@@ -147,7 +147,7 @@ func Test_UpsertUpdateSession(t *testing.T) {
 	}
 
 	// Verify it was updated
-	retrieved, err := f.SessionDb.GetById("update-session")
+	retrieved, err := f.SessionDb.GetBySessionID("update-session")
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}

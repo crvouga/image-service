@@ -8,7 +8,7 @@ import (
 )
 
 type UserAccountDb interface {
-	GetById(id userID.UserID) (*userAccount.UserAccount, error)
+	GetByUserID(id userID.UserID) (*userAccount.UserAccount, error)
 	GetByEmailAddress(emailAddress emailAddress.EmailAddress) (*userAccount.UserAccount, error)
 	Upsert(uow *uow.Uow, userAccount userAccount.UserAccount) error
 }

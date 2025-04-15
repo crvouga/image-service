@@ -23,7 +23,7 @@ func userAccountKey(id userID.UserID) string {
 	return fmt.Sprintf("userAccount:%s", id)
 }
 
-func (db ImplKeyValueDb) GetById(id userID.UserID) (*userAccount.UserAccount, error) {
+func (db ImplKeyValueDb) GetByUserID(id userID.UserID) (*userAccount.UserAccount, error) {
 	value, err := db.Db.Get(userAccountKey(id))
 	if err != nil {
 		return nil, err
@@ -62,17 +62,17 @@ func (db ImplKeyValueDb) Upsert(uow *uow.Uow, account userAccount.UserAccount) e
 func (db ImplKeyValueDb) GetByEmailAddress(emailAddress emailAddress.EmailAddress) (*userAccount.UserAccount, error) {
 	// Get the user ID from the email index
 	emailKey := emailIndexKey(emailAddress)
-	userId, err := db.Db.Get(emailKey)
+	gotUserID, err := db.Db.Get(emailKey)
 	if err != nil {
 		return nil, err
 	}
 
-	if userId == nil {
+	if gotUserID == nil {
 		return nil, nil
 	}
 
 	// Use the user ID to get the actual user account
-	return db.GetById(userID.New(*userId))
+	return db.GetByUserID(userID.New(*gotUserID))
 }
 
 var _ UserAccountDb = (*ImplKeyValueDb)(nil)

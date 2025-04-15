@@ -16,7 +16,7 @@ func Router(mux *http.ServeMux) {
 
 type Data struct {
 	Action string
-	LinkId linkID.LinkID
+	LinkID linkID.LinkID
 }
 
 func Respond() http.HandlerFunc {
@@ -24,23 +24,23 @@ func Respond() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			Action: routes.UseLinkAction,
-			LinkId: linkID.New(r.URL.Query().Get("linkId")),
+			LinkID: linkID.New(r.URL.Query().Get("linkID")),
 		}
 
 		page.Respond(htmlPath, data)(w, r)
 	}
 }
 
-func ToUrl(reqCtx *reqCtx.ReqCtx, linkId linkID.LinkID) string {
-	path := ToPath(linkId)
+func ToUrl(reqCtx *reqCtx.ReqCtx, linkID linkID.LinkID) string {
+	path := ToPath(linkID)
 	u, _ := url.Parse(reqCtx.BaseURL + path)
 	return u.String()
 }
 
-func ToPath(linkId linkID.LinkID) string {
+func ToPath(linkID linkID.LinkID) string {
 	u, _ := url.Parse(routes.UseLinkPage)
 	q := u.Query()
-	q.Set("linkId", string(linkId))
+	q.Set("linkID", string(linkID))
 	u.RawQuery = q.Encode()
 	return u.String()
 }

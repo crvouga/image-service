@@ -14,7 +14,7 @@ type ImplKeyValueDb struct {
 
 var _ LinkDb = ImplKeyValueDb{}
 
-func (db ImplKeyValueDb) GetById(id linkID.LinkID) (*link.Link, error) {
+func (db ImplKeyValueDb) GetByLinkID(id linkID.LinkID) (*link.Link, error) {
 	value, err := db.Db.Get(string(id))
 	if err != nil {
 		return nil, err

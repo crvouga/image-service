@@ -85,10 +85,10 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 
 	return nil
 }
-func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkId linkID.LinkID) email.Email {
+func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkID linkID.LinkID) email.Email {
 	return email.Email{
 		To:      emailAddress,
 		Subject: "Login link",
-		Body:    useLinkPage.ToUrl(reqCtx, linkId),
+		Body:    useLinkPage.ToUrl(reqCtx, linkID),
 	}
 }

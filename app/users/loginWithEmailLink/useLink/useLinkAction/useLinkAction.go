@@ -33,9 +33,9 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 			return
 		}
 
-		linkId := strings.TrimSpace(r.FormValue("linkId"))
+		linkID := strings.TrimSpace(r.FormValue("linkID"))
 
-		if err := UseLink(appCtx, &reqCtx, linkId); err != nil {
+		if err := UseLink(appCtx, &reqCtx, linkID); err != nil {
 			useLinkErrorPage.Redirect(w, r, err.Error())
 			return
 		}
@@ -48,7 +48,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) error {
 	logger := reqCtx.Logger.With(slog.String("operation", "UseLink"))
 
-	logger.Info("Starting login with email link process", "linkId", maybeLinkID)
+	logger.Info("Starting login with email link process", "linkID", maybeLinkID)
 
 	cleaned := strings.TrimSpace(maybeLinkID)
 
@@ -57,11 +57,11 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		return errors.New("login link id is required")
 	}
 
-	logger.Info("Fetching link from database", "linkId", cleaned)
+	logger.Info("Fetching link from database", "linkID", cleaned)
 
-	linkId := linkID.New(cleaned)
+	linkID := linkID.New(cleaned)
 
-	found, err := appCtx.LinkDb.GetById(linkId)
+	found, err := appCtx.LinkDb.GetByLinkID(linkID)
 
 	if err != nil {
 		logger.Error("Error fetching link", "error", err.Error())
@@ -69,12 +69,12 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 	}
 
 	if found == nil {
-		logger.Warn("No link found with provided ID", "linkId", cleaned)
+		logger.Warn("No link found with provided ID", "linkID", cleaned)
 		return errors.New("no record of login link found")
 	}
 
 	if link.WasUsed(found) {
-		logger.Warn("Link has already been used", "linkId", cleaned)
+		logger.Warn("Link has already been used", "linkID", cleaned)
 		return errors.New("login link has already been used")
 	}
 
@@ -88,7 +88,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 
 	defer uow.Rollback()
 
-	logger.Info("Marking link as used", "linkId", cleaned)
+	logger.Info("Marking link as used", "linkID", cleaned)
 	marked := link.MarkAsUsed(*found)
 
 	if err := appCtx.LinkDb.Upsert(uow, marked); err != nil {
@@ -113,7 +113,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 			UpdatedAt:    time.Now(),
 		}
 	} else {
-		logger.Info("Found existing user account", "userId", account.ID)
+		logger.Info("Found existing user account", "userID", account.ID)
 	}
 
 	if err := appCtx.UserAccountDb.Upsert(uow, *account); err != nil {
@@ -121,7 +121,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		return newDatabaseError(err)
 	}
 
-	logger.Info("Creating new user session", "userId", account.ID)
+	logger.Info("Creating new user session", "userID", account.ID)
 	sessionNew := userSession.UserSession{
 		ID:        userSessionID.Gen(),
 		UserID:    account.ID,
@@ -140,7 +140,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		return newDatabaseError(err)
 	}
 
-	logger.Info("Successfully completed login process", "userId", account.ID)
+	logger.Info("Successfully completed login process", "userID", account.ID)
 	return nil
 }
 
