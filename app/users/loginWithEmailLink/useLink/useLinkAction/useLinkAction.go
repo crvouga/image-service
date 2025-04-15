@@ -10,16 +10,21 @@ import (
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 )
 
-func Router(mux *http.ServeMux, d *ctx.Ctx) {
-	mux.HandleFunc(routes.UseLinkAction, Respond(d))
+func Router(mux *http.ServeMux, ctx *ctx.Ctx) {
+	mux.HandleFunc(routes.UseLinkAction, Respond(ctx))
 }
 
-func Respond(d *ctx.Ctx) http.HandlerFunc {
+func Respond(ctx *ctx.Ctx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		linkId := strings.TrimSpace(r.URL.Query().Get("linkId"))
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "Failed to parse form", http.StatusBadRequest)
+			return
+		}
 
-		err := UseLink(d, linkId)
+		linkId := strings.TrimSpace(r.FormValue("linkId"))
+
+		err := UseLink(ctx, linkId)
 
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -31,14 +36,14 @@ func Respond(d *ctx.Ctx) http.HandlerFunc {
 	}
 }
 
-func UseLink(d *ctx.Ctx, linkId string) error {
+func UseLink(ctx *ctx.Ctx, linkId string) error {
 	cleaned := strings.TrimSpace(linkId)
 
 	if cleaned == "" {
 		return errors.New("login link id is required")
 	}
 
-	found, err := d.LinkDb.GetById(cleaned)
+	found, err := ctx.LinkDb.GetById(cleaned)
 
 	if err != nil {
 		return err
