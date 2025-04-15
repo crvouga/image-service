@@ -1,18 +1,14 @@
 package reqCtx
 
 import (
+	"imageresizerservice/library/httpRequest"
 	"imageresizerservice/library/id"
 	"net/http"
 )
 
 type ReqCtx struct {
+	BaseURL   string
 	SessionID string
-}
-
-func New(sessionID string) ReqCtx {
-	return ReqCtx{
-		SessionID: sessionID,
-	}
 }
 
 // FromHttpRequest extracts the ReqCtx from an HTTP request
@@ -23,7 +19,14 @@ func FromHttpRequest(r *http.Request) (ReqCtx, error) {
 		return ReqCtx{}, err
 	}
 
-	return New(cookie.Value), nil
+	baseURL := httpRequest.GetRequestBaseURL(r)
+
+	reqCtx := ReqCtx{
+		BaseURL:   baseURL,
+		SessionID: cookie.Value,
+	}
+
+	return reqCtx, nil
 }
 
 // WithSessionID is a middleware that ensures a sessionID cookie exists.

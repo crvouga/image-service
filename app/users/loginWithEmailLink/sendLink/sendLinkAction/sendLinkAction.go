@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/app/users/loginWithEmailLink/sendLink/sendLinkPage"
@@ -34,7 +35,14 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		emailInput := strings.TrimSpace(r.FormValue("email"))
 
-		errSent := SendLink(appCtx, emailInput)
+		reqCtx, err := reqCtx.FromHttpRequest(r)
+
+		if err != nil {
+			http.Error(w, "Unable to get request context", http.StatusInternalServerError)
+			return
+		}
+
+		errSent := SendLink(appCtx, &reqCtx, emailInput)
 
 		if errSent != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
@@ -48,7 +56,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	}
 }
 
-func SendLink(appCtx *appCtx.AppCtx, emailAddressInput string) error {
+func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) error {
 	if err := email.ValidateEmailAddress(emailAddressInput); err != nil {
 		return err
 	}
@@ -67,7 +75,7 @@ func SendLink(appCtx *appCtx.AppCtx, emailAddressInput string) error {
 		return err
 	}
 
-	email := toLoginEmail(appCtx, emailAddressInput, linkNew.Id)
+	email := toLoginEmail(reqCtx, emailAddressInput, linkNew.Id)
 
 	if err := appCtx.SendEmail.SendEmail(uow, email); err != nil {
 		return err
@@ -79,11 +87,11 @@ func SendLink(appCtx *appCtx.AppCtx, emailAddressInput string) error {
 
 	return nil
 }
-func toLoginEmail(appCtx *appCtx.AppCtx, emailAddress string, linkId string) email.Email {
+func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress string, linkId string) email.Email {
 	return email.Email{
 		To:      emailAddress,
 		From:    "noreply@imageresizer.com",
 		Subject: "Login link",
-		Body:    useLinkPage.ToUrl(appCtx, linkId),
+		Body:    useLinkPage.ToUrl(reqCtx, linkId),
 	}
 }

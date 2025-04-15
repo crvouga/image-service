@@ -18,19 +18,17 @@ func main() {
 
 	defer db.Close()
 
-	addr := ":8080"
-
-	baseUrl := "http://localhost" + addr
-
-	appCtx := appCtx.New(db, baseUrl)
+	appCtx := appCtx.New(db)
 
 	mux := http.NewServeMux()
 
 	Router(mux, &appCtx)
 
-	log.Printf("Server live here %s/ \n", baseUrl)
-
 	handler := reqCtx.WithSessionID(mux)
+
+	addr := ":8080"
+
+	log.Printf("Server live here http://localhost%s/ \n", addr)
 
 	http.ListenAndServe(addr, handler)
 }
