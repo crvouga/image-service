@@ -12,6 +12,7 @@ import (
 	"imageresizerservice/app/users/loginWithEmailLink/sendLink/sendLinkSuccessPage"
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkPage"
 	"imageresizerservice/library/email/email"
+	"imageresizerservice/library/email/emailAddress"
 )
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
@@ -52,7 +53,8 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 }
 
 func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) error {
-	if err := email.ValidateEmailAddress(emailAddressInput); err != nil {
+	emailAddress, err := emailAddress.New(emailAddressInput)
+	if err != nil {
 		return err
 	}
 
@@ -64,13 +66,13 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 
 	defer uow.Rollback()
 
-	linkNew := link.New(emailAddressInput)
+	linkNew := link.New(emailAddress)
 
 	if err := appCtx.LinkDb.Upsert(uow, linkNew); err != nil {
 		return err
 	}
 
-	email := toLoginEmail(reqCtx, emailAddressInput, linkNew.Id)
+	email := toLoginEmail(reqCtx, emailAddress, linkNew.Id)
 
 	if err := appCtx.SendEmail.SendEmail(uow, email); err != nil {
 		return err
@@ -82,10 +84,9 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 
 	return nil
 }
-func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress string, linkId string) email.Email {
+func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkId string) email.Email {
 	return email.Email{
 		To:      emailAddress,
-		From:    "noreply@imageresizer.com",
 		Subject: "Login link",
 		Body:    useLinkPage.ToUrl(reqCtx, linkId),
 	}

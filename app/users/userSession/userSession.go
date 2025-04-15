@@ -1,11 +1,16 @@
 package userSession
 
-import "time"
+import (
+	"imageresizerservice/app/ctx/sessionID"
+	"imageresizerservice/app/users/userID"
+	"imageresizerservice/app/users/userSession/userSessionID"
+	"time"
+)
 
 type UserSession struct {
-	ID        string
-	UserID    string
-	SessionID string
+	ID        userSessionID.UserSessionID
+	UserID    userID.UserID
+	SessionID sessionID.SessionID
 	CreatedAt time.Time
 	EndedAt   time.Time
 }

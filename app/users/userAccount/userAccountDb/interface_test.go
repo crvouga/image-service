@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"imageresizerservice/app/users/userAccount"
+	"imageresizerservice/app/users/userID"
+	"imageresizerservice/library/email/emailAddress"
 	"imageresizerservice/library/keyValueDb"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
@@ -30,8 +32,8 @@ func Test_GetById(t *testing.T) {
 
 	// Create a session
 	account := userAccount.UserAccount{
-		ID:           "test-id",
-		EmailAddress: "test@test.com",
+		ID:           userID.Gen(),
+		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
@@ -43,7 +45,7 @@ func Test_GetById(t *testing.T) {
 	}
 
 	// Get the session
-	retrieved, err := f.Db.GetById("test-id")
+	retrieved, err := f.Db.GetById(account.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -84,8 +86,8 @@ func Test_UpsertNewSession(t *testing.T) {
 
 	// Create a session
 	account := userAccount.UserAccount{
-		ID:           "new-session",
-		EmailAddress: "test@test.com",
+		ID:           userID.Gen(),
+		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
@@ -97,7 +99,7 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	// Verify it exists
-	retrieved, err := f.Db.GetById("new-session")
+	retrieved, err := f.Db.GetById(account.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -119,8 +121,8 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	// Create initial session
 	account := userAccount.UserAccount{
-		ID:           "update-session",
-		EmailAddress: "test@test.com",
+		ID:           userID.Gen(),
+		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
@@ -168,8 +170,8 @@ func Test_GetByEmailAddress(t *testing.T) {
 
 	// Create a session
 	account := userAccount.UserAccount{
-		ID:           "test-id",
-		EmailAddress: "test@test.com",
+		ID:           userID.Gen(),
+		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
 	}
@@ -181,7 +183,7 @@ func Test_GetByEmailAddress(t *testing.T) {
 	}
 
 	// Get the session
-	retrieved, err := f.Db.GetByEmailAddress("test@test.com")
+	retrieved, err := f.Db.GetByEmailAddress(emailAddress.NewElsePanic("test@test.com"))
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}

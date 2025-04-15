@@ -2,11 +2,6 @@ package useLinkAction
 
 import (
 	"errors"
-	"log/slog"
-	"net/http"
-	"strings"
-	"time"
-
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
@@ -14,8 +9,13 @@ import (
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkErrorPage"
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkSuccessPage"
 	"imageresizerservice/app/users/userAccount"
+	"imageresizerservice/app/users/userID"
 	"imageresizerservice/app/users/userSession"
-	"imageresizerservice/library/id"
+	"imageresizerservice/app/users/userSession/userSessionID"
+	"log/slog"
+	"net/http"
+	"strings"
+	"time"
 )
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
@@ -103,7 +103,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, linkId string) error 
 	if account == nil {
 		logger.Info("Creating new user account", "email", found.EmailAddress)
 		account = &userAccount.UserAccount{
-			ID:           id.Gen(),
+			ID:           userID.Gen(),
 			EmailAddress: found.EmailAddress,
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
@@ -119,7 +119,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, linkId string) error 
 
 	logger.Info("Creating new user session", "userId", account.ID)
 	sessionNew := userSession.UserSession{
-		ID:        id.Gen(),
+		ID:        userSessionID.Gen(),
 		UserID:    account.ID,
 		CreatedAt: time.Now(),
 		SessionID: reqCtx.SessionID,

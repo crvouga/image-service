@@ -3,20 +3,21 @@ package link
 import (
 	"time"
 
+	"imageresizerservice/library/email/emailAddress"
 	"imageresizerservice/library/id"
 )
 
 type Link struct {
 	Id           string
-	EmailAddress string
+	EmailAddress emailAddress.EmailAddress
 	CreatedAt    time.Time
 	UsedAt       time.Time
 }
 
-func New(email string) Link {
+func New(emailAddress emailAddress.EmailAddress) Link {
 	return Link{
 		Id:           id.Gen(),
-		EmailAddress: email,
+		EmailAddress: emailAddress,
 		CreatedAt:    time.Now(),
 	}
 }

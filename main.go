@@ -2,7 +2,7 @@ package main
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/library/static"
@@ -17,7 +17,7 @@ func main() {
 
 	Router(mux, &appCtx)
 
-	handler := reqCtx.WithSessionID(mux)
+	handler := sessionID.WithSessionIDCookie(mux)
 
 	addr := ":8080"
 

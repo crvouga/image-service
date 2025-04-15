@@ -2,10 +2,10 @@ package userSessionDb
 
 import (
 	"encoding/json"
+	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/userSession"
 	"imageresizerservice/library/keyValueDb"
 	"imageresizerservice/library/uow"
-	"time"
 )
 
 type ImplKeyValueDb struct {
@@ -14,10 +14,8 @@ type ImplKeyValueDb struct {
 
 var _ UserSessionDb = ImplKeyValueDb{}
 
-func (db ImplKeyValueDb) GetById(id string) (*userSession.UserSession, error) {
-	time.Sleep(time.Second)
-
-	value, err := db.Db.Get(id)
+func (db ImplKeyValueDb) GetById(id sessionID.SessionID) (*userSession.UserSession, error) {
+	value, err := db.Db.Get(string(id))
 	if err != nil {
 		return nil, err
 	}
@@ -35,14 +33,12 @@ func (db ImplKeyValueDb) GetById(id string) (*userSession.UserSession, error) {
 }
 
 func (db ImplKeyValueDb) Upsert(uow *uow.Uow, session userSession.UserSession) error {
-	time.Sleep(time.Second)
-
 	jsonData, err := json.Marshal(session)
 	if err != nil {
 		return err
 	}
 
-	return db.Db.Put(uow, session.ID, string(jsonData))
+	return db.Db.Put(uow, string(session.ID), string(jsonData))
 }
 
 var _ UserSessionDb = (*ImplKeyValueDb)(nil)

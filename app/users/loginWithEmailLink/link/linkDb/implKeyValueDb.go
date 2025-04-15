@@ -5,7 +5,6 @@ import (
 	"imageresizerservice/app/users/loginWithEmailLink/link"
 	"imageresizerservice/library/keyValueDb"
 	"imageresizerservice/library/uow"
-	"time"
 )
 
 type ImplKeyValueDb struct {
@@ -15,8 +14,6 @@ type ImplKeyValueDb struct {
 var _ LinkDb = ImplKeyValueDb{}
 
 func (db ImplKeyValueDb) GetById(id string) (*link.Link, error) {
-	time.Sleep(time.Second)
-
 	value, err := db.Db.Get(id)
 	if err != nil {
 		return nil, err
@@ -35,8 +32,6 @@ func (db ImplKeyValueDb) GetById(id string) (*link.Link, error) {
 }
 
 func (db ImplKeyValueDb) Upsert(uow *uow.Uow, l link.Link) error {
-	time.Sleep(time.Second)
-
 	jsonData, err := json.Marshal(l)
 	if err != nil {
 		return err
