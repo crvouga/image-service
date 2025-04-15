@@ -38,17 +38,17 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	}
 }
 
-func UseLink(ctx *appCtx.AppCtx, linkId string) error {
+func UseLink(appCtx *appCtx.AppCtx, linkId string) error {
 	cleaned := strings.TrimSpace(linkId)
 
 	if cleaned == "" {
 		return errors.New("login link id is required")
 	}
 
-	found, err := ctx.LinkDb.GetById(cleaned)
+	found, err := appCtx.LinkDb.GetById(cleaned)
 
 	if err != nil {
-		return errors.New("database error: " + err.Error())
+		return newDatabaseError(err)
 	}
 
 	if found == nil {
@@ -59,5 +59,27 @@ func UseLink(ctx *appCtx.AppCtx, linkId string) error {
 		return errors.New("login link has already been used")
 	}
 
+	uow, err := appCtx.UowFactory.Begin()
+
+	if err != nil {
+		return newDatabaseError(err)
+	}
+
+	defer uow.Rollback()
+
+	marked := link.MarkAsUsed(*found)
+
+	if err := appCtx.LinkDb.Upsert(uow, marked); err != nil {
+		return newDatabaseError(err)
+	}
+
+	if err := uow.Commit(); err != nil {
+		return newDatabaseError(err)
+	}
+
 	return nil
+}
+
+func newDatabaseError(err error) error {
+	return errors.New("database error: " + err.Error())
 }

@@ -5,18 +5,13 @@ import (
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
-	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/static"
 	"log"
 	"net/http"
 )
 
 func main() {
-	db := sqlite.New()
-
-	defer db.Close()
-
-	appCtx := appCtx.New(db)
+	appCtx := appCtx.New()
 
 	mux := http.NewServeMux()
 

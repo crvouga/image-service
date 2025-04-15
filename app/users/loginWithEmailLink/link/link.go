@@ -22,8 +22,12 @@ func New(email string) Link {
 }
 
 func MarkAsUsed(l Link) Link {
-	l.UsedAt = time.Now()
-	return l
+	return Link{
+		Id:           l.Id,
+		EmailAddress: l.EmailAddress,
+		CreatedAt:    l.CreatedAt,
+		UsedAt:       time.Now(),
+	}
 }
 
 func WasUsed(l *Link) bool {
