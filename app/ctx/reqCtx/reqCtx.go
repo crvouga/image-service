@@ -33,6 +33,9 @@ func getUserID(appCtx *appCtx.AppCtx, sessionID sessionID.SessionID) *userID.Use
 	if err != nil {
 		return nil
 	}
+	if userSession == nil {
+		return nil
+	}
 	return &userSession.UserID
 }
 
