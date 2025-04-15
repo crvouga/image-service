@@ -8,6 +8,8 @@ import (
 	"imageresizerservice/app/ctx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
+	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkErrorPage"
+	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkSuccessPage"
 )
 
 func Router(mux *http.ServeMux, ctx *ctx.Ctx) {
@@ -27,11 +29,11 @@ func Respond(ctx *ctx.Ctx) http.HandlerFunc {
 		err := UseLink(ctx, linkId)
 
 		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			useLinkErrorPage.Redirect(w, r, err.Error())
 			return
 		}
 
-		http.Redirect(w, r, routes.SendLinkPage, http.StatusSeeOther)
+		useLinkSuccessPage.Redirect(w, r)
 
 	}
 }
@@ -46,7 +48,7 @@ func UseLink(ctx *ctx.Ctx, linkId string) error {
 	found, err := ctx.LinkDb.GetById(cleaned)
 
 	if err != nil {
-		return err
+		return errors.New("database error: " + err.Error())
 	}
 
 	if found == nil {

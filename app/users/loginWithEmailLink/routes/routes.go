@@ -7,7 +7,8 @@ const (
 	SendLinkAction      = Prefix + "send-link-action"
 	SendLinkSuccessPage = Prefix + "send-link-success-page"
 	//
-	UseLinkPage       = Prefix + "use-link-page"
-	UseLinkAction     = Prefix + "use-link-action"
-	UseLinkResultPage = Prefix + "use-link-result-page"
+	UseLinkPage        = Prefix + "use-link-page"
+	UseLinkAction      = Prefix + "use-link-action"
+	UseLinkSuccessPage = Prefix + "use-link-success-page"
+	UseLinkErrorPage   = Prefix + "use-link-error-page"
 )
