@@ -7,7 +7,7 @@ import (
 
 func Respond(pageTemplatePath string, pageData any) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpl, err := template.ParseFiles("./app/page/page.html", "./app/ui/icons.html", "./app/ui/header.html", pageTemplatePath)
+		tmpl, err := template.ParseFiles("./app/ui/page/page.html", "./app/ui/icons.html", "./app/ui/header.html", pageTemplatePath)
 
 		if err != nil {
 			errStr := err.Error()

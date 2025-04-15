@@ -1,11 +1,11 @@
 package users
 
 import (
-	"imageresizerservice/app/deps"
+	"imageresizerservice/app/ctx"
 	"imageresizerservice/app/users/loginWithEmailLink"
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, d *deps.Deps) {
+func Router(mux *http.ServeMux, d *ctx.Ctx) {
 	loginWithEmailLink.Router(mux, d)
 }

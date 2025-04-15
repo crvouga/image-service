@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"imageresizerservice/app/page"
+	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/library/static"
 )

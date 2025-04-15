@@ -1,7 +1,7 @@
 package main
 
 import (
-	"imageresizerservice/app/deps"
+	"imageresizerservice/app/ctx"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/library/sqlite"
@@ -21,7 +21,7 @@ func main() {
 
 	baseUrl := "http://localhost" + addr
 
-	d := deps.New(db, baseUrl)
+	d := ctx.New(db, baseUrl)
 
 	mux := http.NewServeMux()
 
@@ -32,7 +32,7 @@ func main() {
 	http.ListenAndServe(addr, mux)
 }
 
-func Router(mux *http.ServeMux, d *deps.Deps) {
+func Router(mux *http.ServeMux, d *ctx.Ctx) {
 
 	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("User-agent: *\nAllow: /"))

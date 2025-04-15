@@ -1,4 +1,4 @@
-package deps
+package ctx
 
 import (
 	"database/sql"
@@ -9,7 +9,7 @@ import (
 	"imageresizerservice/library/uow"
 )
 
-type Deps struct {
+type Ctx struct {
 	BaseUrl     string
 	SendEmail   sendEmail.SendEmail
 	LinkDb      linkDb.LinkDb
@@ -18,11 +18,11 @@ type Deps struct {
 	KeyValueDb  keyValueDb.KeyValueDb
 }
 
-func New(db *sql.DB, baseUrl string) Deps {
+func New(db *sql.DB, baseUrl string) Ctx {
 
 	keyValueDbHashMap := keyValueDb.ImplHashMap{}
 
-	return Deps{
+	return Ctx{
 		BaseUrl:     baseUrl,
 		SendEmail:   &sendEmail.ImplFake{},
 		LinkDb:      &linkDb.ImplKeyValueDb{Db: &keyValueDbHashMap},

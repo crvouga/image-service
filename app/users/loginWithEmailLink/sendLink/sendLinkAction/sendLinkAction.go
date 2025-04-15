@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"imageresizerservice/app/deps"
+	"imageresizerservice/app/ctx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/app/users/loginWithEmailLink/sendLink/sendLinkPage"
@@ -13,11 +13,11 @@ import (
 	"imageresizerservice/library/email/email"
 )
 
-func Router(mux *http.ServeMux, d *deps.Deps) {
+func Router(mux *http.ServeMux, d *ctx.Ctx) {
 	mux.HandleFunc(routes.SendLinkAction, Respond(d))
 }
 
-func Respond(d *deps.Deps) http.HandlerFunc {
+func Respond(d *ctx.Ctx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -48,7 +48,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 	}
 }
 
-func SendLink(d *deps.Deps, emailAddressInput string) error {
+func SendLink(d *ctx.Ctx, emailAddressInput string) error {
 	if err := email.ValidateEmailAddress(emailAddressInput); err != nil {
 		return err
 	}
@@ -79,7 +79,7 @@ func SendLink(d *deps.Deps, emailAddressInput string) error {
 
 	return nil
 }
-func toLoginEmail(d *deps.Deps, emailAddress string, linkId string) email.Email {
+func toLoginEmail(d *ctx.Ctx, emailAddress string, linkId string) email.Email {
 	return email.Email{
 		To:      emailAddress,
 		From:    "noreply@imageresizer.com",

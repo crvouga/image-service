@@ -5,16 +5,16 @@ import (
 	"net/http"
 	"strings"
 
-	"imageresizerservice/app/deps"
+	"imageresizerservice/app/ctx"
 	"imageresizerservice/app/users/loginWithEmailLink/link"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 )
 
-func Router(mux *http.ServeMux, d *deps.Deps) {
+func Router(mux *http.ServeMux, d *ctx.Ctx) {
 	mux.HandleFunc(routes.UseLinkAction, Respond(d))
 }
 
-func Respond(d *deps.Deps) http.HandlerFunc {
+func Respond(d *ctx.Ctx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		linkId := strings.TrimSpace(r.URL.Query().Get("linkId"))
@@ -31,7 +31,7 @@ func Respond(d *deps.Deps) http.HandlerFunc {
 	}
 }
 
-func UseLink(d *deps.Deps, linkId string) error {
+func UseLink(d *ctx.Ctx, linkId string) error {
 	cleaned := strings.TrimSpace(linkId)
 
 	if cleaned == "" {
