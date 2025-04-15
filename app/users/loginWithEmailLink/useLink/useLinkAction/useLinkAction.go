@@ -12,11 +12,11 @@ import (
 	"imageresizerservice/app/users/loginWithEmailLink/useLink/useLinkSuccessPage"
 )
 
-func Router(mux *http.ServeMux, ctx *ctx.Ctx) {
-	mux.HandleFunc(routes.UseLinkAction, Respond(ctx))
+func Router(mux *http.ServeMux, appCtx *ctx.AppCtx) {
+	mux.HandleFunc(routes.UseLinkAction, Respond(appCtx))
 }
 
-func Respond(ctx *ctx.Ctx) http.HandlerFunc {
+func Respond(appCtx *ctx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		if err := r.ParseForm(); err != nil {
@@ -26,7 +26,7 @@ func Respond(ctx *ctx.Ctx) http.HandlerFunc {
 
 		linkId := strings.TrimSpace(r.FormValue("linkId"))
 
-		err := UseLink(ctx, linkId)
+		err := UseLink(appCtx, linkId)
 
 		if err != nil {
 			useLinkErrorPage.Redirect(w, r, err.Error())
@@ -38,7 +38,7 @@ func Respond(ctx *ctx.Ctx) http.HandlerFunc {
 	}
 }
 
-func UseLink(ctx *ctx.Ctx, linkId string) error {
+func UseLink(ctx *ctx.AppCtx, linkId string) error {
 	cleaned := strings.TrimSpace(linkId)
 
 	if cleaned == "" {

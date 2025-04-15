@@ -30,9 +30,9 @@ func Respond() http.HandlerFunc {
 	}
 }
 
-func ToUrl(d *ctx.Ctx, linkId string) string {
+func ToUrl(appCtx *ctx.AppCtx, linkId string) string {
 	path := ToPath(linkId)
-	u, _ := url.Parse(d.BaseUrl + path)
+	u, _ := url.Parse(appCtx.BaseUrl + path)
 	return u.String()
 }
 

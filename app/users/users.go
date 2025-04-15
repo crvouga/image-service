@@ -6,6 +6,6 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, d *ctx.Ctx) {
-	loginWithEmailLink.Router(mux, d)
+func Router(mux *http.ServeMux, appCtx *ctx.AppCtx) {
+	loginWithEmailLink.Router(mux, appCtx)
 }

@@ -9,7 +9,7 @@ import (
 	"imageresizerservice/library/uow"
 )
 
-type Ctx struct {
+type AppCtx struct {
 	BaseUrl     string
 	SendEmail   sendEmail.SendEmail
 	LinkDb      linkDb.LinkDb
@@ -18,11 +18,11 @@ type Ctx struct {
 	KeyValueDb  keyValueDb.KeyValueDb
 }
 
-func New(db *sql.DB, baseUrl string) Ctx {
+func New(db *sql.DB, baseUrl string) AppCtx {
 
 	keyValueDbHashMap := keyValueDb.ImplHashMap{}
 
-	return Ctx{
+	return AppCtx{
 		BaseUrl:     baseUrl,
 		SendEmail:   &sendEmail.ImplFake{},
 		LinkDb:      &linkDb.ImplKeyValueDb{Db: &keyValueDbHashMap},

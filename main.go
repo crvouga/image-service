@@ -32,13 +32,13 @@ func main() {
 	http.ListenAndServe(addr, mux)
 }
 
-func Router(mux *http.ServeMux, d *ctx.Ctx) {
+func Router(mux *http.ServeMux, appCtx *ctx.AppCtx) {
 
 	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("User-agent: *\nAllow: /"))
 	})
 
-	users.Router(mux, d)
+	users.Router(mux, appCtx)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := static.ServeStaticAssets(w, r)

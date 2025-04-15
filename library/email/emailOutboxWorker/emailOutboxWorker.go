@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func Start(d *ctx.Ctx, sleepTime time.Duration) chan bool {
+func Start(appCtx *ctx.AppCtx, sleepTime time.Duration) chan bool {
 	stopChan := make(chan bool)
 
 	go func() {
@@ -18,7 +18,7 @@ func Start(d *ctx.Ctx, sleepTime time.Duration) chan bool {
 				log.Println("Email outbox worker stopped")
 				return
 			default:
-				processEmails(d, sleepTime)
+				processEmails(appCtx, sleepTime)
 				time.Sleep(sleepTime)
 			}
 		}
@@ -26,9 +26,9 @@ func Start(d *ctx.Ctx, sleepTime time.Duration) chan bool {
 
 	return stopChan
 }
-func processEmails(d *ctx.Ctx, sleepTime time.Duration) {
+func processEmails(appCtx *ctx.AppCtx, sleepTime time.Duration) {
 	log.Println("Getting unsent emails")
-	emails, err := d.EmailOutbox.GetUnsentEmails()
+	emails, err := appCtx.EmailOutbox.GetUnsentEmails()
 	if err != nil {
 		log.Printf("Error getting unsent emails: %v", err)
 		return
@@ -39,13 +39,13 @@ func processEmails(d *ctx.Ctx, sleepTime time.Duration) {
 	for _, email := range emails {
 		log.Printf("Sending email: %v", email)
 		// Mark email as sent after successful sending
-		uow, err := d.UowFactory.Begin()
+		uow, err := appCtx.UowFactory.Begin()
 		if err != nil {
 			log.Printf("Error beginning unit of work: %v", err)
 			time.Sleep(sleepTime)
 			continue
 		}
-		err = d.SendEmail.SendEmail(uow, email)
+		err = appCtx.SendEmail.SendEmail(uow, email)
 		if err != nil {
 			log.Printf("Error sending email: %v", err)
 			time.Sleep(sleepTime)
@@ -54,7 +54,7 @@ func processEmails(d *ctx.Ctx, sleepTime time.Duration) {
 
 		defer uow.Rollback()
 
-		err = d.EmailOutbox.MarkAsSent(uow, email)
+		err = appCtx.EmailOutbox.MarkAsSent(uow, email)
 		if err != nil {
 			log.Printf("Error marking email as sent: %v", err)
 			uow.Rollback()
