@@ -1,6 +1,7 @@
 package reqCtx
 
 import (
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/library/httpRequest"
 	"imageresizerservice/library/id"
 	"log/slog"
@@ -12,6 +13,7 @@ type ReqCtx struct {
 	SessionID string
 	TraceID   string
 	Logger    *slog.Logger
+	UserID    *string
 }
 
 // FromHttpRequest extracts the ReqCtx from an HTTP request
@@ -32,7 +34,15 @@ func getSessionID(r *http.Request) string {
 	return cookie.Value
 }
 
-func FromHttpRequest(r *http.Request) ReqCtx {
+func getUserID(appCtx *appCtx.AppCtx, sessionID string) *string {
+	userSession, err := appCtx.UserSessionDb.GetById(sessionID)
+	if err != nil {
+		return nil
+	}
+	return &userSession.UserID
+}
+
+func FromHttpRequest(appCtx *appCtx.AppCtx, r *http.Request) ReqCtx {
 	sessionID := getSessionID(r)
 
 	traceID := getTraceID(r)
@@ -43,11 +53,14 @@ func FromHttpRequest(r *http.Request) ReqCtx {
 		slog.String("traceID", traceID),
 	)
 
+	userID := getUserID(appCtx, sessionID)
+
 	reqCtx := ReqCtx{
 		BaseURL:   baseURL,
 		SessionID: sessionID,
 		TraceID:   traceID,
 		Logger:    logger,
+		UserID:    userID,
 	}
 
 	return reqCtx

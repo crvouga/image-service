@@ -35,7 +35,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		emailInput := strings.TrimSpace(r.FormValue("email"))
 
-		reqCtx := reqCtx.FromHttpRequest(r)
+		reqCtx := reqCtx.FromHttpRequest(appCtx, r)
 
 		errSent := SendLink(appCtx, &reqCtx, emailInput)
 
