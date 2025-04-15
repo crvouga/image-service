@@ -30,9 +30,9 @@ func Test_GetById(t *testing.T) {
 
 	// Create a session
 	session := userSession.UserSession{
-		Id:        "test-id",
-		UserId:    "user-123",
-		SessionId: "session-456",
+		ID:        "test-id",
+		UserID:    "user-123",
+		SessionID: "session-456",
 		CreatedAt: time.Now(),
 	}
 
@@ -52,12 +52,12 @@ func Test_GetById(t *testing.T) {
 		t.Fatal("Expected to retrieve session, got nil")
 	}
 
-	if retrieved.Id != session.Id {
-		t.Errorf("Expected Id to be %s, got %s", session.Id, retrieved.Id)
+	if retrieved.ID != session.ID {
+		t.Errorf("Expected Id to be %s, got %s", session.ID, retrieved.ID)
 	}
 
-	if retrieved.UserId != session.UserId {
-		t.Errorf("Expected UserId to be %s, got %s", session.UserId, retrieved.UserId)
+	if retrieved.UserID != session.UserID {
+		t.Errorf("Expected UserId to be %s, got %s", session.UserID, retrieved.UserID)
 	}
 
 	uow.Commit()
@@ -84,9 +84,9 @@ func Test_UpsertNewSession(t *testing.T) {
 
 	// Create a session
 	session := userSession.UserSession{
-		Id:        "new-session",
-		UserId:    "user-123",
-		SessionId: "session-456",
+		ID:        "new-session",
+		UserID:    "user-123",
+		SessionID: "session-456",
 		CreatedAt: time.Now(),
 	}
 
@@ -106,8 +106,8 @@ func Test_UpsertNewSession(t *testing.T) {
 		t.Fatal("Expected to retrieve session, got nil")
 	}
 
-	if retrieved.Id != session.Id {
-		t.Errorf("Expected Id to be %s, got %s", session.Id, retrieved.Id)
+	if retrieved.ID != session.ID {
+		t.Errorf("Expected Id to be %s, got %s", session.ID, retrieved.ID)
 	}
 
 	uow.Commit()
@@ -119,9 +119,9 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	// Create initial session
 	session := userSession.UserSession{
-		Id:        "update-session",
-		UserId:    "user-123",
-		SessionId: "session-456",
+		ID:        "update-session",
+		UserID:    "user-123",
+		SessionID: "session-456",
 		CreatedAt: time.Now(),
 	}
 
@@ -133,9 +133,9 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	// Update the session
 	updatedSession := userSession.UserSession{
-		Id:        "update-session",
-		UserId:    "user-123",
-		SessionId: "session-456",
+		ID:        "update-session",
+		UserID:    "user-123",
+		SessionID: "session-456",
 		CreatedAt: session.CreatedAt,
 		EndedAt:   time.Now(),
 	}

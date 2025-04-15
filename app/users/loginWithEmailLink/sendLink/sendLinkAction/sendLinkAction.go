@@ -35,12 +35,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		emailInput := strings.TrimSpace(r.FormValue("email"))
 
-		reqCtx, err := reqCtx.FromHttpRequest(r)
-
-		if err != nil {
-			http.Error(w, "Unable to get request context", http.StatusInternalServerError)
-			return
-		}
+		reqCtx := reqCtx.FromHttpRequest(r)
 
 		errSent := SendLink(appCtx, &reqCtx, emailInput)
 

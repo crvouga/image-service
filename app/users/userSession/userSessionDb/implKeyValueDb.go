@@ -42,7 +42,7 @@ func (db ImplKeyValueDb) Upsert(uow *uow.Uow, session userSession.UserSession) e
 		return err
 	}
 
-	return db.Db.Put(uow, session.Id, string(jsonData))
+	return db.Db.Put(uow, session.ID, string(jsonData))
 }
 
 var _ UserSessionDb = (*ImplKeyValueDb)(nil)

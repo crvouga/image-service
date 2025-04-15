@@ -3,30 +3,56 @@ package reqCtx
 import (
 	"imageresizerservice/library/httpRequest"
 	"imageresizerservice/library/id"
+	"log/slog"
 	"net/http"
 )
 
 type ReqCtx struct {
 	BaseURL   string
 	SessionID string
+	TraceID   string
+	Logger    *slog.Logger
 }
 
 // FromHttpRequest extracts the ReqCtx from an HTTP request
 // by retrieving the session ID from the request's cookies.
-func FromHttpRequest(r *http.Request) (ReqCtx, error) {
+func getTraceID(r *http.Request) string {
+	traceID := r.Header.Get("x-trace-id")
+	if traceID == "" {
+		traceID = "trace-id:" + id.Gen()
+	} else {
+		traceID = "trace-id:" + traceID
+	}
+	return traceID
+}
+
+func getSessionID(r *http.Request) string {
 	cookie, err := r.Cookie("sessionID")
 	if err != nil {
-		return ReqCtx{}, err
+		return id.Gen()
 	}
+	return cookie.Value
+}
+
+func FromHttpRequest(r *http.Request) ReqCtx {
+	sessionID := getSessionID(r)
+
+	traceID := getTraceID(r)
 
 	baseURL := httpRequest.GetRequestBaseURL(r)
 
+	logger := slog.Default().With(
+		slog.String("traceID", traceID),
+	)
+
 	reqCtx := ReqCtx{
 		BaseURL:   baseURL,
-		SessionID: cookie.Value,
+		SessionID: sessionID,
+		TraceID:   traceID,
+		Logger:    logger,
 	}
 
-	return reqCtx, nil
+	return reqCtx
 }
 
 // WithSessionID is a middleware that ensures a sessionID cookie exists.

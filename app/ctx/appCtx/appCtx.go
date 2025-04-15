@@ -3,12 +3,14 @@ package appCtx
 import (
 	"database/sql"
 	"imageresizerservice/app/users/loginWithEmailLink/link/linkDb"
+	"imageresizerservice/app/users/userAccount/userAccountDb"
 	"imageresizerservice/app/users/userSession/userSessionDb"
 	"imageresizerservice/library/email/emailOutbox"
 	"imageresizerservice/library/email/sendEmail"
 	"imageresizerservice/library/keyValueDb"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
+	"log/slog"
 )
 
 type AppCtx struct {
@@ -18,7 +20,9 @@ type AppCtx struct {
 	EmailOutbox   emailOutbox.EmailOutbox
 	KeyValueDb    keyValueDb.KeyValueDb
 	UserSessionDb userSessionDb.UserSessionDb
+	UserAccountDb userAccountDb.UserAccountDb
 	Db            *sql.DB
+	Logger        *slog.Logger
 }
 
 func (appCtx *AppCtx) CleanUp() {
@@ -37,7 +41,9 @@ func New() AppCtx {
 		KeyValueDb:    &keyValueDbHashMap,
 		EmailOutbox:   &emailOutbox.ImplKeyValueDb{Db: &keyValueDbHashMap},
 		UserSessionDb: &userSessionDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
+		UserAccountDb: &userAccountDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
 		Db:            db,
+		Logger:        slog.Default(),
 	}
 
 }
@@ -54,6 +60,8 @@ func NewTest() AppCtx {
 		KeyValueDb:    &keyValueDbHashMap,
 		EmailOutbox:   &emailOutbox.ImplKeyValueDb{Db: &keyValueDbHashMap},
 		UserSessionDb: &userSessionDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
+		UserAccountDb: &userAccountDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
 		Db:            db,
+		Logger:        slog.Default(),
 	}
 }

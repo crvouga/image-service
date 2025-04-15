@@ -3,9 +3,9 @@ package userSession
 import "time"
 
 type UserSession struct {
-	Id        string
-	UserId    string
-	SessionId string
+	ID        string
+	UserID    string
+	SessionID string
 	CreatedAt time.Time
 	EndedAt   time.Time
 }
