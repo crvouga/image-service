@@ -1,7 +1,6 @@
 package keyValueDb
 
 import (
-	"errors"
 	"imageresizerservice/library/uow"
 	"sync"
 )
@@ -19,16 +18,16 @@ func NewImplHashMap() *ImplHashMap {
 	}
 }
 
-// Get retrieves a value by key
-func (db *ImplHashMap) Get(key string) (string, error) {
+// Get retrieves a value by key. Returns nil if key not found.
+func (db *ImplHashMap) Get(key string) (*string, error) {
 	db.mutex.RLock()
 	defer db.mutex.RUnlock()
 
 	value, exists := db.data[key]
 	if !exists {
-		return "", errors.New("key not found")
+		return nil, nil
 	}
-	return value, nil
+	return &value, nil
 }
 
 // Put stores a key-value pair
@@ -51,12 +50,13 @@ func (db *ImplHashMap) Zap(uow *uow.Uow, key string) error {
 	defer db.mutex.Unlock()
 
 	if db.data == nil {
-		return errors.New("key not found")
+		return nil
 	}
 
 	_, exists := db.data[key]
+
 	if !exists {
-		return errors.New("key not found")
+		return nil
 	}
 
 	delete(db.data, key)

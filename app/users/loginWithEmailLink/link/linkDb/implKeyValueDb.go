@@ -22,12 +22,12 @@ func (db ImplKeyValueDb) GetById(id string) (*link.Link, error) {
 		return nil, err
 	}
 
-	if value == "" {
+	if value == nil {
 		return nil, nil
 	}
 
 	var l link.Link
-	if err := json.Unmarshal([]byte(value), &l); err != nil {
+	if err := json.Unmarshal([]byte(*value), &l); err != nil {
 		return nil, err
 	}
 

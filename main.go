@@ -2,6 +2,7 @@ package main
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/loginWithEmailLink/routes"
 	"imageresizerservice/library/sqlite"
@@ -29,7 +30,9 @@ func main() {
 
 	log.Printf("Server live here %s/ \n", baseUrl)
 
-	http.ListenAndServe(addr, mux)
+	handler := reqCtx.WithSessionID(mux)
+
+	http.ListenAndServe(addr, handler)
 }
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
@@ -46,4 +49,5 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 			http.Redirect(w, r, routes.SendLinkPage, http.StatusSeeOther)
 		}
 	})
+
 }

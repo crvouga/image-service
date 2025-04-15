@@ -30,11 +30,11 @@ func (impl *ImplKeyValueDb) GetUnsentEmails() ([]email.Email, error) {
 	}
 
 	var emails []email.Email
-	if emailsJSON == "" {
+	if emailsJSON == nil {
 		return emails, nil
 	}
 
-	err = json.Unmarshal([]byte(emailsJSON), &emails)
+	err = json.Unmarshal([]byte(*emailsJSON), &emails)
 	if err != nil {
 		return nil, err
 	}
