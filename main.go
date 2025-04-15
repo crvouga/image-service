@@ -1,16 +1,15 @@
 package main
 
 import (
+	"imageresizerservice/app/deps"
+	"imageresizerservice/app/users"
+	"imageresizerservice/app/users/loginWithEmailLink/routes"
+	"imageresizerservice/library/sqlite"
+	"imageresizerservice/library/static"
 	"log"
 	"net/http"
 
 	_ "github.com/mattn/go-sqlite3"
-
-	"imageresizerservice/deps"
-	"imageresizerservice/sqlite"
-	"imageresizerservice/static"
-	"imageresizerservice/users"
-	"imageresizerservice/users/loginWithEmailLink/routes"
 )
 
 func main() {
