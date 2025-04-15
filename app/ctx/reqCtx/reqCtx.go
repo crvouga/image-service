@@ -19,9 +19,7 @@ type ReqCtx struct {
 func getTraceID(r *http.Request) string {
 	traceID := r.Header.Get("x-trace-id")
 	if traceID == "" {
-		traceID = "trace-id:" + id.Gen()
-	} else {
-		traceID = "trace-id:" + traceID
+		return id.Gen()
 	}
 	return traceID
 }
