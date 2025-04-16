@@ -6,6 +6,8 @@ import (
 	"image/jpeg"
 	"image/png"
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/projects/project/projectID"
+	"imageresizerservice/library/imageExt"
 	"io"
 	"net/http"
 	"path/filepath"
@@ -26,9 +28,24 @@ func ApiImageResize(appCtx *appCtx.AppCtx) http.HandlerFunc {
 		imageURL := r.URL.Query().Get("url")
 		widthStr := r.URL.Query().Get("width")
 		heightStr := r.URL.Query().Get("height")
-		projectID := r.URL.Query().Get("projectID")
+		projectIDMaybe := r.URL.Query().Get("projectID")
 
-		fmt.Println("projectID", projectID)
+		projectIDInst, err := projectID.New(projectIDMaybe)
+		if err != nil {
+			http.Error(w, "Failed to parse projectID: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		fmt.Println("projectID", projectIDInst)
+
+		project, err := appCtx.ProjectDB.GetByID(projectIDInst)
+
+		if err != nil {
+			http.Error(w, "Failed to get project: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Println("project", project)
 
 		// Validate URL parameter
 		if imageURL == "" {
@@ -67,6 +84,10 @@ func ApiImageResize(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		fmt.Println("img", img)
 		fmt.Println("format", format)
+
+		imgNew := imageExt.Resize(img, width, height)
+
+		fmt.Println("imgNew", imgNew)
 
 		// Resize the image
 		// resizedImg := resize.Resize(uint(width), uint(height), img, resize.Lanczos3)
