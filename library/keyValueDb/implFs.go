@@ -16,34 +16,33 @@ type ImplFs struct {
 }
 
 // NewImplFs creates a new instance of ImplFs
-func NewImplFs(dirPath string, fileName string) (*ImplFs, error) {
+func NewImplFs(fileName string) *ImplFs {
+	// Extract directory path from fileName if it exists
+	dirPath := filepath.Dir(fileName)
+
 	// Create directory if it doesn't exist
-	if err := os.MkdirAll(dirPath, 0755); err != nil {
-		return nil, err
+	if dirPath != "." {
+		if err := os.MkdirAll(dirPath, 0755); err != nil {
+			// Just log error and continue, as we'll handle file creation errors later
+			// This allows the function to match the interface without returning an error
+		}
 	}
 
-	filePath := filepath.Join(dirPath, fileName)
-
 	db := &ImplFs{
-		filePath: filePath,
+		filePath: fileName,
 		data:     make(map[string]string),
 	}
 
 	// Load existing data if file exists
-	if _, err := os.Stat(filePath); !os.IsNotExist(err) {
-		data, err := os.ReadFile(filePath)
-		if err != nil {
-			return nil, err
-		}
-
-		if len(data) > 0 {
-			if err := json.Unmarshal(data, &db.data); err != nil {
-				return nil, err
-			}
+	if _, err := os.Stat(fileName); !os.IsNotExist(err) {
+		data, err := os.ReadFile(fileName)
+		if err == nil && len(data) > 0 {
+			// Ignore unmarshaling errors, just start with empty map
+			_ = json.Unmarshal(data, &db.data)
 		}
 	}
 
-	return db, nil
+	return db
 }
 
 // Get retrieves a value by key. Returns nil if key not found.

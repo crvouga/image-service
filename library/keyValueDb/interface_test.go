@@ -17,9 +17,7 @@ func newFixtures() []*Fixture {
 
 	fixtures := make([]*Fixture, 0)
 
-	keyValueDbs := make([]KeyValueDb, 0)
-
-	keyValueDbs = append(keyValueDbs, &ImplHashMap{})
+	keyValueDbs := []KeyValueDb{NewImplHashMap(), NewImplFs("keyValueDb.json")}
 
 	for _, keyValueDb := range keyValueDbs {
 		fixtures = append(fixtures, &Fixture{

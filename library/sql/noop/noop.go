@@ -3,7 +3,10 @@ package noop
 import (
 	"database/sql"
 	"database/sql/driver"
+	"sync"
 )
+
+var registerOnce sync.Once
 
 // Driver implements database/sql/driver.Driver interface
 type Driver struct{}
@@ -102,7 +105,9 @@ func (t *tx) Rollback() error {
 
 // Register registers the driver
 func Register() {
-	sql.Register("noop", &Driver{})
+	registerOnce.Do(func() {
+		sql.Register("noop", &Driver{})
+	})
 }
 
 // New creates a new no-op database connection

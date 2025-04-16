@@ -32,16 +32,16 @@ func (appCtx *AppCtx) CleanUp() {
 func New() AppCtx {
 	db := sqlite.New()
 
-	keyValueDbHashMap := keyValueDb.ImplHashMap{}
+	keyValueDbFs := keyValueDb.NewImplFs("keyValueDb.json")
 
 	return AppCtx{
 		SendEmail:     &sendEmail.ImplFake{},
-		LinkDb:        &linkDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
+		LinkDb:        &linkDb.ImplKeyValueDb{Db: keyValueDbFs},
 		UowFactory:    uow.UowFactory{Db: db},
-		KeyValueDb:    &keyValueDbHashMap,
-		EmailOutbox:   &emailOutbox.ImplKeyValueDb{Db: &keyValueDbHashMap},
-		UserSessionDb: &userSessionDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
-		UserAccountDb: &userAccountDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
+		KeyValueDb:    keyValueDbFs,
+		EmailOutbox:   &emailOutbox.ImplKeyValueDb{Db: keyValueDbFs},
+		UserSessionDb: &userSessionDb.ImplKeyValueDb{Db: keyValueDbFs},
+		UserAccountDb: &userAccountDb.ImplKeyValueDb{Db: keyValueDbFs},
 		Db:            db,
 		Logger:        slog.Default(),
 	}
