@@ -15,15 +15,15 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 }
 
 type Data struct {
-	ProjectsPage    string
-	UserAccountPage string
+	ProjectsPageHref    string
+	UserAccountPageHref string
 }
 
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			ProjectsPage:    projectRoutes.ToProjectListPage(),
-			UserAccountPage: userAccountRoutes.UserAccountPage,
+			ProjectsPageHref:    projectRoutes.ToProjectListPage(),
+			UserAccountPageHref: userAccountRoutes.UserAccountPage,
 		}
 
 		page.Respond(static.GetSiblingPath("homePage.html"), data)(w, r)
