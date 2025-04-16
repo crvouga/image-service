@@ -3,15 +3,9 @@ package sqlite
 import (
 	"database/sql"
 
-	_ "github.com/mattn/go-sqlite3"
+	"imageresizerservice/library/sql/noop"
 )
 
 func New() *sql.DB {
-	db, err := sql.Open("sqlite3", ":memory:")
-
-	if err != nil {
-		panic(err)
-	}
-
-	return db
+	return noop.New()
 }

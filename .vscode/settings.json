@@ -1,10 +1,14 @@
 {
-    "cSpell.words": [
-        "describedby",
-        "imageresizerservice",
-        "mattn",
-        "modernc",
-        "resizer",
-        "tmpl"
-    ]
+  "cSpell.words": [
+    "adduser",
+    "appuser",
+    "describedby",
+    "imageresizerservice",
+    "ldflags",
+    "mattn",
+    "modernc",
+    "resizer",
+    "tmpl",
+    "tzdata"
+  ]
 }
