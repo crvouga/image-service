@@ -46,9 +46,10 @@
         </div>
         <script>
             const resizeButton = document.getElementById('resize-button');
-            const imageSrc = document.getElementById('image-src');
+            const imageSrcInput = document.getElementById('image-src');
             const imageWidthInput = document.getElementById('image-width');
             const imageHeightInput = document.getElementById('image-height');
+            const projectSelect = document.getElementById('project-select');
             const outputImage = document.getElementById('output');
 
             const getMinWidth = () => parseInt(imageWidthInput.getAttribute('min'));
@@ -65,6 +66,27 @@
             });
             imageHeightInput.addEventListener('input', () => {
                 outputImage.height = getHeight();
+            });
+
+            resizeButton.addEventListener('click', () => {
+                const projectID = projectSelect.value;
+                const imageURL = imageSrcInput.value;
+                const width = getWidth();
+                const height = getHeight();
+                const params = new URLSearchParams();
+                params.set('url', imageURL);
+                params.set('width', width.toString());
+                params.set('height', height.toString());
+                params.set('projectID', projectID);
+                const url = '/api/image/resize?' + params.toString();
+                console.log(url);
+                fetch(url)
+                    .then(response => response.blob())
+                    .then(blob => {
+                        const image = new Image();
+                        image.src = URL.createObjectURL(blob);
+                        outputImage.src = image.src;
+                    });
             });
         </script>
     </section>
