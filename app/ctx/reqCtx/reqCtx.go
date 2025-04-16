@@ -2,11 +2,11 @@ package reqCtx
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userSession"
 	"imageresizerservice/library/httpRequest"
-	"imageresizerservice/library/id"
+	"imageresizerservice/library/sessionID"
+	"imageresizerservice/library/traceID"
 	"log/slog"
 	"net/http"
 )
@@ -14,20 +14,10 @@ import (
 type ReqCtx struct {
 	BaseURL     string
 	SessionID   sessionID.SessionID
-	TraceID     string
+	TraceID     traceID.TraceID
 	Logger      *slog.Logger
 	UserSession *userSession.UserSession
 	UserAccount *userAccount.UserAccount
-}
-
-// FromHttpRequest extracts the ReqCtx from an HTTP request
-// by retrieving the session ID from the request's cookies.
-func getTraceID(r *http.Request) string {
-	traceID := r.Header.Get("x-trace-id")
-	if traceID == "" {
-		return id.Gen()
-	}
-	return traceID
 }
 
 func getUserSession(appCtx *appCtx.AppCtx, sessionID sessionID.SessionID) *userSession.UserSession {
@@ -57,24 +47,24 @@ func getUserAccount(appCtx *appCtx.AppCtx, userSessionInst *userSession.UserSess
 
 // FromHttpRequest creates a new ReqCtx from an HTTP request.
 func FromHttpRequest(appCtx *appCtx.AppCtx, r *http.Request) ReqCtx {
-	sessionID := sessionID.FromSessionIDCookie(r)
+	sessionIDInst := sessionID.FromSessionIDCookie(r)
 
-	traceID := getTraceID(r)
+	traceIDInst := traceID.FromHttpRequest(r)
 
 	baseURL := httpRequest.GetRequestBaseURL(r)
 
 	logger := slog.Default().With(
-		slog.String("traceID", traceID),
+		slog.String("traceID", string(traceIDInst)),
 	)
 
-	userSessionInst := getUserSession(appCtx, sessionID)
+	userSessionInst := getUserSession(appCtx, sessionIDInst)
 
 	userAccountInst := getUserAccount(appCtx, userSessionInst)
 
 	reqCtx := ReqCtx{
 		BaseURL:     baseURL,
-		SessionID:   sessionID,
-		TraceID:     traceID,
+		SessionID:   sessionIDInst,
+		TraceID:     traceIDInst,
 		Logger:      logger,
 		UserSession: userSessionInst,
 		UserAccount: userAccountInst,

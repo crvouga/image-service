@@ -3,10 +3,11 @@ package app
 import (
 	"imageresizerservice/app/api"
 	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/home"
 	"imageresizerservice/app/home/getHome"
 	"imageresizerservice/app/imageResizer"
+	"imageresizerservice/library/sessionID"
+	"imageresizerservice/library/traceID"
 
 	"imageresizerservice/app/projects"
 	"imageresizerservice/app/users"
@@ -24,7 +25,7 @@ func Handler() http.Handler {
 
 	router(mux, &appCtx)
 
-	handler := sessionID.WithSessionIDCookie(mux)
+	handler := traceID.WithTraceIDHeader(sessionID.WithSessionIDCookie(mux))
 
 	return handler
 }

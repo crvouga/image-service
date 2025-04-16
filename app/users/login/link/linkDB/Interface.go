@@ -1,9 +1,9 @@
 package linkDB
 
 import (
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
+	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/uow"
 )
 

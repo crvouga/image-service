@@ -4,11 +4,11 @@ import (
 	"testing"
 	"time"
 
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/userID"
 	"imageresizerservice/app/users/userSession"
 	"imageresizerservice/app/users/userSession/userSessionID"
 	"imageresizerservice/library/keyValueDB"
+	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
 )

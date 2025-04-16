@@ -3,11 +3,11 @@ package linkDB
 import (
 	"testing"
 
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/library/email/emailAddress"
 	"imageresizerservice/library/keyValueDB"
+	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
 )

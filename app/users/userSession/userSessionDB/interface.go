@@ -1,8 +1,8 @@
 package userSessionDB
 
 import (
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/userSession"
+	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/uow"
 )
 

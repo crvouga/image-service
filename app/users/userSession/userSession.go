@@ -1,9 +1,9 @@
 package userSession
 
 import (
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/userID"
 	"imageresizerservice/app/users/userSession/userSessionID"
+	"imageresizerservice/library/sessionID"
 	"time"
 )
 

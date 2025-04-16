@@ -2,10 +2,10 @@ package linkDB
 
 import (
 	"encoding/json"
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/library/keyValueDB"
+	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/uow"
 )
 

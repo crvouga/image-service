@@ -2,9 +2,9 @@ package userSessionDB
 
 import (
 	"encoding/json"
-	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/userSession"
 	"imageresizerservice/library/keyValueDB"
+	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/uow"
 )
 
