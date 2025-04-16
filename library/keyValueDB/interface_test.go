@@ -19,8 +19,8 @@ func newFixtures() []*Fixture {
 
 	keyValueDBs := []KeyValueDB{
 		NewImplHashMap(),
-		NewImplFs("keyValueDB.json"),
-		NewImplNamespaced(NewImplFs("keyValueDB.json"), "test"),
+		NewImplFs("test/keyValueDB.json"),
+		NewImplNamespaced(NewImplFs("test/keyValueDB.json"), "test"),
 	}
 
 	for _, keyValueDB := range keyValueDBs {
