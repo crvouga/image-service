@@ -1,9 +1,12 @@
 {{define "page"}}
 {{ template "header" . }}
 <main>
-    <h1>
-        Edit Project
-    </h1>
+    <section>
+        <a href="{{.ProjectPage}}">Back</a>
+        <h1>
+            Edit Project
+        </h1>
+    </section>
     <section>
         <form method="POST" action="">
             <input type="hidden" name="projectID" value="{{.Project.ID}}">
@@ -25,7 +28,7 @@
 
             <div class="form-actions">
                 <button type="submit">Save Changes</button>
-                <a href="{{.ProjectPage}}" role="button" class="secondary">Cancel</a>
+
             </div>
         </form>
     </section>

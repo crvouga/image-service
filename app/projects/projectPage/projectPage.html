@@ -1,15 +1,11 @@
 {{define "page"}}
 {{ template "header" . }}
-<main style="display: flex; flex-direction: column; gap: 48px;">
+<main style="display: flex; flex-direction: column; gap: 64px;">
     <section>
-        <a role="button" href="{{.DashboardPage}}">Back to Dashboard</a>
+        <a href="{{.DashboardPage}}">Back</a>
         <h1>
-            Project Details
+            {{.Project.Name}}
         </h1>
-    </section>
-
-    <section>
-        <a role="button" href="{{.EditProjectPage}}">Edit Project</a>
     </section>
 
     <section>
@@ -50,8 +46,13 @@
 
 
     <section>
-        <h2>Danger Zone</h2>
-        <a role="button" href="{{.DeleteProjectPage}}">Delete Project</a>
+        <h2>Edit Project</h2>
+        <a role="button" href="{{.EditProjectPage}}">Edit</a>
+    </section>
+
+    <section>
+        <h2>Delete Project</h2>
+        <a role="button" href="{{.DeleteProjectPage}}">Delete</a>
     </section>
 
     <div style="width: 100%; height: 64px"></div>

@@ -28,8 +28,8 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		data := Data{
 			UserSession:       req.UserSession,
-			LogoutPage:        logoutRoutes.LogoutPage,
-			CreateProjectPage: projectRoutes.ProjectCreate,
+			LogoutPage:        logoutRoutes.ToLogoutPage(),
+			CreateProjectPage: projectRoutes.ToProjectCreate(),
 		}
 
 		page.Respond(static.GetSiblingPath("dashboardPage.html"), data)(w, r)

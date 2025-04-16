@@ -3,6 +3,7 @@ package projectCreate
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/dashboard/dashboardRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/project/projectName"
@@ -19,6 +20,7 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 }
 
 type Data struct {
+	DashboardPage string
 }
 
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
@@ -32,7 +34,9 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 }
 
 func respondGet(w http.ResponseWriter, r *http.Request) {
-	data := Data{}
+	data := Data{
+		DashboardPage: dashboardRoutes.DashboardPage,
+	}
 	page.Respond(static.GetSiblingPath("projectCreate.html"), data)(w, r)
 }
 func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
