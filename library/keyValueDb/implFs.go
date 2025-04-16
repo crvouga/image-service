@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/library/uow"
 	"os"
 	"path/filepath"
+	"sort"
 	"sync"
 )
 
@@ -70,13 +71,8 @@ func (db *ImplFs) Put(uow *uow.Uow, key string, value string) error {
 
 	db.data[key] = value
 
-	// Write the entire map to the JSON file
-	data, err := json.MarshalIndent(db.data, "", "  ")
-	if err != nil {
-		return err
-	}
-
-	return os.WriteFile(db.filePath, data, 0644)
+	// Write the entire map to the JSON file with sorted keys
+	return db.writeToFile()
 }
 
 // Zap removes a key-value pair
@@ -95,8 +91,31 @@ func (db *ImplFs) Zap(uow *uow.Uow, key string) error {
 
 	delete(db.data, key)
 
-	// Write the updated map to the JSON file
-	data, err := json.MarshalIndent(db.data, "", "  ")
+	// Write the updated map to the JSON file with sorted keys
+	return db.writeToFile()
+}
+
+// writeToFile writes the data map to the file with sorted keys
+func (db *ImplFs) writeToFile() error {
+	// Create a custom marshaler that sorts keys
+	sortedData := make(map[string]string)
+	keys := make([]string, 0, len(db.data))
+
+	// Get all keys
+	for k := range db.data {
+		keys = append(keys, k)
+	}
+
+	// Sort the keys
+	sort.Strings(keys)
+
+	// Create a new map with sorted keys
+	for _, k := range keys {
+		sortedData[k] = db.data[k]
+	}
+
+	// Marshal with sorted keys
+	data, err := json.MarshalIndent(sortedData, "", "  ")
 	if err != nil {
 		return err
 	}
