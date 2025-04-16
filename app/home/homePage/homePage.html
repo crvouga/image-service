@@ -1,0 +1,29 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <h1>
+            Home
+        </h1>
+    </section>
+
+    <section>
+        <a href={{.UserAccountPage}}>
+            <article>
+                <h2>
+                    Account
+                </h2>
+            </article>
+        </a>
+
+        <a href={{.ProjectsPage}}>
+            <article>
+                <h2>
+                    Projects
+                </h2>
+            </article>
+        </a>
+    </section>
+</main>
+
+{{end}}

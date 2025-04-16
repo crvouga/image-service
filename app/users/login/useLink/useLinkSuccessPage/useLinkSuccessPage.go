@@ -1,7 +1,7 @@
 package useLinkSuccessPage
 
 import (
-	"imageresizerservice/app/dashboard/dashboardRoutes"
+	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/login/loginRoutes"
 	"imageresizerservice/library/static"
@@ -13,14 +13,14 @@ func Router(mux *http.ServeMux) {
 }
 
 type Data struct {
-	Dashboard string
+	Home string
 }
 
 func Respond() http.HandlerFunc {
 	htmlPath := static.GetSiblingPath("useLinkSuccessPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			Dashboard: dashboardRoutes.DashboardPage,
+			Home: homeRoutes.HomePage,
 		}
 
 		page.Respond(htmlPath, data)(w, r)

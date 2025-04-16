@@ -3,13 +3,12 @@ package projectCreate
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/dashboard/dashboardRoutes"
+	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/project/projectName"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/users/userID"
 	"imageresizerservice/library/static"
 	"net/http"
 	"time"
@@ -20,7 +19,7 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 }
 
 type Data struct {
-	DashboardPage string
+	HomePage string
 }
 
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
@@ -35,7 +34,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 func respondGet(w http.ResponseWriter, r *http.Request) {
 	data := Data{
-		DashboardPage: dashboardRoutes.DashboardPage,
+		HomePage: homeRoutes.HomePage,
 	}
 	page.Respond(static.GetSiblingPath("projectCreate.html"), data)(w, r)
 }
@@ -76,11 +75,10 @@ func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) 
 	logger.Info("parsed allowed domains", "count", len(allowedDomainsList))
 
 	projectID := projectID.Gen()
-	userID := userID.Gen()
 
 	projectNew := project.Project{
 		ID:              projectID,
-		CreatedByUserID: userID,
+		CreatedByUserID: req.UserSession.UserID,
 		Name:            projectNameInst,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
@@ -89,7 +87,7 @@ func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) 
 
 	logger.Info("projectNew", "projectNew", projectNew)
 
-	logger.Info("creating new project", "projectID", projectID, "userID", userID)
+	logger.Info("creating new project", "projectID", projectID, "createdByUserID", projectNew.CreatedByUserID)
 
 	uow, err := appCtx.UowFactory.Begin()
 
@@ -99,7 +97,7 @@ func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	logger.Info("upserting project", "projectID", projectID, "userID", userID)
+	logger.Info("upserting project", "projectID", projectID, "createdByUserID", projectNew.CreatedByUserID)
 
 	if err = appCtx.ProjectDB.Upsert(uow, projectNew); err != nil {
 		logger.Error("failed to upsert project", "error", err)

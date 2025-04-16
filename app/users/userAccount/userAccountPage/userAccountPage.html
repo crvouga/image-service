@@ -1,0 +1,39 @@
+{{define "page"}}
+{{ template "header" . }}
+<main style="display: flex; flex-direction: column; gap: 48px;">
+    <section>
+        <a href="{{.HomePage}}">
+            Back
+        </a>
+        <h1>
+            Account
+        </h1>
+    </section>
+
+    <section>
+        <h2>Information</h2>
+        <p>
+            Email: {{.UserAccount.EmailAddress}}
+        </p>
+        <p>
+            UserID: {{.UserAccount.UserID}}
+        </p>
+        <p>
+            SessionID: {{.UserSession.SessionID}}
+        </p>
+        <p>
+            CreatedAt: {{.UserSession.CreatedAt}}
+        </p>
+    </section>
+
+    <section>
+        <h2>
+            Logout
+        </h2>
+        <a role="button" href={{.LogoutPage}}>Logout</a>
+    </section>
+
+
+</main>
+
+{{end}}

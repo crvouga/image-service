@@ -58,12 +58,12 @@ func (db ImplKeyValueDB) Upsert(uow *uow.Uow, account userAccount.UserAccount) e
 	}
 
 	// Store the user account by ID
-	if err := db.entities.Put(uow, userAccountKey(account.ID), string(jsonData)); err != nil {
+	if err := db.entities.Put(uow, userAccountKey(account.UserID), string(jsonData)); err != nil {
 		return err
 	}
 
 	// Create an index entry for email address -> user ID
-	return db.indexEmail.Put(uow, emailIndexKey(account.EmailAddress), string(account.ID))
+	return db.indexEmail.Put(uow, emailIndexKey(account.EmailAddress), string(account.UserID))
 }
 
 func (db ImplKeyValueDB) GetByEmailAddress(emailAddress emailAddress.EmailAddress) (*userAccount.UserAccount, error) {

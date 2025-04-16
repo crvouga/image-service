@@ -3,7 +3,6 @@ package projectPage
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/dashboard/dashboardRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
@@ -17,10 +16,10 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 }
 
 type Data struct {
-	DashboardPage     string
-	Project           *project.Project
-	EditProjectPage   string
-	DeleteProjectPage string
+	BackURL   string
+	Project   *project.Project
+	EditURL   string
+	DeleteURL string
 }
 
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
@@ -75,10 +74,10 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 		logger.Info("project found", "projectID", projectIDMaybe)
 
 		data := Data{
-			DashboardPage:     dashboardRoutes.DashboardPage,
-			Project:           project,
-			EditProjectPage:   projectRoutes.ToProjectEdit(projectIDNew),
-			DeleteProjectPage: projectRoutes.ToProjectDelete(projectIDNew),
+			BackURL:   projectRoutes.ToProjectListPage(),
+			Project:   project.EnsureComputed(),
+			EditURL:   projectRoutes.ToProjectEdit(projectIDNew),
+			DeleteURL: projectRoutes.ToProjectDelete(projectIDNew),
 		}
 
 		logger.Info("rendering project page")

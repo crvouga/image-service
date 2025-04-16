@@ -3,6 +3,7 @@ package project
 import (
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/project/projectName"
+	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/users/userID"
 	"net/url"
 	"strings"
@@ -16,6 +17,7 @@ type Project struct {
 	UpdatedAt       time.Time
 	Name            projectName.ProjectName
 	AllowedDomains  []url.URL
+	PageURL         string
 }
 
 func UrlLinesToUrlList(urls string) []url.URL {
@@ -33,4 +35,9 @@ func UrlLinesToUrlList(urls string) []url.URL {
 		}
 	}
 	return validURLs
+}
+
+func (p *Project) EnsureComputed() *Project {
+	p.PageURL = projectRoutes.ToProjectPage(p.ID)
+	return p
 }

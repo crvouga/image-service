@@ -33,7 +33,7 @@ func Test_GetByUserID(t *testing.T) {
 
 	// Create a session
 	account := userAccount.UserAccount{
-		ID:           userID.Gen(),
+		UserID:       userID.Gen(),
 		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -46,7 +46,7 @@ func Test_GetByUserID(t *testing.T) {
 	}
 
 	// Get the session
-	retrieved, err := f.DB.GetByUserID(account.ID)
+	retrieved, err := f.DB.GetByUserID(account.UserID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -55,8 +55,8 @@ func Test_GetByUserID(t *testing.T) {
 		t.Fatal("Expected to retrieve session, got nil")
 	}
 
-	if retrieved.ID != account.ID {
-		t.Errorf("Expected ID to be %s, got %s", account.ID, retrieved.ID)
+	if retrieved.UserID != account.UserID {
+		t.Errorf("Expected ID to be %s, got %s", account.UserID, retrieved.UserID)
 	}
 
 	if retrieved.EmailAddress != account.EmailAddress {
@@ -87,7 +87,7 @@ func Test_UpsertNewSession(t *testing.T) {
 
 	// Create a session
 	account := userAccount.UserAccount{
-		ID:           userID.Gen(),
+		UserID:       userID.Gen(),
 		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -100,7 +100,7 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	// Verify it exists
-	retrieved, err := f.DB.GetByUserID(account.ID)
+	retrieved, err := f.DB.GetByUserID(account.UserID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -109,8 +109,8 @@ func Test_UpsertNewSession(t *testing.T) {
 		t.Fatal("Expected to retrieve session, got nil")
 	}
 
-	if retrieved.ID != account.ID {
-		t.Errorf("Expected ID to be %s, got %s", account.ID, retrieved.ID)
+	if retrieved.UserID != account.UserID {
+		t.Errorf("Expected ID to be %s, got %s", account.UserID, retrieved.UserID)
 	}
 
 	uow.Commit()
@@ -122,7 +122,7 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	// Create initial session
 	account := userAccount.UserAccount{
-		ID:           userID.Gen(),
+		UserID:       userID.Gen(),
 		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -136,7 +136,7 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	// Update the session
 	updatedAccount := userAccount.UserAccount{
-		ID:           "update-session",
+		UserID:       "update-session",
 		EmailAddress: "test@test.com",
 		CreatedAt:    account.CreatedAt,
 		UpdatedAt:    time.Now(),
@@ -171,7 +171,7 @@ func Test_GetByEmailAddress(t *testing.T) {
 
 	// Create a session
 	account := userAccount.UserAccount{
-		ID:           userID.Gen(),
+		UserID:       userID.Gen(),
 		EmailAddress: emailAddress.NewElsePanic("test@test.com"),
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
@@ -193,8 +193,8 @@ func Test_GetByEmailAddress(t *testing.T) {
 		t.Fatal("Expected to retrieve session, got nil")
 	}
 
-	if retrieved.ID != account.ID {
-		t.Errorf("Expected ID to be %s, got %s", account.ID, retrieved.ID)
+	if retrieved.UserID != account.UserID {
+		t.Errorf("Expected ID to be %s, got %s", account.UserID, retrieved.UserID)
 	}
 
 	uow.Commit()

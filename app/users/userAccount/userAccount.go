@@ -7,7 +7,7 @@ import (
 )
 
 type UserAccount struct {
-	ID           userID.UserID
+	UserID       userID.UserID
 	EmailAddress emailAddress.EmailAddress
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

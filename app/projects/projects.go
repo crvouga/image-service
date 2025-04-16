@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/app/projects/projectCreate"
 	"imageresizerservice/app/projects/projectDelete"
 	"imageresizerservice/app/projects/projectEdit"
+	"imageresizerservice/app/projects/projectListPage"
 	"imageresizerservice/app/projects/projectPage"
 	"net/http"
 )
@@ -14,4 +15,5 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 	projectEdit.Router(mux, appCtx)
 	projectDelete.Router(mux, appCtx)
 	projectPage.Router(mux, appCtx)
+	projectListPage.Router(mux, appCtx)
 }

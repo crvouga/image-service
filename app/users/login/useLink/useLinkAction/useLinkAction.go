@@ -107,13 +107,13 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 	if account == nil {
 		logger.Info("Creating new user account", "email", found.EmailAddress)
 		account = &userAccount.UserAccount{
-			ID:           userID.Gen(),
+			UserID:       userID.Gen(),
 			EmailAddress: found.EmailAddress,
 			CreatedAt:    time.Now(),
 			UpdatedAt:    time.Now(),
 		}
 	} else {
-		logger.Info("Found existing user account", "userID", account.ID)
+		logger.Info("Found existing user account", "userID", account.UserID)
 	}
 
 	if err := appCtx.UserAccountDB.Upsert(uow, *account); err != nil {
@@ -121,10 +121,10 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		return newDatabaseError(err)
 	}
 
-	logger.Info("Creating new user session", "userID", account.ID)
+	logger.Info("Creating new user session", "userID", account.UserID)
 	sessionNew := userSession.UserSession{
 		ID:        userSessionID.Gen(),
-		UserID:    account.ID,
+		UserID:    account.UserID,
 		CreatedAt: time.Now(),
 		SessionID: reqCtx.SessionID,
 	}
@@ -140,7 +140,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		return newDatabaseError(err)
 	}
 
-	logger.Info("Successfully completed login process", "userID", account.ID)
+	logger.Info("Successfully completed login process", "userID", account.UserID)
 	return nil
 }
 

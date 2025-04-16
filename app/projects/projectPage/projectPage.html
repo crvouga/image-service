@@ -2,14 +2,14 @@
 {{ template "header" . }}
 <main style="display: flex; flex-direction: column; gap: 64px;">
     <section>
-        <a href="{{.DashboardPage}}">Back</a>
+        <a href="{{.BackURL}}">Back</a>
         <h1>
             {{.Project.Name}}
         </h1>
     </section>
 
     <section>
-        <h2>Project Information</h2>
+        <h2>Information</h2>
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <p>
                 <strong>Project ID:</strong> {{.Project.ID}}
@@ -47,12 +47,12 @@
 
     <section>
         <h2>Edit Project</h2>
-        <a role="button" href="{{.EditProjectPage}}">Edit</a>
+        <a role="button" href="{{.EditURL}}">Edit</a>
     </section>
 
     <section>
         <h2>Delete Project</h2>
-        <a role="button" href="{{.DeleteProjectPage}}">Delete</a>
+        <a role="button" href="{{.DeleteURL}}">Delete</a>
     </section>
 
     <div style="width: 100%; height: 64px"></div>

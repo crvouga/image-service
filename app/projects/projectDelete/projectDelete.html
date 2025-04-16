@@ -1,9 +1,12 @@
 {{define "page"}}
 {{ template "header" . }}
 <main>
-    <h1>
-        Delete Project
-    </h1>
+    <section>
+        <a href="{{.Project.PageURL}}">Back</a>
+        <h1>
+            Delete Project
+        </h1>
+    </section>
     <section>
         <form method="POST" action="">
             <input type="hidden" name="projectID" value="{{.Project.ID}}">
@@ -31,7 +34,6 @@
 
             <div class="form-actions">
                 <button type="submit" class="danger">Delete Project</button>
-                <a href="{{.ProjectPage}}" role="button" class="secondary">Cancel</a>
             </div>
         </form>
     </section>

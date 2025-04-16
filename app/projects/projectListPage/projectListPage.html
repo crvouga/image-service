@@ -1,0 +1,45 @@
+{{define "page"}}
+{{ template "header" . }}
+<main style="display: flex; flex-direction: column; gap: 64px;">
+    <section>
+        <a href="{{.BackURL}}">Back</a>
+        <h1>Projects</h1>
+    </section>
+
+    <section>
+        <h2>Create Project</h2>
+        <a role="button" href="{{.CreateURL}}">Create New Project</a>
+    </section>
+
+    <section>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>Your Projects</h2>
+        </div>
+
+        {{if .Projects}}
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+            {{range .Projects}}
+            <article>
+                <h3>{{.Name}}</h3>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+                    <p><strong>Project ID:</strong> {{.ID}}</p>
+                    <p><strong>Created At:</strong> {{.CreatedAt}}</p>
+                    <p><strong>Last Updated:</strong> {{.UpdatedAt}}</p>
+                </div>
+                <div style="margin-top: 16px;">
+                    <a href="{{.PageURL}}">View</a>
+                </div>
+            </article>
+            {{end}}
+        </div>
+        {{else}}
+        <div>
+            <p>You don't have any projects yet.</p>
+        </div>
+        {{end}}
+    </section>
+
+    <div style="width: 100%; height: 64px"></div>
+</main>
+
+{{end}}

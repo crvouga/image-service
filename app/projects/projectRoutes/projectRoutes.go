@@ -6,14 +6,19 @@ import (
 )
 
 const (
-	ProjectCreate = "/projects-create"
-	ProjectEdit   = "/projects-edit"
-	ProjectDelete = "/projects-delete"
-	ProjectPage   = "/projects"
+	ProjectListPage = "/projects-list-page"
+	ProjectCreate   = "/projects-create"
+	ProjectEdit     = "/projects-edit"
+	ProjectDelete   = "/projects-delete"
+	ProjectPage     = "/projects"
 )
 
 func withProjectID(route string, projectID projectID.ProjectID) string {
 	return fmt.Sprintf("%s?projectID=%s", route, projectID)
+}
+
+func ToProjectListPage() string {
+	return ProjectListPage
 }
 
 func ToProjectEdit(projectID projectID.ProjectID) string {

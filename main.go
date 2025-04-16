@@ -3,8 +3,8 @@ package main
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/sessionID"
-	"imageresizerservice/app/dashboard"
-	"imageresizerservice/app/dashboard/dashboardPage"
+	"imageresizerservice/app/home"
+	"imageresizerservice/app/home/homePage"
 	"imageresizerservice/app/projects"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/auth"
@@ -54,10 +54,10 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 func RouterLoggedIn(appCtx *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.Router(mux, appCtx)
-	dashboard.Router(mux, appCtx)
+	home.Router(mux, appCtx)
 	projects.Router(mux, appCtx)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		dashboardPage.Redirect(w, r)
+		homePage.Redirect(w, r)
 	})
 
 	return mux
