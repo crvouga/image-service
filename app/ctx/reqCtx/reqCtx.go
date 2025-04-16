@@ -55,6 +55,7 @@ func getUserAccount(appCtx *appCtx.AppCtx, userSessionInst *userSession.UserSess
 	return userAccount
 }
 
+// FromHttpRequest creates a new ReqCtx from an HTTP request.
 func FromHttpRequest(appCtx *appCtx.AppCtx, r *http.Request) ReqCtx {
 	sessionID := sessionID.FromSessionIDCookie(r)
 
