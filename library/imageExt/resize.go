@@ -11,23 +11,19 @@ import (
 // It returns the resized image.
 func Resize(img image.Image, width, height int) image.Image {
 	// Create a new RGBA image with the target dimensions
-	dst := image.NewRGBA(image.Rect(0, 0, width, height))
-
-	// Use bilinear interpolation for resizing
-	resizeBilinear(dst, img)
+	dst := ResizeWithAlgorithm(img, width, height, Bilinear)
 
 	return dst
 }
 
 // ResizeWithAlgorithm resizes an image using a specified algorithm.
-// Algorithm options: "nearest", "bilinear"
-func ResizeWithAlgorithm(img image.Image, width, height int, algorithm string) image.Image {
+func ResizeWithAlgorithm(img image.Image, width, height int, algorithm ResizeAlgorithm) image.Image {
 	dst := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	switch algorithm {
-	case "nearest":
+	case Nearest:
 		resizeNearest(dst, img)
-	case "bilinear":
+	case Bilinear:
 		resizeBilinear(dst, img)
 	default:
 		// Default to bilinear
@@ -47,8 +43,8 @@ func resizeNearest(dst *image.RGBA, src image.Image) {
 	dstW := dstBounds.Dx()
 	dstH := dstBounds.Dy()
 
-	for y := 0; y < dstH; y++ {
-		for x := 0; x < dstW; x++ {
+	for y := range dstH {
+		for x := range dstW {
 			// Calculate source coordinates
 			srcX := int(float64(x) * float64(srcW) / float64(dstW))
 			srcY := int(float64(y) * float64(srcH) / float64(dstH))
@@ -73,8 +69,8 @@ func resizeBilinear(dst *image.RGBA, src image.Image) {
 	// Draw background
 	draw.Draw(dst, dstBounds, image.Transparent, image.Point{}, draw.Src)
 
-	for y := 0; y < dstH; y++ {
-		for x := 0; x < dstW; x++ {
+	for y := range dstH {
+		for x := range dstW {
 			// Calculate floating point source coordinates
 			srcX := float64(x) * float64(srcW-1) / float64(dstW-1)
 			srcY := float64(y) * float64(srcH-1) / float64(dstH-1)
