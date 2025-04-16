@@ -22,6 +22,7 @@ type AppCtx struct {
 	KeyValueDB    keyValueDB.KeyValueDB
 	UserSessionDB userSessionDB.UserSessionDB
 	UserAccountDB userAccountDB.UserAccountDB
+	ProjectDB     projectDB.ProjectDB
 }
 
 func (appCtx *AppCtx) CleanUp() {

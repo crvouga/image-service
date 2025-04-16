@@ -1,1 +1,58 @@
-package projectPage
+{{define "page"}}
+{{ template "header" . }}
+<main style="display: flex; flex-direction: column; gap: 48px;">
+    <section>
+        <a role="button" href="{{.DashboardPage}}">Back to Dashboard</a>
+        <h1>
+            Project Details
+        </h1>
+    </section>
+
+    <section>
+        <h2>Project Information</h2>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <p>
+                <strong>Project ID:</strong> {{.Project.ID}}
+            </p>
+            <p>
+                <strong>Name:</strong> {{.Project.Name}}
+            </p>
+            <p>
+                <strong>Created By:</strong> {{.Project.CreatedByUserID}}
+            </p>
+            <p>
+                <strong>Created At:</strong> {{.Project.CreatedAt}}
+            </p>
+            <p>
+                <strong>Last Updated:</strong> {{.Project.UpdatedAt}}
+            </p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Allowed Domains</h2>
+        <div>
+            {{if .Project.AllowedDomains}}
+            <ul>
+                {{range .Project.AllowedDomains}}
+                <li>{{.String}}</li>
+                {{end}}
+            </ul>
+            {{else}}
+            <p>No domains configured</p>
+            {{end}}
+        </div>
+    </section>
+
+    <section>
+        <a role="button" href="{{.EditProjectPage}}">Edit Project</a>
+    </section>
+
+    <section>
+        <a role="button" href="{{.DeleteProjectPage}}">Delete Project</a>
+    </section>
+
+    <div style="width: 100%; height: 64px"></div>
+</main>
+
+{{end}}

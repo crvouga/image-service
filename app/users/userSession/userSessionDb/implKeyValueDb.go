@@ -9,7 +9,7 @@ import (
 )
 
 type ImplKeyValueDB struct {
-	db             keyValueDB.KeyValueDB
+	entities       keyValueDB.KeyValueDB
 	indexSessionID keyValueDB.KeyValueDB
 }
 
@@ -17,7 +17,7 @@ var _ UserSessionDB = (*ImplKeyValueDB)(nil)
 
 func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
 	return &ImplKeyValueDB{
-		db:             keyValueDB.NewImplNamespaced(db, "userSession"),
+		entities:       keyValueDB.NewImplNamespaced(db, "userSession"),
 		indexSessionID: keyValueDB.NewImplNamespaced(db, "userSessionIndexSessionID"),
 	}
 }
@@ -33,7 +33,7 @@ func (db *ImplKeyValueDB) GetBySessionID(sessionId sessionID.SessionID) (*userSe
 		return nil, nil
 	}
 
-	value, err := db.db.Get(*userSessionId)
+	value, err := db.entities.Get(*userSessionId)
 
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (db *ImplKeyValueDB) GetBySessionID(sessionId sessionID.SessionID) (*userSe
 
 func (db *ImplKeyValueDB) Upsert(uow *uow.Uow, userSession userSession.UserSession) error {
 	// Check if db is initialized to prevent nil pointer dereference
-	if db.db == nil || db.indexSessionID == nil {
+	if db.entities == nil || db.indexSessionID == nil {
 		return nil
 	}
 
@@ -63,7 +63,7 @@ func (db *ImplKeyValueDB) Upsert(uow *uow.Uow, userSession userSession.UserSessi
 		return err
 	}
 
-	if err := db.db.Put(uow, string(userSession.ID), string(jsonData)); err != nil {
+	if err := db.entities.Put(uow, string(userSession.ID), string(jsonData)); err != nil {
 		return err
 	}
 

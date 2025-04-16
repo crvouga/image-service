@@ -10,7 +10,7 @@ import (
 )
 
 type ImplKeyValueDB struct {
-	db                 keyValueDB.KeyValueDB
+	entities           keyValueDB.KeyValueDB
 	indexManySessionID keyValueDB.KeyValueDB
 }
 
@@ -18,13 +18,13 @@ var _ LinkDB = ImplKeyValueDB{}
 
 func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
 	return &ImplKeyValueDB{
-		db:                 keyValueDB.NewImplNamespaced(db, "link"),
+		entities:           keyValueDB.NewImplNamespaced(db, "link"),
 		indexManySessionID: keyValueDB.NewImplNamespaced(db, "link:indexManySessionID"),
 	}
 }
 
 func (db ImplKeyValueDB) GetByLinkID(id linkID.LinkID) (*link.Link, error) {
-	value, err := db.db.Get(string(id))
+	value, err := db.entities.Get(string(id))
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (db ImplKeyValueDB) Upsert(uow *uow.Uow, l link.Link) error {
 		return err
 	}
 
-	if err := db.db.Put(uow, string(l.ID), string(jsonData)); err != nil {
+	if err := db.entities.Put(uow, string(l.ID), string(jsonData)); err != nil {
 		return err
 	}
 
