@@ -47,9 +47,7 @@ func processEmails(appCtx *appCtx.AppCtx, sleepTime time.Duration) {
 			continue
 		}
 
-		sendEmailFactoryInst := sendEmailFactory.New()
-
-		sendEmail, err := sendEmailFactoryInst.FromReqCtx(nil)
+		sendEmail := sendEmailFactory.FromReqCtx(nil)
 
 		if err != nil {
 			log.Printf("Error getting send email: %v", err)
