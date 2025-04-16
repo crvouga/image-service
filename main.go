@@ -1,6 +1,7 @@
 package main
 
 import (
+	"imageresizerservice/app/api"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/home"
@@ -31,8 +32,8 @@ func main() {
 }
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
-	loggedInMux := RouterLoggedIn(appCtx)
-	loggedOutMux := RouterLoggedOut(appCtx)
+	muxLoggedIn := MuxLoggedIn(appCtx)
+	muxLoggedOut := MuxLoggedOut(appCtx)
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Pragma", "no-cache")
@@ -43,29 +44,30 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 			return
 		}
 		if auth.IsLoggedIn(appCtx, r) {
-			loggedInMux.ServeHTTP(w, r)
+			muxLoggedIn.ServeHTTP(w, r)
 			return
 		}
-		loggedOutMux.ServeHTTP(w, r)
+		muxLoggedOut.ServeHTTP(w, r)
 	})
 	mux.Handle("/", handler)
 }
 
-func RouterLoggedIn(appCtx *appCtx.AppCtx) *http.ServeMux {
+func MuxLoggedIn(appCtx *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.Router(mux, appCtx)
 	home.Router(mux, appCtx)
 	projects.Router(mux, appCtx)
+	api.Router(mux, appCtx)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		homePage.Redirect(w, r)
 	})
-
 	return mux
 }
 
-func RouterLoggedOut(appCtx *appCtx.AppCtx) *http.ServeMux {
+func MuxLoggedOut(appCtx *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.RouterLoggedOut(mux, appCtx)
+	api.Router(mux, appCtx)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		sendLinkPage.Redirect(w, r)
 	})
