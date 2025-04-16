@@ -26,7 +26,7 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		reqCtx := reqCtx.FromHttpRequest(appCtx, r)
+		reqCtxInst := reqCtx.FromHttpRequest(appCtx, r)
 
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Failed to parse form", http.StatusBadRequest)
@@ -35,7 +35,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		linkID := strings.TrimSpace(r.FormValue("linkID"))
 
-		if err := UseLink(appCtx, &reqCtx, linkID); err != nil {
+		if err := UseLink(appCtx, &reqCtxInst, linkID); err != nil {
 			useLinkErrorPage.Redirect(w, r, err.Error())
 			return
 		}

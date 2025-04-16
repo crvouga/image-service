@@ -38,9 +38,9 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		emailInput := strings.TrimSpace(r.FormValue("email"))
 
-		reqCtx := reqCtx.FromHttpRequest(appCtx, r)
+		reqCtxInst := reqCtx.FromHttpRequest(appCtx, r)
 
-		errSent := SendLink(appCtx, &reqCtx, emailInput)
+		errSent := SendLink(appCtx, &reqCtxInst, emailInput)
 
 		if errSent != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{

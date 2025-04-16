@@ -61,7 +61,7 @@ func FromHttpRequest(appCtx *appCtx.AppCtx, r *http.Request) ReqCtx {
 
 	userAccountInst := getUserAccount(appCtx, userSessionInst)
 
-	reqCtx := ReqCtx{
+	reqCtxInst := ReqCtx{
 		BaseURL:     baseURL,
 		SessionID:   sessionIDInst,
 		TraceID:     traceIDInst,
@@ -70,5 +70,5 @@ func FromHttpRequest(appCtx *appCtx.AppCtx, r *http.Request) ReqCtx {
 		UserAccount: userAccountInst,
 	}
 
-	return reqCtx
+	return reqCtxInst
 }
