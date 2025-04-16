@@ -3,16 +3,16 @@ package logoutAction
 import (
 	"net/http"
 
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/logout/logoutRoutes"
 )
 
-func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 	mux.HandleFunc(logoutRoutes.LogoutAction, Respond(appCtx))
 }
 
-func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
+func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -30,7 +30,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	}
 }
 
-func Logout(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx) error {
+func Logout(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx) error {
 	if reqCtx.UserSession == nil {
 		return nil
 	}

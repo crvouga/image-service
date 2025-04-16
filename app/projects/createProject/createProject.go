@@ -1,7 +1,7 @@
 package createProject
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 	mux.HandleFunc(projectRoutes.ProjectCreate, Respond(appCtx))
 }
 
@@ -22,7 +22,7 @@ type Data struct {
 	HomePage string
 }
 
-func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
+func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			respondPost(appCtx, w, r)
@@ -38,7 +38,7 @@ func respondGet(w http.ResponseWriter, r *http.Request) {
 	}
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }
-func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
+func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
 	req := reqCtx.FromHttpRequest(appCtx, r)
 	logger := req.Logger
 

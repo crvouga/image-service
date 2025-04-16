@@ -1,18 +1,18 @@
 package useLinkAction
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/users/login/link"
 )
 
 type Fixture struct {
-	AppCtx       appCtx.AppCtx
+	AppCtx       appContext.AppCtx
 	ExistingLink link.Link
 }
 
 func NewFixture() Fixture {
 
-	f := Fixture{AppCtx: appCtx.NewTest()}
+	f := Fixture{AppCtx: appContext.NewTest()}
 
 	return f
 }

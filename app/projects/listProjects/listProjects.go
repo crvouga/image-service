@@ -1,7 +1,7 @@
 package listProjects
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 	mux.HandleFunc(projectRoutes.ProjectListPage, Respond(appCtx))
 }
 
@@ -23,7 +23,7 @@ type Data struct {
 	CreateURL           string
 }
 
-func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
+func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := reqCtx.FromHttpRequest(appCtx, r)
 		logger := req.Logger

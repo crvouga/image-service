@@ -2,7 +2,7 @@ package useLinkAction
 
 import (
 	"errors"
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
@@ -19,11 +19,11 @@ import (
 	"time"
 )
 
-func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 	mux.HandleFunc(loginRoutes.UseLinkAction, Respond(appCtx))
 }
 
-func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
+func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		reqCtxInst := reqCtx.FromHttpRequest(appCtx, r)
@@ -45,7 +45,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	}
 }
 
-func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) error {
+func UseLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) error {
 	logger := reqCtx.Logger.With(slog.String("operation", "UseLink"))
 
 	logger.Info("Starting login with email link process", "linkID", maybeLinkID)

@@ -1,7 +1,7 @@
 package deleteProject
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 	mux.HandleFunc(projectRoutes.ProjectDelete, Respond(appCtx))
 }
 
@@ -20,7 +20,7 @@ type Data struct {
 	ProjectPage string
 }
 
-func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
+func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			respondPost(appCtx, w, r)
@@ -30,7 +30,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	}
 }
 
-func respondGet(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
+func respondGet(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
 	req := reqCtx.FromHttpRequest(appCtx, r)
 	logger := req.Logger
 
@@ -77,7 +77,7 @@ func respondGet(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }
 
-func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
+func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
 	req := reqCtx.FromHttpRequest(appCtx, r)
 	logger := req.Logger
 

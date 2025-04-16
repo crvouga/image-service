@@ -1,7 +1,7 @@
 package getProject
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/error/errorPage"
 	"imageresizerservice/app/projects/project"
@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 	mux.HandleFunc(projectRoutes.ProjectPage, Respond(appCtx))
 }
 
@@ -23,7 +23,7 @@ type Data struct {
 	DeleteURL string
 }
 
-func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
+func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := reqCtx.FromHttpRequest(appCtx, r)
 		logger := req.Logger

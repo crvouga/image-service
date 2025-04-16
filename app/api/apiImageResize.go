@@ -5,7 +5,7 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
-	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/appContext"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/library/imageExt"
 	"io"
@@ -16,7 +16,7 @@ import (
 )
 
 // ApiImageResize handles image resizing requests
-func ApiImageResize(appCtx *appCtx.AppCtx) http.HandlerFunc {
+func ApiImageResize(appCtx *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Only allow GET requests
 		if r.Method != http.MethodGet {

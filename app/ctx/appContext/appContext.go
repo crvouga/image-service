@@ -1,4 +1,4 @@
-package appCtx
+package appContext
 
 import (
 	"database/sql"
