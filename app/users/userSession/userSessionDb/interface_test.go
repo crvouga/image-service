@@ -23,7 +23,7 @@ func newFixture() *Fixture {
 
 	return &Fixture{
 		SessionDb:  NewImplKeyValueDb(keyValueDb.NewImplHashMap()),
-		UowFactory: uow.UowFactory{Db: db},
+		UowFactory: *uow.NewFactory(db),
 	}
 }
 

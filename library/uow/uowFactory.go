@@ -5,9 +5,15 @@ import (
 )
 
 type UowFactory struct {
-	Db *sql.DB
+	db *sql.DB
+}
+
+func NewFactory(db *sql.DB) *UowFactory {
+	return &UowFactory{
+		db: db,
+	}
 }
 
 func (uowFactory *UowFactory) Begin() (*Uow, error) {
-	return Begin(uowFactory.Db)
+	return Begin(uowFactory.db)
 }

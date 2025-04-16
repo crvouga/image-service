@@ -2,6 +2,7 @@ package emailOutboxWorker
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/email/sendEmailFactory"
 	"log"
 	"time"
 )
@@ -45,7 +46,17 @@ func processEmails(appCtx *appCtx.AppCtx, sleepTime time.Duration) {
 			time.Sleep(sleepTime)
 			continue
 		}
-		err = appCtx.SendEmail.SendEmail(uow, email)
+
+		sendEmailFactoryInst := sendEmailFactory.New()
+
+		sendEmail, err := sendEmailFactoryInst.FromReqCtx(nil)
+
+		if err != nil {
+			log.Printf("Error getting send email: %v", err)
+			time.Sleep(sleepTime)
+			continue
+		}
+		err = sendEmail.SendEmail(uow, email)
 		if err != nil {
 			log.Printf("Error sending email: %v", err)
 			time.Sleep(sleepTime)

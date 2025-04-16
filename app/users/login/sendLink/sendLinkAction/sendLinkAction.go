@@ -6,6 +6,7 @@ import (
 
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/email/sendEmailFactory"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/app/users/login/loginRoutes"
@@ -39,7 +40,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		reqCtx := reqCtx.FromHttpRequest(appCtx, r)
 
-		errSent := SendLink(appCtx, &reqCtx, emailInput)
+		linkSent, errSent := SendLink(appCtx, &reqCtx, emailInput)
 
 		if errSent != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
@@ -49,20 +50,20 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 			return
 		}
 
-		sendLinkSuccessPage.Redirect(w, r, emailInput)
+		sendLinkSuccessPage.Redirect(w, r, emailInput, sendEmailFactory.IsConfigured(), useLinkPage.ToUrl(&reqCtx, linkSent.ID))
 	}
 }
 
-func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) error {
+func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) (*link.Link, error) {
 	emailAddress, err := emailAddress.New(emailAddressInput)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	uow, err := appCtx.UowFactory.Begin()
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	defer uow.Rollback()
@@ -70,20 +71,22 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 	linkNew := link.New(emailAddress)
 
 	if err := appCtx.LinkDb.Upsert(uow, linkNew); err != nil {
-		return err
+		return nil, err
 	}
 
 	email := toLoginEmail(reqCtx, emailAddress, linkNew.ID)
 
-	if err := appCtx.SendEmail.SendEmail(uow, email); err != nil {
-		return err
+	sendEmail := sendEmailFactory.FromReqCtx(reqCtx)
+
+	if err := sendEmail.SendEmail(uow, email); err != nil {
+		return nil, err
 	}
 
 	if err := uow.Commit(); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &linkNew, nil
 }
 func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkID linkID.LinkID) email.Email {
 	return email.Email{

@@ -26,7 +26,7 @@ func newFixtures() []*Fixture {
 	for _, keyValueDb := range keyValueDbs {
 		fixtures = append(fixtures, &Fixture{
 			KeyValueDb: keyValueDb,
-			UowFactory: uow.UowFactory{Db: db},
+			UowFactory: *uow.NewFactory(db),
 		})
 	}
 

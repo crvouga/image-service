@@ -28,5 +28,17 @@
       Send another link
     </a>
   </section>
+
+  {{if eq .IsSendEmailConfigured "false"}}
+  <article style="margin-top:360px;">
+    <p>
+      Nobody has configured email provider. Authentication is disabled. You can login using the link below.
+    </p>
+    <p>
+      <a href="{{.LoginLink}}" aria-label="Login link">Login Link</a>
+    </p>
+  </article>
+  {{end}}
+
 </main>
 {{end}}
