@@ -2,8 +2,10 @@ package main
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/dashboard"
+	"imageresizerservice/app/dashboard/dashboardRoutes"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/login/loginRoutes"
 	"imageresizerservice/library/static"
@@ -33,8 +35,19 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := static.ServeStaticAssets(w, r)
-		if err != nil {
-			http.Redirect(w, r, loginRoutes.SendLinkPage, http.StatusSeeOther)
+		if err == nil {
+			return
 		}
+
+		ctx := reqCtx.FromHttpRequest(appCtx, r)
+
+		log.Printf("Request context: UserID=%v, SessionID=%v", ctx.UserSession.UserID, ctx.UserSession.SessionID)
+
+		if ctx.UserSession == nil {
+			http.Redirect(w, r, loginRoutes.SendLinkPage, http.StatusSeeOther)
+			return
+		}
+
+		http.Redirect(w, r, dashboardRoutes.DashboardPage, http.StatusSeeOther)
 	})
 }

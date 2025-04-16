@@ -3,7 +3,7 @@ package reqCtx
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/sessionID"
-	"imageresizerservice/app/users/userID"
+	"imageresizerservice/app/users/userSession"
 	"imageresizerservice/library/httpRequest"
 	"imageresizerservice/library/id"
 	"log/slog"
@@ -11,11 +11,11 @@ import (
 )
 
 type ReqCtx struct {
-	BaseURL   string
-	SessionID sessionID.SessionID
-	TraceID   string
-	Logger    *slog.Logger
-	UserID    *userID.UserID
+	BaseURL     string
+	SessionID   sessionID.SessionID
+	TraceID     string
+	Logger      *slog.Logger
+	UserSession *userSession.UserSession
 }
 
 // FromHttpRequest extracts the ReqCtx from an HTTP request
@@ -28,7 +28,7 @@ func getTraceID(r *http.Request) string {
 	return traceID
 }
 
-func getUserID(appCtx *appCtx.AppCtx, sessionID sessionID.SessionID) *userID.UserID {
+func getUserSession(appCtx *appCtx.AppCtx, sessionID sessionID.SessionID) *userSession.UserSession {
 	userSession, err := appCtx.UserSessionDb.GetBySessionID(sessionID)
 	if err != nil {
 		return nil
@@ -36,7 +36,7 @@ func getUserID(appCtx *appCtx.AppCtx, sessionID sessionID.SessionID) *userID.Use
 	if userSession == nil {
 		return nil
 	}
-	return &userSession.UserID
+	return userSession
 }
 
 func FromHttpRequest(appCtx *appCtx.AppCtx, r *http.Request) ReqCtx {
@@ -50,14 +50,14 @@ func FromHttpRequest(appCtx *appCtx.AppCtx, r *http.Request) ReqCtx {
 		slog.String("traceID", traceID),
 	)
 
-	userID := getUserID(appCtx, sessionID)
+	userSession := getUserSession(appCtx, sessionID)
 
 	reqCtx := ReqCtx{
-		BaseURL:   baseURL,
-		SessionID: sessionID,
-		TraceID:   traceID,
-		Logger:    logger,
-		UserID:    userID,
+		BaseURL:     baseURL,
+		SessionID:   sessionID,
+		TraceID:     traceID,
+		Logger:      logger,
+		UserSession: userSession,
 	}
 
 	return reqCtx

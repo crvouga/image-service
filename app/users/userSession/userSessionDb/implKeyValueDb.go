@@ -9,19 +9,32 @@ import (
 )
 
 type ImplKeyValueDb struct {
-	db keyValueDb.KeyValueDb
+	db             keyValueDb.KeyValueDb
+	indexSessionID keyValueDb.KeyValueDb
 }
 
-var _ UserSessionDb = ImplKeyValueDb{}
+var _ UserSessionDb = (*ImplKeyValueDb)(nil)
 
 func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
 	return &ImplKeyValueDb{
-		db: keyValueDb.NewImplNamespaced(db, "userSession"),
+		db:             keyValueDb.NewImplNamespaced(db, "userSession"),
+		indexSessionID: keyValueDb.NewImplNamespaced(db, "userSessionIndexSessionID"),
 	}
 }
 
-func (db ImplKeyValueDb) GetBySessionID(id sessionID.SessionID) (*userSession.UserSession, error) {
-	value, err := db.db.Get(string(id))
+func (db *ImplKeyValueDb) GetBySessionID(sessionId sessionID.SessionID) (*userSession.UserSession, error) {
+	userSessionId, err := db.indexSessionID.Get(string(sessionId))
+
+	if err != nil {
+		return nil, err
+	}
+
+	if userSessionId == nil {
+		return nil, nil
+	}
+
+	value, err := db.db.Get(*userSessionId)
+
 	if err != nil {
 		return nil, err
 	}
@@ -38,13 +51,25 @@ func (db ImplKeyValueDb) GetBySessionID(id sessionID.SessionID) (*userSession.Us
 	return &session, nil
 }
 
-func (db ImplKeyValueDb) Upsert(uow *uow.Uow, session userSession.UserSession) error {
-	jsonData, err := json.Marshal(session)
+func (db *ImplKeyValueDb) Upsert(uow *uow.Uow, userSession userSession.UserSession) error {
+	// Check if db is initialized to prevent nil pointer dereference
+	if db.db == nil || db.indexSessionID == nil {
+		return nil
+	}
+
+	jsonData, err := json.Marshal(userSession)
+
 	if err != nil {
 		return err
 	}
 
-	return db.db.Put(uow, string(session.ID), string(jsonData))
-}
+	if err := db.db.Put(uow, string(userSession.ID), string(jsonData)); err != nil {
+		return err
+	}
 
-var _ UserSessionDb = (*ImplKeyValueDb)(nil)
+	if err := db.indexSessionID.Put(uow, string(userSession.SessionID), string(userSession.ID)); err != nil {
+		return err
+	}
+
+	return nil
+}

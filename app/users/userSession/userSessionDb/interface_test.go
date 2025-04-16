@@ -4,7 +4,10 @@ import (
 	"testing"
 	"time"
 
+	"imageresizerservice/app/ctx/sessionID"
+	"imageresizerservice/app/users/userID"
 	"imageresizerservice/app/users/userSession"
+	"imageresizerservice/app/users/userSession/userSessionID"
 	"imageresizerservice/library/keyValueDb"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
@@ -19,20 +22,20 @@ func newFixture() *Fixture {
 	db := sqlite.New()
 
 	return &Fixture{
-		SessionDb:  ImplKeyValueDb{db: &keyValueDb.ImplHashMap{}},
+		SessionDb:  NewImplKeyValueDb(keyValueDb.NewImplHashMap()),
 		UowFactory: uow.UowFactory{Db: db},
 	}
 }
 
-func Test_GetByID(t *testing.T) {
+func Test_GetBySessionID(t *testing.T) {
 	f := newFixture()
 	uow, _ := f.UowFactory.Begin()
 
 	// Create a session
 	session := userSession.UserSession{
-		ID:        "test-id",
-		UserID:    "user-123",
-		SessionID: "session-456",
+		ID:        userSessionID.Gen(),
+		UserID:    userID.Gen(),
+		SessionID: sessionID.Gen(),
 		CreatedAt: time.Now(),
 	}
 
@@ -43,7 +46,7 @@ func Test_GetByID(t *testing.T) {
 	}
 
 	// Get the session
-	retrieved, err := f.SessionDb.GetBySessionID("test-id")
+	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -67,7 +70,9 @@ func Test_GetByIDNonExistent(t *testing.T) {
 	f := newFixture()
 
 	// Try to get a session that doesn't exist
-	retrieved, err := f.SessionDb.GetBySessionID("nonexistent")
+	nonexistentSessionID := sessionID.Gen()
+
+	retrieved, err := f.SessionDb.GetBySessionID(nonexistentSessionID)
 
 	if err != nil {
 		t.Errorf("Expected no error for nonexistent session, got %v", err)
@@ -84,9 +89,9 @@ func Test_UpsertNewSession(t *testing.T) {
 
 	// Create a session
 	session := userSession.UserSession{
-		ID:        "new-session",
-		UserID:    "user-123",
-		SessionID: "session-456",
+		ID:        userSessionID.Gen(),
+		UserID:    userID.Gen(),
+		SessionID: sessionID.Gen(),
 		CreatedAt: time.Now(),
 	}
 
@@ -97,7 +102,7 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	// Verify it exists
-	retrieved, err := f.SessionDb.GetBySessionID("new-session")
+	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -119,9 +124,9 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	// Create initial session
 	session := userSession.UserSession{
-		ID:        "update-session",
-		UserID:    "user-123",
-		SessionID: "session-456",
+		ID:        userSessionID.Gen(),
+		UserID:    userID.Gen(),
+		SessionID: sessionID.Gen(),
 		CreatedAt: time.Now(),
 	}
 
@@ -133,9 +138,9 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	// Update the session
 	updatedSession := userSession.UserSession{
-		ID:        "update-session",
-		UserID:    "user-123",
-		SessionID: "session-456",
+		ID:        session.ID,
+		UserID:    session.UserID,
+		SessionID: session.SessionID,
 		CreatedAt: session.CreatedAt,
 		EndedAt:   time.Now(),
 	}
@@ -147,7 +152,7 @@ func Test_UpsertUpdateSession(t *testing.T) {
 	}
 
 	// Verify it was updated
-	retrieved, err := f.SessionDb.GetBySessionID("update-session")
+	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
