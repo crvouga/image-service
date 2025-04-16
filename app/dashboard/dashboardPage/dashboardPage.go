@@ -4,6 +4,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/dashboard/dashboardRoutes"
+	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/logout/logoutRoutes"
 	"imageresizerservice/app/users/userSession"
@@ -16,8 +17,9 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 }
 
 type Data struct {
-	UserSession *userSession.UserSession
-	LogoutPage  string
+	UserSession       *userSession.UserSession
+	LogoutPage        string
+	CreateProjectPage string
 }
 
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
@@ -25,8 +27,9 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 		req := reqCtx.FromHttpRequest(appCtx, r)
 
 		data := Data{
-			UserSession: req.UserSession,
-			LogoutPage:  logoutRoutes.LogoutPage,
+			UserSession:       req.UserSession,
+			LogoutPage:        logoutRoutes.LogoutPage,
+			CreateProjectPage: projectRoutes.CreateProjectPage,
 		}
 
 		page.Respond(static.GetSiblingPath("dashboardPage.html"), data)(w, r)

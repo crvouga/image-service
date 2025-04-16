@@ -1,13 +1,12 @@
 {{define "page"}}
 {{ template "header" . }}
 <main>
-
-    <a role="button" href={{.LogoutPage}}>Logout</a>
-
+    <h1>
+        Dashboard
+    </h1>
     <section>
-        <h1>
-            Dashboard
-        </h1>
+        <h2>Your Account</h2>
+        <a role="button" href={{.LogoutPage}}>Logout</a>
         <p>
             UserID: {{.UserSession.UserID}}
         </p>
@@ -17,6 +16,17 @@
         <p>
             CreatedAt: {{.UserSession.CreatedAt}}
         </p>
+    </section>
+    <section>
+        <div>
+            <h1>
+                Projects
+            </h1>
+            <a role="button" href={{.CreateProjectPage}}>Create Project</a>
+        </div>
+        <div>
+
+        </div>
 
     </section>
 </main>
