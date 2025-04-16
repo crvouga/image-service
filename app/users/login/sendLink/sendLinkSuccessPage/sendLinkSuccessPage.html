@@ -32,10 +32,10 @@
   {{if eq .IsSendEmailConfigured "false"}}
   <article style="margin-top:360px;">
     <p>
-      Nobody has configured email provider. Authentication is disabled. You can login using the link below.
+      Authentication is disabled. Nobody has configured email provider we can use to authenticate users.
     </p>
     <p>
-      <a href="{{.LoginLink}}" aria-label="Login link">Login Link</a>
+      <a href="{{.LoginLink}}" aria-label="Login link">Use login link</a>
     </p>
   </article>
   {{end}}

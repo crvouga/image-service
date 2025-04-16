@@ -12,5 +12,5 @@ import (
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 	sendLinkPage.Router(mux)
 	sendLinkAction.Router(mux, appCtx)
-	sendLinkSuccessPage.Router(mux)
+	sendLinkSuccessPage.Router(mux, appCtx)
 }

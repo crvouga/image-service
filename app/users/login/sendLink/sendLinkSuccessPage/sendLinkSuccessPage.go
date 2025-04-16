@@ -1,11 +1,17 @@
 package sendLinkSuccessPage
 
 import (
+	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/email/sendEmailFactory"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/loginRoutes"
+	"imageresizerservice/app/users/login/useLink/useLinkPage"
 	"imageresizerservice/library/static"
 	"net/http"
 	"net/url"
+	"sort"
 	"strconv"
 )
 
@@ -16,30 +22,68 @@ type Data struct {
 	LoginLink             string
 }
 
-func Router(mux *http.ServeMux) {
-	mux.HandleFunc(loginRoutes.SendLinkSuccessPage, Respond())
+func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+	mux.HandleFunc(loginRoutes.SendLinkSuccessPage, Respond(appCtx))
 }
 
-func Respond() http.HandlerFunc {
+func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	htmlPath := static.GetSiblingPath("sendLinkSuccessPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
+		ctx := reqCtx.FromHttpRequest(appCtx, r)
+
+		isSendEmailConfigured := sendEmailFactory.IsConfigured()
+		loginLink := toLoginLink(appCtx, &ctx)
+
 		data := Data{
 			SendAnotherLink:       loginRoutes.SendLinkPage,
 			Email:                 r.URL.Query().Get("Email"),
-			IsSendEmailConfigured: parseConfiguredFlag(r),
-			LoginLink:             r.URL.Query().Get("LoginLink"),
+			IsSendEmailConfigured: strconv.FormatBool(isSendEmailConfigured),
+			LoginLink:             loginLink,
 		}
 
 		page.Respond(htmlPath, data)(w, r)
 	}
 }
 
-func Redirect(w http.ResponseWriter, r *http.Request, email string, isSendEmailConfigured bool, loginLink string) {
+func toLoginLink(appCtx *appCtx.AppCtx, ctx *reqCtx.ReqCtx) string {
+	link := toLatestLoginLink(appCtx, ctx)
+	if link == nil {
+		return ""
+	}
+	linkUrl := useLinkPage.ToUrl(ctx, link.ID)
+	return linkUrl
+}
+
+func toLatestLoginLink(appCtx *appCtx.AppCtx, ctx *reqCtx.ReqCtx) *link.Link {
+	isSendEmailConfigured := sendEmailFactory.IsConfigured()
+
+	if isSendEmailConfigured {
+		return nil
+	}
+
+	links, err := appCtx.LinkDb.GetBySessionID(ctx.SessionID)
+
+	if err != nil {
+		return nil
+	}
+
+	if len(links) == 0 {
+		return nil
+	}
+
+	latestFirst := make([]*link.Link, len(links))
+	copy(latestFirst, links)
+	sort.Slice(latestFirst, func(i, j int) bool {
+		return latestFirst[i].CreatedAt.After(latestFirst[j].CreatedAt)
+	})
+
+	return latestFirst[0]
+}
+
+func Redirect(w http.ResponseWriter, r *http.Request, email string) {
 	u, _ := url.Parse(loginRoutes.SendLinkSuccessPage)
 	q := u.Query()
 	q.Set("Email", email)
-	q.Set("IsSendEmailConfigured", strconv.FormatBool(isSendEmailConfigured))
-	q.Set("LoginLink", loginLink)
 	u.RawQuery = q.Encode()
 	http.Redirect(w, r, u.String(), http.StatusSeeOther)
 }

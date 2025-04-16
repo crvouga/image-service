@@ -40,7 +40,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		reqCtx := reqCtx.FromHttpRequest(appCtx, r)
 
-		linkSent, errSent := SendLink(appCtx, &reqCtx, emailInput)
+		errSent := SendLink(appCtx, &reqCtx, emailInput)
 
 		if errSent != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
@@ -50,28 +50,28 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 			return
 		}
 
-		sendLinkSuccessPage.Redirect(w, r, emailInput, sendEmailFactory.IsConfigured(), useLinkPage.ToUrl(&reqCtx, linkSent.ID))
+		sendLinkSuccessPage.Redirect(w, r, emailInput)
 	}
 }
 
-func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) (*link.Link, error) {
+func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) error {
 	emailAddress, err := emailAddress.New(emailAddressInput)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	uow, err := appCtx.UowFactory.Begin()
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	defer uow.Rollback()
 
-	linkNew := link.New(emailAddress)
+	linkNew := link.New(emailAddress, reqCtx.SessionID)
 
 	if err := appCtx.LinkDb.Upsert(uow, linkNew); err != nil {
-		return nil, err
+		return err
 	}
 
 	email := toLoginEmail(reqCtx, emailAddress, linkNew.ID)
@@ -79,14 +79,14 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 	sendEmail := sendEmailFactory.FromReqCtx(reqCtx)
 
 	if err := sendEmail.SendEmail(uow, email); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := uow.Commit(); err != nil {
-		return nil, err
+		return err
 	}
 
-	return &linkNew, nil
+	return nil
 }
 func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkID linkID.LinkID) email.Email {
 	return email.Email{

@@ -1,10 +1,10 @@
 package link
 
 import (
-	"time"
-
+	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/library/email/emailAddress"
+	"time"
 )
 
 type Link struct {
@@ -12,13 +12,15 @@ type Link struct {
 	EmailAddress emailAddress.EmailAddress
 	CreatedAt    time.Time
 	UsedAt       time.Time
+	SessionID    sessionID.SessionID
 }
 
-func New(emailAddress emailAddress.EmailAddress) Link {
+func New(emailAddress emailAddress.EmailAddress, sessionID sessionID.SessionID) Link {
 	return Link{
 		ID:           linkID.Gen(),
 		EmailAddress: emailAddress,
 		CreatedAt:    time.Now(),
+		SessionID:    sessionID,
 	}
 }
 
@@ -28,6 +30,7 @@ func MarkAsUsed(l Link) Link {
 		EmailAddress: l.EmailAddress,
 		CreatedAt:    l.CreatedAt,
 		UsedAt:       time.Now(),
+		SessionID:    l.SessionID,
 	}
 }
 
