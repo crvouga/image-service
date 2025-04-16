@@ -1,0 +1,39 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <h1>
+        Delete Project
+    </h1>
+    <section>
+        <form method="POST" action="">
+            <input type="hidden" name="projectID" value="{{.Project.ID}}">
+
+            <div class="alert alert-danger">
+                <strong>Warning:</strong> You are about to delete the project "{{.Project.Name}}". This action cannot be
+                undone.
+            </div>
+
+            <div class="form-group">
+                <p>Project details:</p>
+                <ul>
+                    <li><strong>Project ID:</strong> {{.Project.ID}}</li>
+                    <li><strong>Project Name:</strong> {{.Project.Name}}</li>
+                    <li><strong>Created:</strong> {{.Project.CreatedAt}}</li>
+                    <li><strong>Allowed Domains:</strong> {{len .Project.AllowedDomains}}</li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmDelete">Type "DELETE" to confirm:</label>
+                <input type="text" id="confirmDelete" name="confirmDelete" required pattern="DELETE">
+                <small>You must type DELETE in all caps to confirm</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="danger">Delete Project</button>
+                <a href="{{.ProjectPage}}" role="button" class="secondary">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+{{end}}

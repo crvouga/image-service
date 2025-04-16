@@ -62,4 +62,17 @@ func (db *ImplKeyValueDB) Upsert(uow *uow.Uow, proj project.Project) error {
 	return db.entities.Put(uow, key, string(jsonData))
 }
 
+func (db *ImplKeyValueDB) ZapByID(uow *uow.Uow, id projectID.ProjectID) error {
+	if uow == nil {
+		return fmt.Errorf("unit of work cannot be nil")
+	}
+
+	key := projectKey(id)
+	if key == "" {
+		return fmt.Errorf("invalid project ID")
+	}
+
+	return db.entities.Zap(uow, key)
+}
+
 var _ ProjectDB = (*ImplKeyValueDB)(nil)

@@ -173,3 +173,49 @@ func Test_UpsertUpdateProject(t *testing.T) {
 
 	uow.Commit()
 }
+
+func TestZapByID(t *testing.T) {
+	f := newFixture()
+	uow, _ := f.UowFactory.Begin()
+
+	// Create initial project
+	proj := project.Project{
+		ID:              projectID.Gen(),
+		CreatedByUserID: userID.Gen(),
+		Name:            "Test Project",
+		CreatedAt:       time.Now(),
+		UpdatedAt:       time.Now(),
+	}
+
+	// Insert the project
+	err := f.ProjectDB.Upsert(uow, proj)
+	if err != nil {
+		t.Errorf("Expected no error on insert, got %v", err)
+	}
+
+	// Verify it was inserted
+	retrieved, err := f.ProjectDB.GetByID(proj.ID)
+	if err != nil {
+		t.Errorf("Expected no error on retrieval, got %v", err)
+	}
+	if retrieved == nil {
+		t.Fatal("Expected to retrieve project, got nil")
+	}
+
+	// Zap the project
+	err = f.ProjectDB.ZapByID(uow, proj.ID)
+	if err != nil {
+		t.Errorf("Expected no error on zap, got %v", err)
+	}
+
+	// Verify it was zapped
+	retrieved, err = f.ProjectDB.GetByID(proj.ID)
+	if err != nil {
+		t.Errorf("Expected no error on retrieval after zap, got %v", err)
+	}
+	if retrieved != nil {
+		t.Errorf("Expected project to be zapped (nil), got %+v", retrieved)
+	}
+
+	uow.Commit()
+}
