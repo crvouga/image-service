@@ -19,14 +19,14 @@ import (
 	"time"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(loginRoutes.UseLinkAction, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(loginRoutes.UseLinkAction, Respond(ac))
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		reqCtxInst := reqCtx.FromHttpRequest(appCtx, r)
+		reqCtxInst := reqCtx.FromHttpRequest(ac, r)
 
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Failed to parse form", http.StatusBadRequest)
@@ -35,7 +35,7 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 
 		linkID := strings.TrimSpace(r.FormValue("linkID"))
 
-		if err := UseLink(appCtx, &reqCtxInst, linkID); err != nil {
+		if err := UseLink(ac, &reqCtxInst, linkID); err != nil {
 			useLinkErrorPage.Redirect(w, r, err.Error())
 			return
 		}
@@ -45,7 +45,7 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func UseLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) error {
+func UseLink(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) error {
 	logger := reqCtx.Logger.With(slog.String("operation", "UseLink"))
 
 	logger.Info("Starting login with email link process", "linkID", maybeLinkID)
@@ -61,7 +61,7 @@ func UseLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID strin
 
 	linkID := linkID.New(cleaned)
 
-	found, err := appCtx.LinkDB.GetByLinkID(linkID)
+	found, err := ac.LinkDB.GetByLinkID(linkID)
 
 	if err != nil {
 		logger.Error("Error fetching link", "error", err.Error())
@@ -79,7 +79,7 @@ func UseLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID strin
 	}
 
 	logger.Info("Beginning database transaction")
-	uow, err := appCtx.UowFactory.Begin()
+	uow, err := ac.UowFactory.Begin()
 
 	if err != nil {
 		logger.Error("Failed to begin transaction", "error", err.Error())
@@ -91,13 +91,13 @@ func UseLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID strin
 	logger.Info("Marking link as used", "linkID", cleaned)
 	marked := link.MarkAsUsed(*found)
 
-	if err := appCtx.LinkDB.Upsert(uow, marked); err != nil {
+	if err := ac.LinkDB.Upsert(uow, marked); err != nil {
 		logger.Error("Failed to mark link as used", "error", err.Error())
 		return newDatabaseError(err)
 	}
 
 	logger.Info("Looking up user account by email", "email", found.EmailAddress)
-	account, err := appCtx.UserAccountDB.GetByEmailAddress(found.EmailAddress)
+	account, err := ac.UserAccountDB.GetByEmailAddress(found.EmailAddress)
 
 	if err != nil {
 		logger.Error("Error looking up user account", "error", err.Error())
@@ -116,7 +116,7 @@ func UseLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID strin
 		logger.Info("Found existing user account", "userID", account.UserID)
 	}
 
-	if err := appCtx.UserAccountDB.Upsert(uow, *account); err != nil {
+	if err := ac.UserAccountDB.Upsert(uow, *account); err != nil {
 		logger.Error("Failed to save user account", "error", err.Error())
 		return newDatabaseError(err)
 	}
@@ -129,7 +129,7 @@ func UseLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID strin
 		SessionID: reqCtx.SessionID,
 	}
 
-	if err := appCtx.UserSessionDB.Upsert(uow, sessionNew); err != nil {
+	if err := ac.UserSessionDB.Upsert(uow, sessionNew); err != nil {
 		logger.Error("Failed to create user session", "error", err.Error())
 		return newDatabaseError(err)
 	}

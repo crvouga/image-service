@@ -5,6 +5,6 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc("/api/image/resize", ApiImageResize(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc("/api/image/resize", ApiImageResize(ac))
 }

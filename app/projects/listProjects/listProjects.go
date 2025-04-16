@@ -12,8 +12,8 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectListPage, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(projectRoutes.ProjectListPage, Respond(ac))
 }
 
 type Data struct {
@@ -23,15 +23,15 @@ type Data struct {
 	CreateURL           string
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := reqCtx.FromHttpRequest(appCtx, r)
+		req := reqCtx.FromHttpRequest(ac, r)
 		logger := req.Logger
 		createdByUserID := req.UserSession.UserID
 
 		logger.Info("projectListPage", "userID", createdByUserID)
 
-		uow, err := appCtx.UowFactory.Begin()
+		uow, err := ac.UowFactory.Begin()
 		if err != nil {
 			logger.Error("database access failed", "error", err)
 			http.Error(w, "Failed to access database", http.StatusInternalServerError)
@@ -39,7 +39,7 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 		}
 		defer uow.Rollback()
 
-		projects, err := appCtx.ProjectDB.GetByCreatedByUserID(createdByUserID)
+		projects, err := ac.ProjectDB.GetByCreatedByUserID(createdByUserID)
 		if err != nil {
 			logger.Error("failed to fetch projects", "userID", createdByUserID, "error", err)
 			http.Error(w, "Failed to fetch projects", http.StatusInternalServerError)

@@ -6,6 +6,6 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	imageResizerPage.Router(mux, appCtx)
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	imageResizerPage.Router(mux, ac)
 }

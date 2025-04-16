@@ -13,8 +13,8 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(userAccountRoutes.UserAccountPage, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(userAccountRoutes.UserAccountPage, Respond(ac))
 }
 
 type Data struct {
@@ -24,9 +24,9 @@ type Data struct {
 	BackURL     string
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		reqCtxInst := reqCtx.FromHttpRequest(appCtx, r)
+		reqCtxInst := reqCtx.FromHttpRequest(ac, r)
 
 		data := Data{
 			UserSession: reqCtxInst.UserSession,

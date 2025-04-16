@@ -19,11 +19,11 @@ import (
 
 // Handler is the main handler for the application.
 func Handler() http.Handler {
-	appCtx := appContext.New()
+	ac := appContext.New()
 
 	mux := http.NewServeMux()
 
-	router(mux, &appCtx)
+	router(mux, &ac)
 
 	handler := traceID.WithTraceIDHeader(sessionID.WithSessionIDCookie(mux))
 
@@ -31,9 +31,9 @@ func Handler() http.Handler {
 }
 
 // router is the router for the application.
-func router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	muxLoggedIn := newMuxLoggedIn(appCtx)
-	muxLoggedOut := newMuxLoggedOut(appCtx)
+func router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	muxLoggedIn := newMuxLoggedIn(ac)
+	muxLoggedOut := newMuxLoggedOut(ac)
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Pragma", "no-cache")
@@ -43,7 +43,7 @@ func router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 		if err == nil {
 			return
 		}
-		if auth.IsLoggedIn(appCtx, r) {
+		if auth.IsLoggedIn(ac, r) {
 			muxLoggedIn.ServeHTTP(w, r)
 			return
 		}
@@ -53,13 +53,13 @@ func router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
 }
 
 // newMuxLoggedIn is the mux for the logged in user.
-func newMuxLoggedIn(appCtx *appContext.AppCtx) *http.ServeMux {
+func newMuxLoggedIn(ac *appContext.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
-	users.Router(mux, appCtx)
-	home.Router(mux, appCtx)
-	projects.Router(mux, appCtx)
-	imageResizer.Router(mux, appCtx)
-	api.Router(mux, appCtx)
+	users.Router(mux, ac)
+	home.Router(mux, ac)
+	projects.Router(mux, ac)
+	imageResizer.Router(mux, ac)
+	api.Router(mux, ac)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		getHome.Redirect(w, r)
 	})
@@ -67,10 +67,10 @@ func newMuxLoggedIn(appCtx *appContext.AppCtx) *http.ServeMux {
 }
 
 // newMuxLoggedOut is the mux for the logged out user.
-func newMuxLoggedOut(appCtx *appContext.AppCtx) *http.ServeMux {
+func newMuxLoggedOut(ac *appContext.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
-	users.RouterLoggedOut(mux, appCtx)
-	api.Router(mux, appCtx)
+	users.RouterLoggedOut(mux, ac)
+	api.Router(mux, ac)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		sendLinkPage.Redirect(w, r)
 	})

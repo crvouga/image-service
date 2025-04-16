@@ -16,7 +16,7 @@ import (
 )
 
 // ApiImageResize handles image resizing requests
-func ApiImageResize(appCtx *appContext.AppCtx) http.HandlerFunc {
+func ApiImageResize(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// Only allow GET requests
 		if r.Method != http.MethodGet {
@@ -38,7 +38,7 @@ func ApiImageResize(appCtx *appContext.AppCtx) http.HandlerFunc {
 
 		fmt.Println("projectID", projectIDInst)
 
-		project, err := appCtx.ProjectDB.GetByID(projectIDInst)
+		project, err := ac.ProjectDB.GetByID(projectIDInst)
 
 		if err != nil {
 			http.Error(w, "Failed to get project: "+err.Error(), http.StatusInternalServerError)

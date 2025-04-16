@@ -8,7 +8,7 @@ import (
 	"imageresizerservice/app/users/logout/logoutPage"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	logoutPage.Router(mux, appCtx)
-	logoutAction.Router(mux, appCtx)
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	logoutPage.Router(mux, ac)
+	logoutAction.Router(mux, ac)
 }

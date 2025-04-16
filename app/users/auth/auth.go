@@ -7,7 +7,7 @@ import (
 )
 
 // IsLoggedIn checks if the user is logged in by checking if they have a valid user session
-func IsLoggedIn(appCtx *appContext.AppCtx, r *http.Request) bool {
-	reqCtxInst := reqCtx.FromHttpRequest(appCtx, r)
+func IsLoggedIn(ac *appContext.AppCtx, r *http.Request) bool {
+	reqCtxInst := reqCtx.FromHttpRequest(ac, r)
 	return reqCtxInst.UserSession != nil
 }

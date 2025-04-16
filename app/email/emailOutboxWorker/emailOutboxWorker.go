@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func Start(appCtx *appContext.AppCtx, sleepTime time.Duration) chan bool {
+func Start(ac *appContext.AppCtx, sleepTime time.Duration) chan bool {
 	stopChan := make(chan bool)
 
 	go func() {
@@ -19,7 +19,7 @@ func Start(appCtx *appContext.AppCtx, sleepTime time.Duration) chan bool {
 				log.Println("Email outbox worker stopped")
 				return
 			default:
-				processEmails(appCtx, sleepTime)
+				processEmails(ac, sleepTime)
 				time.Sleep(sleepTime)
 			}
 		}
@@ -27,9 +27,9 @@ func Start(appCtx *appContext.AppCtx, sleepTime time.Duration) chan bool {
 
 	return stopChan
 }
-func processEmails(appCtx *appContext.AppCtx, sleepTime time.Duration) {
+func processEmails(ac *appContext.AppCtx, sleepTime time.Duration) {
 	log.Println("Getting unsent emails")
-	emails, err := appCtx.EmailOutbox.GetUnsentEmails()
+	emails, err := ac.EmailOutbox.GetUnsentEmails()
 	if err != nil {
 		log.Printf("Error getting unsent emails: %v", err)
 		return
@@ -40,7 +40,7 @@ func processEmails(appCtx *appContext.AppCtx, sleepTime time.Duration) {
 	for _, email := range emails {
 		log.Printf("Sending email: %v", email)
 		// Mark email as sent after successful sending
-		uow, err := appCtx.UowFactory.Begin()
+		uow, err := ac.UowFactory.Begin()
 		if err != nil {
 			log.Printf("Error beginning unit of work: %v", err)
 			time.Sleep(sleepTime)
@@ -49,11 +49,6 @@ func processEmails(appCtx *appContext.AppCtx, sleepTime time.Duration) {
 
 		sendEmail := sendEmailFactory.FromReqCtx(nil)
 
-		if err != nil {
-			log.Printf("Error getting send email: %v", err)
-			time.Sleep(sleepTime)
-			continue
-		}
 		err = sendEmail.SendEmail(uow, email)
 		if err != nil {
 			log.Printf("Error sending email: %v", err)
@@ -63,7 +58,7 @@ func processEmails(appCtx *appContext.AppCtx, sleepTime time.Duration) {
 
 		defer uow.Rollback()
 
-		err = appCtx.EmailOutbox.MarkAsSent(uow, email)
+		err = ac.EmailOutbox.MarkAsSent(uow, email)
 		if err != nil {
 			log.Printf("Error marking email as sent: %v", err)
 			uow.Rollback()

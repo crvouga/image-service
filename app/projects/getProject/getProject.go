@@ -12,8 +12,8 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectPage, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(projectRoutes.ProjectPage, Respond(ac))
 }
 
 type Data struct {
@@ -23,9 +23,9 @@ type Data struct {
 	DeleteURL string
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := reqCtx.FromHttpRequest(appCtx, r)
+		req := reqCtx.FromHttpRequest(ac, r)
 		logger := req.Logger
 
 		logger.Info("projectPage", "projectID", r.URL.Query().Get("projectID"))
@@ -50,7 +50,7 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 			return
 		}
 
-		uow, err := appCtx.UowFactory.Begin()
+		uow, err := ac.UowFactory.Begin()
 		if err != nil {
 			logger.Error("database access failed", "error", err)
 			errorPage.Redirect(w, r, "Failed to access database")
@@ -58,7 +58,7 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 		}
 		defer uow.Rollback()
 
-		project, err := appCtx.ProjectDB.GetByID(projectIDNew)
+		project, err := ac.ProjectDB.GetByID(projectIDNew)
 
 		if err != nil {
 			logger.Error("project not found", "projectID", projectIDMaybe, "error", err)

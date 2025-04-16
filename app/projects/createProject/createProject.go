@@ -14,18 +14,18 @@ import (
 	"time"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectCreate, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(projectRoutes.ProjectCreate, Respond(ac))
 }
 
 type Data struct {
 	HomePage string
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-			respondPost(appCtx, w, r)
+			respondPost(ac, w, r)
 		} else {
 			respondGet(w, r)
 		}
@@ -38,8 +38,8 @@ func respondGet(w http.ResponseWriter, r *http.Request) {
 	}
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }
-func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
-	req := reqCtx.FromHttpRequest(appCtx, r)
+func respondPost(ac *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
+	req := reqCtx.FromHttpRequest(ac, r)
 	logger := req.Logger
 
 	logger.Info("handling project creation request")
@@ -89,7 +89,7 @@ func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reque
 
 	logger.Info("creating new project", "projectID", projectID, "createdByUserID", projectNew.CreatedByUserID)
 
-	uow, err := appCtx.UowFactory.Begin()
+	uow, err := ac.UowFactory.Begin()
 
 	if err != nil {
 		logger.Error("failed to begin transaction", "error", err)
@@ -99,7 +99,7 @@ func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reque
 
 	logger.Info("upserting project", "projectID", projectID, "createdByUserID", projectNew.CreatedByUserID)
 
-	if err = appCtx.ProjectDB.Upsert(uow, &projectNew); err != nil {
+	if err = ac.ProjectDB.Upsert(uow, &projectNew); err != nil {
 		logger.Error("failed to upsert project", "error", err)
 		http.Error(w, "Failed to create project", http.StatusInternalServerError)
 		return

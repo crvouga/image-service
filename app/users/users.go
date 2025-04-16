@@ -8,12 +8,12 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	logout.Router(mux, appCtx)
-	login.Router(mux, appCtx)
-	getUserAccount.Router(mux, appCtx)
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	logout.Router(mux, ac)
+	login.Router(mux, ac)
+	getUserAccount.Router(mux, ac)
 }
 
-func RouterLoggedOut(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	login.RouterLoggedOut(mux, appCtx)
+func RouterLoggedOut(mux *http.ServeMux, ac *appContext.AppCtx) {
+	login.RouterLoggedOut(mux, ac)
 }

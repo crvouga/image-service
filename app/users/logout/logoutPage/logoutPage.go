@@ -10,8 +10,8 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(logoutRoutes.LogoutPage, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(logoutRoutes.LogoutPage, Respond(ac))
 }
 
 type Data struct {
@@ -19,9 +19,9 @@ type Data struct {
 	LogoutAction string
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := reqCtx.FromHttpRequest(appCtx, r)
+		req := reqCtx.FromHttpRequest(ac, r)
 
 		data := Data{
 			UserSession:  req.UserSession,

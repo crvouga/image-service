@@ -26,8 +26,8 @@ type AppCtx struct {
 	ProjectDB     projectDB.ProjectDB
 }
 
-func (appCtx *AppCtx) CleanUp() {
-	appCtx.DB.Close()
+func (ac *AppCtx) CleanUp() {
+	ac.DB.Close()
 }
 
 func New() AppCtx {

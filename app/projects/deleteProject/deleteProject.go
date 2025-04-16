@@ -11,8 +11,8 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectDelete, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(projectRoutes.ProjectDelete, Respond(ac))
 }
 
 type Data struct {
@@ -20,18 +20,18 @@ type Data struct {
 	ProjectPage string
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
-			respondPost(appCtx, w, r)
+			respondPost(ac, w, r)
 		} else {
-			respondGet(appCtx, w, r)
+			respondGet(ac, w, r)
 		}
 	}
 }
 
-func respondGet(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
-	req := reqCtx.FromHttpRequest(appCtx, r)
+func respondGet(ac *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
+	req := reqCtx.FromHttpRequest(ac, r)
 	logger := req.Logger
 
 	projectIDMaybe := r.URL.Query().Get("projectID")
@@ -48,7 +48,7 @@ func respondGet(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	uow, err := appCtx.UowFactory.Begin()
+	uow, err := ac.UowFactory.Begin()
 	if err != nil {
 		logger.Error("database access failed", "error", err)
 		http.Error(w, "Failed to access database", http.StatusInternalServerError)
@@ -56,7 +56,7 @@ func respondGet(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reques
 	}
 	defer uow.Rollback()
 
-	project, err := appCtx.ProjectDB.GetByID(projectIDInst)
+	project, err := ac.ProjectDB.GetByID(projectIDInst)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 		http.Error(w, "Project not found", http.StatusNotFound)
@@ -77,8 +77,8 @@ func respondGet(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reques
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }
 
-func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
-	req := reqCtx.FromHttpRequest(appCtx, r)
+func respondPost(ac *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
+	req := reqCtx.FromHttpRequest(ac, r)
 	logger := req.Logger
 
 	logger.Info("handling project delete request")
@@ -112,7 +112,7 @@ func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reque
 	}
 
 	// Get existing project
-	uow, err := appCtx.UowFactory.Begin()
+	uow, err := ac.UowFactory.Begin()
 	if err != nil {
 		logger.Error("failed to begin transaction", "error", err)
 		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
@@ -120,7 +120,7 @@ func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reque
 	}
 	defer uow.Rollback()
 
-	existingProject, err := appCtx.ProjectDB.GetByID(projectIDInst)
+	existingProject, err := ac.ProjectDB.GetByID(projectIDInst)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 		http.Error(w, "Project not found", http.StatusNotFound)
@@ -135,7 +135,7 @@ func respondPost(appCtx *appContext.AppCtx, w http.ResponseWriter, r *http.Reque
 
 	logger.Info("deleting project", "projectID", projectIDInst)
 
-	if err = appCtx.ProjectDB.ZapByID(uow, projectIDInst); err != nil {
+	if err = ac.ProjectDB.ZapByID(uow, projectIDInst); err != nil {
 		logger.Error("failed to delete project", "error", err)
 		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
 		return

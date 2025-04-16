@@ -9,8 +9,8 @@ import (
 	"imageresizerservice/app/users/login/useLink/useLinkSuccessPage"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
 	useLinkPage.Router(mux)
-	useLinkAction.Router(mux, appCtx)
+	useLinkAction.Router(mux, ac)
 	useLinkSuccessPage.Router(mux)
 }

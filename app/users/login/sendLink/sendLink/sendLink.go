@@ -9,8 +9,8 @@ import (
 	"imageresizerservice/app/users/login/sendLink/sendLinkSuccessPage"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
 	sendLinkPage.Router(mux)
-	sendLinkAction.Router(mux, appCtx)
-	sendLinkSuccessPage.Router(mux, appCtx)
+	sendLinkAction.Router(mux, ac)
+	sendLinkSuccessPage.Router(mux, ac)
 }

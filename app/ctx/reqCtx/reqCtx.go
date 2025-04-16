@@ -20,8 +20,8 @@ type ReqCtx struct {
 	UserAccount *userAccount.UserAccount
 }
 
-func getUserSession(appCtx *appContext.AppCtx, sessionID sessionID.SessionID) *userSession.UserSession {
-	userSession, err := appCtx.UserSessionDB.GetBySessionID(sessionID)
+func getUserSession(ac *appContext.AppCtx, sessionID sessionID.SessionID) *userSession.UserSession {
+	userSession, err := ac.UserSessionDB.GetBySessionID(sessionID)
 	if err != nil {
 		return nil
 	}
@@ -31,11 +31,11 @@ func getUserSession(appCtx *appContext.AppCtx, sessionID sessionID.SessionID) *u
 	return userSession
 }
 
-func getUserAccount(appCtx *appContext.AppCtx, userSessionInst *userSession.UserSession) *userAccount.UserAccount {
+func getUserAccount(ac *appContext.AppCtx, userSessionInst *userSession.UserSession) *userAccount.UserAccount {
 	if userSessionInst == nil {
 		return nil
 	}
-	userAccount, err := appCtx.UserAccountDB.GetByUserID(userSessionInst.UserID)
+	userAccount, err := ac.UserAccountDB.GetByUserID(userSessionInst.UserID)
 	if err != nil {
 		return nil
 	}
@@ -46,7 +46,7 @@ func getUserAccount(appCtx *appContext.AppCtx, userSessionInst *userSession.User
 }
 
 // FromHttpRequest creates a new ReqCtx from an HTTP request.
-func FromHttpRequest(appCtx *appContext.AppCtx, r *http.Request) ReqCtx {
+func FromHttpRequest(ac *appContext.AppCtx, r *http.Request) ReqCtx {
 	sessionIDInst := sessionID.FromSessionIDCookie(r)
 
 	traceIDInst := traceID.FromHttpRequest(r)
@@ -57,9 +57,9 @@ func FromHttpRequest(appCtx *appContext.AppCtx, r *http.Request) ReqCtx {
 		slog.String("traceID", string(traceIDInst)),
 	)
 
-	userSessionInst := getUserSession(appCtx, sessionIDInst)
+	userSessionInst := getUserSession(ac, sessionIDInst)
 
-	userAccountInst := getUserAccount(appCtx, userSessionInst)
+	userAccountInst := getUserAccount(ac, userSessionInst)
 
 	reqCtxInst := ReqCtx{
 		BaseURL:     baseURL,

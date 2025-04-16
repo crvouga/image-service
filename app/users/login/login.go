@@ -8,11 +8,11 @@ import (
 	"imageresizerservice/app/users/login/useLink/useLink"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	useLink.Router(mux, appCtx)
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	useLink.Router(mux, ac)
 }
 
-func RouterLoggedOut(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	sendLink.Router(mux, appCtx)
-	useLink.Router(mux, appCtx)
+func RouterLoggedOut(mux *http.ServeMux, ac *appContext.AppCtx) {
+	sendLink.Router(mux, ac)
+	useLink.Router(mux, ac)
 }

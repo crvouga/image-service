@@ -11,10 +11,10 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	createProject.Router(mux, appCtx)
-	editProject.Router(mux, appCtx)
-	deleteProject.Router(mux, appCtx)
-	listProjects.Router(mux, appCtx)
-	getProject.Router(mux, appCtx)
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	createProject.Router(mux, ac)
+	editProject.Router(mux, ac)
+	deleteProject.Router(mux, ac)
+	listProjects.Router(mux, ac)
+	getProject.Router(mux, ac)
 }

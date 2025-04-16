@@ -17,11 +17,11 @@ import (
 	"imageresizerservice/library/email/emailAddress"
 )
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(loginRoutes.SendLinkAction, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(loginRoutes.SendLinkAction, Respond(ac))
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -38,9 +38,9 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 
 		emailInput := strings.TrimSpace(r.FormValue("email"))
 
-		reqCtxInst := reqCtx.FromHttpRequest(appCtx, r)
+		reqCtxInst := reqCtx.FromHttpRequest(ac, r)
 
-		errSent := SendLink(appCtx, &reqCtxInst, emailInput)
+		errSent := SendLink(ac, &reqCtxInst, emailInput)
 
 		if errSent != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
@@ -54,13 +54,13 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func SendLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) error {
+func SendLink(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) error {
 	emailAddress, err := emailAddress.New(emailAddressInput)
 	if err != nil {
 		return err
 	}
 
-	uow, err := appCtx.UowFactory.Begin()
+	uow, err := ac.UowFactory.Begin()
 
 	if err != nil {
 		return err
@@ -70,7 +70,7 @@ func SendLink(appCtx *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInpu
 
 	linkNew := link.New(emailAddress, reqCtx.SessionID)
 
-	if err := appCtx.LinkDB.Upsert(uow, linkNew); err != nil {
+	if err := ac.LinkDB.Upsert(uow, linkNew); err != nil {
 		return err
 	}
 

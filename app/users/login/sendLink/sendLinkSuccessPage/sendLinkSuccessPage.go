@@ -22,17 +22,17 @@ type Data struct {
 	LoginLink             string
 }
 
-func Router(mux *http.ServeMux, appCtx *appContext.AppCtx) {
-	mux.HandleFunc(loginRoutes.SendLinkSuccessPage, Respond(appCtx))
+func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+	mux.HandleFunc(loginRoutes.SendLinkSuccessPage, Respond(ac))
 }
 
-func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	htmlPath := static.GetSiblingPath("sendLinkSuccessPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
-		ctx := reqCtx.FromHttpRequest(appCtx, r)
+		ctx := reqCtx.FromHttpRequest(ac, r)
 
 		isSendEmailConfigured := sendEmailFactory.IsConfigured()
-		loginLink := toLoginLink(appCtx, &ctx)
+		loginLink := toLoginLink(ac, &ctx)
 
 		data := Data{
 			SendAnotherLink:       loginRoutes.SendLinkPage,
@@ -45,8 +45,8 @@ func Respond(appCtx *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func toLoginLink(appCtx *appContext.AppCtx, ctx *reqCtx.ReqCtx) string {
-	link := toLatestLoginLink(appCtx, ctx)
+func toLoginLink(ac *appContext.AppCtx, ctx *reqCtx.ReqCtx) string {
+	link := toLatestLoginLink(ac, ctx)
 	if link == nil {
 		return ""
 	}
@@ -54,14 +54,14 @@ func toLoginLink(appCtx *appContext.AppCtx, ctx *reqCtx.ReqCtx) string {
 	return linkUrl
 }
 
-func toLatestLoginLink(appCtx *appContext.AppCtx, ctx *reqCtx.ReqCtx) *link.Link {
+func toLatestLoginLink(ac *appContext.AppCtx, ctx *reqCtx.ReqCtx) *link.Link {
 	isSendEmailConfigured := sendEmailFactory.IsConfigured()
 
 	if isSendEmailConfigured {
 		return nil
 	}
 
-	links, err := appCtx.LinkDB.GetBySessionID(ctx.SessionID)
+	links, err := ac.LinkDB.GetBySessionID(ctx.SessionID)
 
 	if err != nil {
 		return nil
