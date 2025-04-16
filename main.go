@@ -4,7 +4,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users"
-	"imageresizerservice/app/users/loginWithEmailLink/routes"
+	"imageresizerservice/app/users/login/loginRoutes"
 	"imageresizerservice/library/static"
 	"log"
 	"net/http"
@@ -27,18 +27,12 @@ func main() {
 }
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
-
-	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("User-agent: *\nAllow: /"))
-	})
-
 	users.Router(mux, appCtx)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := static.ServeStaticAssets(w, r)
 		if err != nil {
-			http.Redirect(w, r, routes.SendLinkPage, http.StatusSeeOther)
+			http.Redirect(w, r, loginRoutes.SendLinkPage, http.StatusSeeOther)
 		}
 	})
-
 }

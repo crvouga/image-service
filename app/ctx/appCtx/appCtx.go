@@ -2,7 +2,7 @@ package appCtx
 
 import (
 	"database/sql"
-	"imageresizerservice/app/users/loginWithEmailLink/link/linkDb"
+	"imageresizerservice/app/users/login/link/linkDb"
 	"imageresizerservice/app/users/userAccount/userAccountDb"
 	"imageresizerservice/app/users/userSession/userSessionDb"
 	"imageresizerservice/library/email/emailOutbox"

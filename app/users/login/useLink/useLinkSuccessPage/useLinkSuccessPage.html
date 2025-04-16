@@ -1,0 +1,19 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <h1>
+            Login Successful
+        </h1>
+        <p>
+            You have successfully logged in using your email link.
+        </p>
+        <p>
+            You can now access your account and all its features.
+        </p>
+        <a href="{{.Dashboard}}" role="button">
+            Go to Dashboard
+        </a>
+    </section>
+</main>
+{{end}}
