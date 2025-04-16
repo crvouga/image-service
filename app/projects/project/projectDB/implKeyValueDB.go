@@ -12,14 +12,14 @@ import (
 )
 
 type ImplKeyValueDB struct {
-	entities                 keyValueDB.KeyValueDB
-	indexManyCreatedByUserID keyValueDB.KeyValueDB
+	projects                         keyValueDB.KeyValueDB
+	indexProjectIDsByCreatedByUserID keyValueDB.KeyValueDB
 }
 
 func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
 	return &ImplKeyValueDB{
-		entities:                 keyValueDB.NewImplNamespaced(db, "project"),
-		indexManyCreatedByUserID: keyValueDB.NewImplNamespaced(db, "project:user"),
+		projects:                         keyValueDB.NewImplNamespaced(db, "project"),
+		indexProjectIDsByCreatedByUserID: keyValueDB.NewImplNamespaced(db, "project:index:projectIDsByCreatedByUserID"),
 	}
 }
 
@@ -32,7 +32,7 @@ func userIndexKey(userID userID.UserID) string {
 }
 
 func (db ImplKeyValueDB) GetByID(projectID projectID.ProjectID) (*project.Project, error) {
-	value, err := db.entities.Get(projectKey(projectID))
+	value, err := db.projects.Get(projectKey(projectID))
 	if err != nil {
 		return nil, err
 	}
@@ -58,13 +58,13 @@ func (db ImplKeyValueDB) Upsert(uow *uow.Uow, project *project.Project) error {
 	}
 
 	// Store the project by ID
-	if err := db.entities.Put(uow, projectKey(project.ID), string(jsonData)); err != nil {
+	if err := db.projects.Put(uow, projectKey(project.ID), string(jsonData)); err != nil {
 		return err
 	}
 
 	// Update the index entry for user ID -> project IDs
 	// Get existing project IDs for this user
-	existingValue, err := db.indexManyCreatedByUserID.Get(userIndexKey(project.CreatedByUserID))
+	existingValue, err := db.indexProjectIDsByCreatedByUserID.Get(userIndexKey(project.CreatedByUserID))
 	if err != nil {
 		return err
 	}
@@ -90,12 +90,12 @@ func (db ImplKeyValueDB) Upsert(uow *uow.Uow, project *project.Project) error {
 	}
 
 	// Update the index
-	return db.indexManyCreatedByUserID.Put(uow, userIndexKey(project.CreatedByUserID), strings.Join(projectIDs, ","))
+	return db.indexProjectIDsByCreatedByUserID.Put(uow, userIndexKey(project.CreatedByUserID), strings.Join(projectIDs, ","))
 }
 
 func (db ImplKeyValueDB) GetByCreatedByUserID(createdByUserID userID.UserID) ([]*project.Project, error) {
 	// Get the list of project IDs for this user
-	projectIDsValue, err := db.indexManyCreatedByUserID.Get(userIndexKey(createdByUserID))
+	projectIDsValue, err := db.indexProjectIDsByCreatedByUserID.Get(userIndexKey(createdByUserID))
 	if err != nil {
 		return nil, err
 	}
@@ -143,12 +143,12 @@ func (db ImplKeyValueDB) ZapByID(uow *uow.Uow, projectID projectID.ProjectID) er
 	}
 
 	// Delete from the main storage
-	if err := db.entities.Zap(uow, projectKey(projectID)); err != nil {
+	if err := db.projects.Zap(uow, projectKey(projectID)); err != nil {
 		return err
 	}
 
 	// Remove the project ID from the user's project list
-	existingValue, err := db.indexManyCreatedByUserID.Get(userIndexKey(proj.CreatedByUserID))
+	existingValue, err := db.indexProjectIDsByCreatedByUserID.Get(userIndexKey(proj.CreatedByUserID))
 	if err != nil {
 		return err
 	}
@@ -166,7 +166,7 @@ func (db ImplKeyValueDB) ZapByID(uow *uow.Uow, projectID projectID.ProjectID) er
 		}
 
 		// Update the index with the new list
-		return db.indexManyCreatedByUserID.Put(uow, userIndexKey(proj.CreatedByUserID), strings.Join(updatedProjectIDs, ","))
+		return db.indexProjectIDsByCreatedByUserID.Put(uow, userIndexKey(proj.CreatedByUserID), strings.Join(updatedProjectIDs, ","))
 	}
 
 	return nil

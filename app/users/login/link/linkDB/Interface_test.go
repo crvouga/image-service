@@ -170,7 +170,7 @@ func Test_GetBySessionID(t *testing.T) {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
 
-	if links == nil || len(links) == 0 {
+	if len(links) == 0 {
 		t.Fatal("Expected to retrieve links, got none")
 	}
 

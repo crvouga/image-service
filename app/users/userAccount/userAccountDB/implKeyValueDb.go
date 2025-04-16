@@ -11,14 +11,14 @@ import (
 )
 
 type ImplKeyValueDB struct {
-	entities   keyValueDB.KeyValueDB
-	indexEmail keyValueDB.KeyValueDB
+	userAccounts              keyValueDB.KeyValueDB
+	indexUserIDByEmailAddress keyValueDB.KeyValueDB
 }
 
 func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
 	return &ImplKeyValueDB{
-		entities:   keyValueDB.NewImplNamespaced(db, "userAccount"),
-		indexEmail: keyValueDB.NewImplNamespaced(db, "userAccount:email"),
+		userAccounts:              keyValueDB.NewImplNamespaced(db, "userAccount"),
+		indexUserIDByEmailAddress: keyValueDB.NewImplNamespaced(db, "userAccount:index:userIDByEmailAddress"),
 	}
 }
 
@@ -31,7 +31,7 @@ func userAccountKey(id userID.UserID) string {
 }
 
 func (db ImplKeyValueDB) GetByUserID(id userID.UserID) (*userAccount.UserAccount, error) {
-	value, err := db.entities.Get(userAccountKey(id))
+	value, err := db.userAccounts.Get(userAccountKey(id))
 	if err != nil {
 		return nil, err
 	}
@@ -57,17 +57,17 @@ func (db ImplKeyValueDB) Upsert(uow *uow.Uow, account userAccount.UserAccount) e
 	}
 
 	// Store the user account by ID
-	if err := db.entities.Put(uow, userAccountKey(account.UserID), string(jsonData)); err != nil {
+	if err := db.userAccounts.Put(uow, userAccountKey(account.UserID), string(jsonData)); err != nil {
 		return err
 	}
 
 	// Create an index entry for email address -> user ID
-	return db.indexEmail.Put(uow, emailIndexKey(account.EmailAddress), string(account.UserID))
+	return db.indexUserIDByEmailAddress.Put(uow, emailIndexKey(account.EmailAddress), string(account.UserID))
 }
 
 func (db ImplKeyValueDB) GetByEmailAddress(emailAddress emailAddress.EmailAddress) (*userAccount.UserAccount, error) {
 	// Get the user ID from the email index
-	gotUserID, err := db.indexEmail.Get(emailIndexKey(emailAddress))
+	gotUserID, err := db.indexUserIDByEmailAddress.Get(emailIndexKey(emailAddress))
 	if err != nil {
 		return nil, err
 	}
