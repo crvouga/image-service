@@ -9,6 +9,7 @@
     "modernc",
     "resizer",
     "tmpl",
-    "tzdata"
+    "tzdata",
+    "upserting"
   ]
 }

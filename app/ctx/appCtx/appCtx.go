@@ -44,8 +44,8 @@ func New() AppCtx {
 		EmailOutbox:   emailOutbox.NewImplKeyValueDB(keyValueDBFs),
 		UserSessionDB: userSessionDB.NewImplKeyValueDB(keyValueDBFs),
 		UserAccountDB: userAccountDB.NewImplKeyValueDB(keyValueDBFs),
+		ProjectDB:     projectDB.NewImplKeyValueDB(keyValueDBFs),
 	}
-
 }
 
 func NewTest() AppCtx {
@@ -62,5 +62,6 @@ func NewTest() AppCtx {
 		EmailOutbox:   emailOutbox.NewImplKeyValueDB(&keyValueDBHashMap),
 		UserSessionDB: userSessionDB.NewImplKeyValueDB(&keyValueDBHashMap),
 		UserAccountDB: userAccountDB.NewImplKeyValueDB(&keyValueDBHashMap),
+		ProjectDB:     projectDB.NewImplKeyValueDB(&keyValueDBHashMap),
 	}
 }

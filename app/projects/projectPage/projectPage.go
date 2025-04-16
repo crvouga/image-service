@@ -2,6 +2,7 @@ package projectPage
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/dashboard/dashboardRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
@@ -9,11 +10,10 @@ import (
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
-	"net/url"
 )
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
-	mux.HandleFunc(dashboardRoutes.DashboardPage, Respond(appCtx))
+	mux.HandleFunc(projectRoutes.ProjectPage, Respond(appCtx))
 }
 
 type Data struct {
@@ -25,43 +25,63 @@ type Data struct {
 
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		req := reqCtx.FromHttpRequest(appCtx, r)
+		logger := req.Logger
+
+		logger.Info("projectPage", "projectID", r.URL.Query().Get("projectID"))
 
 		projectIDMaybe := r.URL.Query().Get("projectID")
 
+		logger.Info("projectIDMaybe", "projectIDMaybe", projectIDMaybe)
+
 		if projectIDMaybe == "" {
+			logger.Error("missing project ID", "error", "Project ID is required")
 			http.Error(w, "Project ID is required", http.StatusBadRequest)
 			return
 		}
 
-		projectIDInst, err := projectID.New(projectIDMaybe)
+		logger.Info("projectIDMaybe", "projectIDMaybe", projectIDMaybe)
+
+		projectIDNew, err := projectID.New(projectIDMaybe)
 
 		if err != nil {
+			logger.Error("invalid project ID", "error", err)
 			http.Error(w, "Invalid project ID", http.StatusBadRequest)
 			return
 		}
 
-		project, err := appCtx.ProjectDB.GetByID(projectIDInst)
+		uow, err := appCtx.UowFactory.Begin()
+		if err != nil {
+			logger.Error("database access failed", "error", err)
+			http.Error(w, "Failed to access database", http.StatusInternalServerError)
+			return
+		}
+		defer uow.Rollback()
+
+		project, err := appCtx.ProjectDB.GetByID(projectIDNew)
 
 		if err != nil {
+			logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 			http.Error(w, "Project not found", http.StatusNotFound)
 			return
 		}
 
+		if project == nil {
+			logger.Error("project not found", "projectID", projectIDMaybe)
+			http.Error(w, "Project not found", http.StatusNotFound)
+			return
+		}
+
+		logger.Info("project found", "projectID", projectIDMaybe)
+
 		data := Data{
 			DashboardPage:     dashboardRoutes.DashboardPage,
 			Project:           project,
-			EditProjectPage:   projectRoutes.ProjectEdit,
-			DeleteProjectPage: projectRoutes.ProjectDelete,
+			EditProjectPage:   projectRoutes.ToProjectEdit(projectIDNew),
+			DeleteProjectPage: projectRoutes.ToProjectDelete(projectIDNew),
 		}
 
+		logger.Info("rendering project page")
 		page.Respond(static.GetSiblingPath("projectPage.html"), data)(w, r)
 	}
-}
-
-func Redirect(w http.ResponseWriter, r *http.Request, projectID string) {
-	u, _ := url.Parse(projectRoutes.ProjectPage)
-	q := u.Query()
-	q.Set("projectID", projectID)
-	u.RawQuery = q.Encode()
-	http.Redirect(w, r, u.String(), http.StatusSeeOther)
 }

@@ -2,10 +2,16 @@ package projectCreate
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/projects/project"
+	"imageresizerservice/app/projects/project/projectID"
+	"imageresizerservice/app/projects/project/projectName"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/users/userID"
 	"imageresizerservice/library/static"
 	"net/http"
+	"time"
 )
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
@@ -29,11 +35,80 @@ func respondGet(w http.ResponseWriter, r *http.Request) {
 	data := Data{}
 	page.Respond(static.GetSiblingPath("projectCreate.html"), data)(w, r)
 }
-
 func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
-	// Handle form submission
-	r.ParseForm()
+	req := reqCtx.FromHttpRequest(appCtx, r)
+	logger := req.Logger
 
-	// Redirect back to the form or to a success page
-	http.Redirect(w, r, projectRoutes.ProjectCreate, http.StatusSeeOther)
+	logger.Info("handling project creation request")
+
+	// Handle form submission
+	if err := r.ParseForm(); err != nil {
+		logger.Error("failed to parse form", "error", err)
+		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+		return
+	}
+
+	projectNameMaybe := r.FormValue("projectName")
+	logger.Info("received project name", "projectName", projectNameMaybe)
+
+	if projectNameMaybe == "" {
+		logger.Error("empty project name")
+		http.Error(w, "Project name is required", http.StatusBadRequest)
+		return
+	}
+
+	projectNameInst, err := projectName.New(projectNameMaybe)
+
+	if err != nil {
+		logger.Error("invalid project name", "error", err)
+		http.Error(w, "Invalid project name", http.StatusBadRequest)
+		return
+	}
+
+	allowedDomainsLines := r.FormValue("allowedDomains")
+	logger.Info("received allowed domains", "allowedDomains", allowedDomainsLines)
+
+	allowedDomainsList := project.UrlLinesToUrlList(allowedDomainsLines)
+	logger.Info("parsed allowed domains", "count", len(allowedDomainsList))
+
+	projectID := projectID.Gen()
+	userID := userID.Gen()
+
+	projectNew := project.Project{
+		ID:              projectID,
+		CreatedByUserID: userID,
+		Name:            projectNameInst,
+		CreatedAt:       time.Now(),
+		UpdatedAt:       time.Now(),
+		AllowedDomains:  allowedDomainsList,
+	}
+
+	logger.Info("projectNew", "projectNew", projectNew)
+
+	logger.Info("creating new project", "projectID", projectID, "userID", userID)
+
+	uow, err := appCtx.UowFactory.Begin()
+
+	if err != nil {
+		logger.Error("failed to begin transaction", "error", err)
+		http.Error(w, "Failed to create project", http.StatusInternalServerError)
+		return
+	}
+
+	logger.Info("upserting project", "projectID", projectID, "userID", userID)
+
+	if err = appCtx.ProjectDB.Upsert(uow, projectNew); err != nil {
+		logger.Error("failed to upsert project", "error", err)
+		http.Error(w, "Failed to create project", http.StatusInternalServerError)
+		return
+	}
+
+	if err = uow.Commit(); err != nil {
+		logger.Error("failed to commit transaction", "error", err)
+		http.Error(w, "Failed to create project", http.StatusInternalServerError)
+		return
+	}
+
+	logger.Info("project created successfully", "projectID", projectID)
+	http.Redirect(w, r, projectRoutes.ToProjectPage(projectID), http.StatusSeeOther)
 }

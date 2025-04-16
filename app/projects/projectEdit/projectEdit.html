@@ -1,0 +1,33 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <h1>
+        Edit Project
+    </h1>
+    <section>
+        <form method="POST" action="">
+            <input type="hidden" name="projectID" value="{{.Project.ID}}">
+
+            <div class="form-group">
+                <label for="projectName">Project Name:</label>
+                <input type="text" id="projectName" name="projectName" value="{{.Project.Name}}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="allowedDomains">Allowed Domains:</label>
+                <textarea id="allowedDomains" name="allowedDomains" placeholder="Enter domains, one per line">
+                    {{- range .Project.AllowedDomains -}}
+                    {{.String}}
+                    {{- end -}}
+                </textarea>
+                <small>Enter full URLs including protocol (e.g., https://example.com)</small>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit">Save Changes</button>
+                <a href="{{.ProjectPage}}" role="button" class="secondary">Cancel</a>
+            </div>
+        </form>
+    </section>
+</main>
+{{end}}

@@ -1,5 +1,5 @@
 package dashboardRoutes
 
 const (
-	DashboardPage = "/dashboard"
+	DashboardPage = "/dashboard-page"
 )

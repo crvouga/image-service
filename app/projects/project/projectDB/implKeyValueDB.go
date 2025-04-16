@@ -24,7 +24,7 @@ func projectKey(id projectID.ProjectID) string {
 	return fmt.Sprintf("%s", id)
 }
 
-func (db ImplKeyValueDB) GetByID(id projectID.ProjectID) (*project.Project, error) {
+func (db *ImplKeyValueDB) GetByID(id projectID.ProjectID) (*project.Project, error) {
 	value, err := db.entities.Get(projectKey(id))
 	if err != nil {
 		return nil, err
@@ -42,15 +42,24 @@ func (db ImplKeyValueDB) GetByID(id projectID.ProjectID) (*project.Project, erro
 	return &proj, nil
 }
 
-func (db ImplKeyValueDB) Upsert(uow *uow.Uow, proj project.Project) error {
+func (db *ImplKeyValueDB) Upsert(uow *uow.Uow, proj project.Project) error {
+	if uow == nil {
+		return fmt.Errorf("unit of work cannot be nil")
+	}
+
 	proj.UpdatedAt = time.Now()
 
 	jsonData, err := json.Marshal(proj)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to marshal project: %w", err)
 	}
 
-	return db.entities.Put(uow, projectKey(proj.ID), string(jsonData))
+	key := projectKey(proj.ID)
+	if key == "" {
+		return fmt.Errorf("invalid project ID")
+	}
+
+	return db.entities.Put(uow, key, string(jsonData))
 }
 
 var _ ProjectDB = (*ImplKeyValueDB)(nil)

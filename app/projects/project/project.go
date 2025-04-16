@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/app/projects/project/projectName"
 	"imageresizerservice/app/users/userID"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -15,4 +16,21 @@ type Project struct {
 	UpdatedAt       time.Time
 	Name            projectName.ProjectName
 	AllowedDomains  []url.URL
+}
+
+func UrlLinesToUrlList(urls string) []url.URL {
+	var validURLs []url.URL
+	urlsList := strings.Split(urls, "\n")
+	for _, urlStr := range urlsList {
+		urlStr = strings.TrimSpace(urlStr)
+		if urlStr == "" {
+			continue
+		}
+
+		parsedURL, err := url.Parse(urlStr)
+		if err == nil && parsedURL.Scheme != "" && parsedURL.Host != "" {
+			validURLs = append(validURLs, *parsedURL)
+		}
+	}
+	return validURLs
 }
