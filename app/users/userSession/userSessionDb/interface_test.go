@@ -19,7 +19,7 @@ func newFixture() *Fixture {
 	db := sqlite.New()
 
 	return &Fixture{
-		SessionDb:  ImplKeyValueDb{Db: &keyValueDb.ImplHashMap{}},
+		SessionDb:  ImplKeyValueDb{db: &keyValueDb.ImplHashMap{}},
 		UowFactory: uow.UowFactory{Db: db},
 	}
 }

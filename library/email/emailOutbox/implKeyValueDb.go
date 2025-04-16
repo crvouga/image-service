@@ -9,7 +9,13 @@ import (
 )
 
 type ImplKeyValueDb struct {
-	Db keyValueDb.KeyValueDb
+	db keyValueDb.KeyValueDb
+}
+
+func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
+	return &ImplKeyValueDb{
+		db: keyValueDb.NewImplNamespaced(db, "emailOutbox"),
+	}
 }
 
 func (impl *ImplKeyValueDb) Add(uow *uow.Uow, email email.Email) error {
@@ -17,14 +23,14 @@ func (impl *ImplKeyValueDb) Add(uow *uow.Uow, email email.Email) error {
 	if err != nil {
 		return err
 	}
-	return impl.Db.Put(uow, "email", string(emailJSON))
+	return impl.db.Put(uow, "email", string(emailJSON))
 }
 
 func (impl *ImplKeyValueDb) GetUnsentEmails() ([]email.Email, error) {
 	// This is a simplified implementation
 	// In a real implementation, we would need to query all emails that are not marked as sent
 	key := "unsent_emails"
-	emailsJSON, err := impl.Db.Get(key)
+	emailsJSON, err := impl.db.Get(key)
 	if err != nil {
 		return nil, err
 	}

@@ -9,13 +9,19 @@ import (
 )
 
 type ImplKeyValueDb struct {
-	Db keyValueDb.KeyValueDb
+	db keyValueDb.KeyValueDb
 }
 
 var _ UserSessionDb = ImplKeyValueDb{}
 
+func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
+	return &ImplKeyValueDb{
+		db: keyValueDb.NewImplNamespaced(db, "userSession"),
+	}
+}
+
 func (db ImplKeyValueDb) GetBySessionID(id sessionID.SessionID) (*userSession.UserSession, error) {
-	value, err := db.Db.Get(string(id))
+	value, err := db.db.Get(string(id))
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +44,7 @@ func (db ImplKeyValueDb) Upsert(uow *uow.Uow, session userSession.UserSession) e
 		return err
 	}
 
-	return db.Db.Put(uow, string(session.ID), string(jsonData))
+	return db.db.Put(uow, string(session.ID), string(jsonData))
 }
 
 var _ UserSessionDb = (*ImplKeyValueDb)(nil)

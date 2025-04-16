@@ -12,19 +12,27 @@ import (
 )
 
 type ImplKeyValueDb struct {
-	Db keyValueDb.KeyValueDb
+	db         keyValueDb.KeyValueDb
+	emailIndex keyValueDb.KeyValueDb
+}
+
+func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
+	return &ImplKeyValueDb{
+		db:         keyValueDb.NewImplNamespaced(db, "userAccount"),
+		emailIndex: keyValueDb.NewImplNamespaced(db, "userAccount:email"),
+	}
 }
 
 func emailIndexKey(emailAddress emailAddress.EmailAddress) string {
-	return fmt.Sprintf("userAccount:email:%s", emailAddress)
+	return fmt.Sprintf("%s", emailAddress)
 }
 
 func userAccountKey(id userID.UserID) string {
-	return fmt.Sprintf("userAccount:%s", id)
+	return fmt.Sprintf("%s", id)
 }
 
 func (db ImplKeyValueDb) GetByUserID(id userID.UserID) (*userAccount.UserAccount, error) {
-	value, err := db.Db.Get(userAccountKey(id))
+	value, err := db.db.Get(userAccountKey(id))
 	if err != nil {
 		return nil, err
 	}
@@ -50,19 +58,17 @@ func (db ImplKeyValueDb) Upsert(uow *uow.Uow, account userAccount.UserAccount) e
 	}
 
 	// Store the user account by ID
-	if err := db.Db.Put(uow, userAccountKey(account.ID), string(jsonData)); err != nil {
+	if err := db.db.Put(uow, userAccountKey(account.ID), string(jsonData)); err != nil {
 		return err
 	}
 
 	// Create an index entry for email address -> user ID
-	emailKey := emailIndexKey(account.EmailAddress)
-	return db.Db.Put(uow, emailKey, string(account.ID))
+	return db.emailIndex.Put(uow, emailIndexKey(account.EmailAddress), string(account.ID))
 }
 
 func (db ImplKeyValueDb) GetByEmailAddress(emailAddress emailAddress.EmailAddress) (*userAccount.UserAccount, error) {
 	// Get the user ID from the email index
-	emailKey := emailIndexKey(emailAddress)
-	gotUserID, err := db.Db.Get(emailKey)
+	gotUserID, err := db.emailIndex.Get(emailIndexKey(emailAddress))
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +78,7 @@ func (db ImplKeyValueDb) GetByEmailAddress(emailAddress emailAddress.EmailAddres
 	}
 
 	// Use the user ID to get the actual user account
-	return db.GetByUserID(userID.New(*gotUserID))
+	return db.GetByUserID(userID.UserID(*gotUserID))
 }
 
 var _ UserAccountDb = (*ImplKeyValueDb)(nil)

@@ -9,13 +9,19 @@ import (
 )
 
 type ImplKeyValueDb struct {
-	Db keyValueDb.KeyValueDb
+	db keyValueDb.KeyValueDb
 }
 
 var _ LinkDb = ImplKeyValueDb{}
 
+func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
+	return &ImplKeyValueDb{
+		db: keyValueDb.NewImplNamespaced(db, "link"),
+	}
+}
+
 func (db ImplKeyValueDb) GetByLinkID(id linkID.LinkID) (*link.Link, error) {
-	value, err := db.Db.Get(string(id))
+	value, err := db.db.Get(string(id))
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +44,7 @@ func (db ImplKeyValueDb) Upsert(uow *uow.Uow, l link.Link) error {
 		return err
 	}
 
-	return db.Db.Put(uow, string(l.ID), string(jsonData))
+	return db.db.Put(uow, string(l.ID), string(jsonData))
 }
 
 var _ LinkDb = (*ImplKeyValueDb)(nil)

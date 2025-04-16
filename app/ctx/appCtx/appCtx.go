@@ -36,14 +36,14 @@ func New() AppCtx {
 
 	return AppCtx{
 		SendEmail:     &sendEmail.ImplFake{},
-		LinkDb:        &linkDb.ImplKeyValueDb{Db: keyValueDbFs},
 		UowFactory:    uow.UowFactory{Db: db},
-		KeyValueDb:    keyValueDbFs,
-		EmailOutbox:   &emailOutbox.ImplKeyValueDb{Db: keyValueDbFs},
-		UserSessionDb: &userSessionDb.ImplKeyValueDb{Db: keyValueDbFs},
-		UserAccountDb: &userAccountDb.ImplKeyValueDb{Db: keyValueDbFs},
 		Db:            db,
 		Logger:        slog.Default(),
+		KeyValueDb:    keyValueDb.NewImplNamespaced(keyValueDbFs, "app"),
+		LinkDb:        linkDb.NewImplKeyValueDb(keyValueDbFs),
+		EmailOutbox:   emailOutbox.NewImplKeyValueDb(keyValueDbFs),
+		UserSessionDb: userSessionDb.NewImplKeyValueDb(keyValueDbFs),
+		UserAccountDb: userAccountDb.NewImplKeyValueDb(keyValueDbFs),
 	}
 
 }
@@ -55,13 +55,13 @@ func NewTest() AppCtx {
 
 	return AppCtx{
 		SendEmail:     &sendEmail.ImplFake{},
-		LinkDb:        &linkDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
 		UowFactory:    uow.UowFactory{Db: db},
-		KeyValueDb:    &keyValueDbHashMap,
-		EmailOutbox:   &emailOutbox.ImplKeyValueDb{Db: &keyValueDbHashMap},
-		UserSessionDb: &userSessionDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
-		UserAccountDb: &userAccountDb.ImplKeyValueDb{Db: &keyValueDbHashMap},
 		Db:            db,
 		Logger:        slog.Default(),
+		KeyValueDb:    &keyValueDbHashMap,
+		LinkDb:        linkDb.NewImplKeyValueDb(&keyValueDbHashMap),
+		EmailOutbox:   emailOutbox.NewImplKeyValueDb(&keyValueDbHashMap),
+		UserSessionDb: userSessionDb.NewImplKeyValueDb(&keyValueDbHashMap),
+		UserAccountDb: userAccountDb.NewImplKeyValueDb(&keyValueDbHashMap),
 	}
 }

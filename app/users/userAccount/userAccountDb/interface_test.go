@@ -19,14 +19,15 @@ type Fixture struct {
 
 func newFixture() *Fixture {
 	db := sqlite.New()
+	keyValueDb := &keyValueDb.ImplHashMap{}
 
 	return &Fixture{
-		Db:         ImplKeyValueDb{Db: &keyValueDb.ImplHashMap{}},
+		Db:         NewImplKeyValueDb(keyValueDb),
 		UowFactory: uow.UowFactory{Db: db},
 	}
 }
 
-func Test_GetByID(t *testing.T) {
+func Test_GetByUserID(t *testing.T) {
 	f := newFixture()
 	uow, _ := f.UowFactory.Begin()
 
