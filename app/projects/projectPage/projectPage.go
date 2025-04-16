@@ -4,6 +4,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/dashboard/dashboardRoutes"
 	"imageresizerservice/app/projects/project"
+	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
@@ -25,14 +26,21 @@ type Data struct {
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		projectID := r.URL.Query().Get("projectID")
+		projectIDMaybe := r.URL.Query().Get("projectID")
 
-		if projectID == "" {
+		if projectIDMaybe == "" {
 			http.Error(w, "Project ID is required", http.StatusBadRequest)
 			return
 		}
 
-		project, err := appCtx.ProjectDB.GetByID(projectID)
+		projectIDInst, err := projectID.New(projectIDMaybe)
+
+		if err != nil {
+			http.Error(w, "Invalid project ID", http.StatusBadRequest)
+			return
+		}
+
+		project, err := appCtx.ProjectDB.GetByID(projectIDInst)
 
 		if err != nil {
 			http.Error(w, "Project not found", http.StatusNotFound)
