@@ -1,12 +1,12 @@
 package home
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home/getHome"
 
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	getHome.Router(mux, ac)
 }

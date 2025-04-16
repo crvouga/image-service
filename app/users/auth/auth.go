@@ -1,13 +1,13 @@
 package auth
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"net/http"
 )
 
 // IsLoggedIn checks if the user is logged in by checking if they have a valid user session
-func IsLoggedIn(ac *appContext.AppCtx, r *http.Request) bool {
-	reqCtxInst := reqCtx.FromHttpRequest(ac, r)
-	return reqCtxInst.UserSession != nil
+func IsLoggedIn(ac *appCtx.AppCtx, r *http.Request) bool {
+	rc := reqCtx.FromHttpRequest(ac, r)
+	return rc.UserSession != nil
 }

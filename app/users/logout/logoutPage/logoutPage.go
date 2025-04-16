@@ -1,7 +1,7 @@
 package logoutPage
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/logout/logoutRoutes"
@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(logoutRoutes.LogoutPage, Respond(ac))
 }
 
@@ -19,7 +19,7 @@ type Data struct {
 	LogoutAction string
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := reqCtx.FromHttpRequest(ac, r)
 

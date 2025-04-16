@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/email/sendEmailFactory"
 	"imageresizerservice/app/users/login/link"
@@ -17,11 +17,11 @@ import (
 	"imageresizerservice/library/email/emailAddress"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(loginRoutes.SendLinkAction, Respond(ac))
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -38,9 +38,9 @@ func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 
 		emailInput := strings.TrimSpace(r.FormValue("email"))
 
-		reqCtxInst := reqCtx.FromHttpRequest(ac, r)
+		rc := reqCtx.FromHttpRequest(ac, r)
 
-		errSent := SendLink(ac, &reqCtxInst, emailInput)
+		errSent := SendLink(ac, &rc, emailInput)
 
 		if errSent != nil {
 			sendLinkPage.RedirectError(w, r, sendLinkPage.RedirectErrorArgs{
@@ -54,7 +54,7 @@ func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func SendLink(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput string) error {
+func SendLink(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx, emailAddressInput string) error {
 	emailAddress, err := emailAddress.New(emailAddressInput)
 	if err != nil {
 		return err
@@ -68,15 +68,15 @@ func SendLink(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 
 	defer uow.Rollback()
 
-	linkNew := link.New(emailAddress, reqCtx.SessionID)
+	linkNew := link.New(emailAddress, rc.SessionID)
 
 	if err := ac.LinkDB.Upsert(uow, linkNew); err != nil {
 		return err
 	}
 
-	email := toLoginEmail(reqCtx, emailAddress, linkNew.ID)
+	email := toLoginEmail(rc, emailAddress, linkNew.ID)
 
-	sendEmail := sendEmailFactory.FromReqCtx(reqCtx)
+	sendEmail := sendEmailFactory.FromReqCtx(rc)
 
 	if err := sendEmail.SendEmail(uow, email); err != nil {
 		return err
@@ -88,10 +88,10 @@ func SendLink(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 
 	return nil
 }
-func toLoginEmail(reqCtx *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkID linkID.LinkID) email.Email {
+func toLoginEmail(rc *reqCtx.ReqCtx, emailAddress emailAddress.EmailAddress, linkID linkID.LinkID) email.Email {
 	return email.Email{
 		To:      emailAddress,
 		Subject: "Login link",
-		Body:    useLinkPage.ToUrl(reqCtx, linkID),
+		Body:    useLinkPage.ToUrl(rc, linkID),
 	}
 }

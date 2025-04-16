@@ -1,7 +1,7 @@
 package sendLinkSuccessPage
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/email/sendEmailFactory"
 	"imageresizerservice/app/ui/page"
@@ -22,11 +22,11 @@ type Data struct {
 	LoginLink             string
 }
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(loginRoutes.SendLinkSuccessPage, Respond(ac))
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	htmlPath := static.GetSiblingPath("sendLinkSuccessPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := reqCtx.FromHttpRequest(ac, r)
@@ -45,7 +45,7 @@ func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func toLoginLink(ac *appContext.AppCtx, ctx *reqCtx.ReqCtx) string {
+func toLoginLink(ac *appCtx.AppCtx, ctx *reqCtx.ReqCtx) string {
 	link := toLatestLoginLink(ac, ctx)
 	if link == nil {
 		return ""
@@ -54,7 +54,7 @@ func toLoginLink(ac *appContext.AppCtx, ctx *reqCtx.ReqCtx) string {
 	return linkUrl
 }
 
-func toLatestLoginLink(ac *appContext.AppCtx, ctx *reqCtx.ReqCtx) *link.Link {
+func toLatestLoginLink(ac *appCtx.AppCtx, ctx *reqCtx.ReqCtx) *link.Link {
 	isSendEmailConfigured := sendEmailFactory.IsConfigured()
 
 	if isSendEmailConfigured {

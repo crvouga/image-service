@@ -1,7 +1,7 @@
 package projects
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/projects/createProject"
 	"imageresizerservice/app/projects/deleteProject"
 	"imageresizerservice/app/projects/editProject"
@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	createProject.Router(mux, ac)
 	editProject.Router(mux, ac)
 	deleteProject.Router(mux, ac)

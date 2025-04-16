@@ -1,13 +1,13 @@
 package emailOutboxWorker
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/email/sendEmailFactory"
 	"log"
 	"time"
 )
 
-func Start(ac *appContext.AppCtx, sleepTime time.Duration) chan bool {
+func Start(ac *appCtx.AppCtx, sleepTime time.Duration) chan bool {
 	stopChan := make(chan bool)
 
 	go func() {
@@ -27,7 +27,7 @@ func Start(ac *appContext.AppCtx, sleepTime time.Duration) chan bool {
 
 	return stopChan
 }
-func processEmails(ac *appContext.AppCtx, sleepTime time.Duration) {
+func processEmails(ac *appCtx.AppCtx, sleepTime time.Duration) {
 	log.Println("Getting unsent emails")
 	emails, err := ac.EmailOutbox.GetUnsentEmails()
 	if err != nil {

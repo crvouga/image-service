@@ -1,11 +1,11 @@
 package imageResizer
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/imageResizer/imageResizerPage"
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	imageResizerPage.Router(mux, ac)
 }

@@ -1,7 +1,7 @@
 package imageResizerPage
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/imageResizer/imageResizerRoutes"
 	"imageresizerservice/app/projects/projectRoutes"
@@ -11,7 +11,7 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(imageResizerRoutes.ImageResizerPage, Respond(ac))
 }
 
@@ -20,7 +20,7 @@ type Data struct {
 	UserAccountPageHref string
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			ProjectsPageHref:    projectRoutes.ToProjectListPage(),

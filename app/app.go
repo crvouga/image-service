@@ -2,7 +2,7 @@ package app
 
 import (
 	"imageresizerservice/app/api"
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home"
 	"imageresizerservice/app/home/getHome"
 	"imageresizerservice/app/imageResizer"
@@ -19,7 +19,7 @@ import (
 
 // Handler is the main handler for the application.
 func Handler() http.Handler {
-	ac := appContext.New()
+	ac := appCtx.New()
 
 	mux := http.NewServeMux()
 
@@ -31,7 +31,7 @@ func Handler() http.Handler {
 }
 
 // router is the router for the application.
-func router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	muxLoggedIn := newMuxLoggedIn(ac)
 	muxLoggedOut := newMuxLoggedOut(ac)
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +53,7 @@ func router(mux *http.ServeMux, ac *appContext.AppCtx) {
 }
 
 // newMuxLoggedIn is the mux for the logged in user.
-func newMuxLoggedIn(ac *appContext.AppCtx) *http.ServeMux {
+func newMuxLoggedIn(ac *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.Router(mux, ac)
 	home.Router(mux, ac)
@@ -67,7 +67,7 @@ func newMuxLoggedIn(ac *appContext.AppCtx) *http.ServeMux {
 }
 
 // newMuxLoggedOut is the mux for the logged out user.
-func newMuxLoggedOut(ac *appContext.AppCtx) *http.ServeMux {
+func newMuxLoggedOut(ac *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.RouterLoggedOut(mux, ac)
 	api.Router(mux, ac)

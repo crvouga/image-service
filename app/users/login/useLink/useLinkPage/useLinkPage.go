@@ -31,9 +31,9 @@ func Respond() http.HandlerFunc {
 	}
 }
 
-func ToUrl(reqCtx *reqCtx.ReqCtx, linkID linkID.LinkID) string {
+func ToUrl(rc *reqCtx.ReqCtx, linkID linkID.LinkID) string {
 	path := ToPath(linkID)
-	u, _ := url.Parse(reqCtx.BaseURL + path)
+	u, _ := url.Parse(rc.BaseURL + path)
 	return u.String()
 }
 

@@ -1,4 +1,4 @@
-package appContext
+package appCtx
 
 import (
 	"database/sql"
@@ -36,8 +36,8 @@ func New() AppCtx {
 	keyValueDBFs := keyValueDB.NewImplFs("keyValueDB.json")
 
 	return AppCtx{
-		UowFactory:    *uow.NewFactory(db),
 		DB:            db,
+		UowFactory:    *uow.NewFactory(db),
 		Logger:        slog.Default(),
 		KeyValueDB:    keyValueDB.NewImplNamespaced(keyValueDBFs, "app"),
 		LinkDB:        linkDB.NewImplKeyValueDB(keyValueDBFs),
@@ -54,8 +54,8 @@ func NewTest() AppCtx {
 	keyValueDBHashMap := keyValueDB.ImplHashMap{}
 
 	return AppCtx{
-		UowFactory:    *uow.NewFactory(db),
 		DB:            db,
+		UowFactory:    *uow.NewFactory(db),
 		Logger:        slog.Default(),
 		KeyValueDB:    &keyValueDBHashMap,
 		LinkDB:        linkDB.NewImplKeyValueDB(&keyValueDBHashMap),

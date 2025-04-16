@@ -1,7 +1,7 @@
 package getUserAccount
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/ui/page"
@@ -13,7 +13,7 @@ import (
 	"net/http"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(userAccountRoutes.UserAccountPage, Respond(ac))
 }
 
@@ -24,13 +24,13 @@ type Data struct {
 	BackURL     string
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		reqCtxInst := reqCtx.FromHttpRequest(ac, r)
+		rc := reqCtx.FromHttpRequest(ac, r)
 
 		data := Data{
-			UserSession: reqCtxInst.UserSession,
-			UserAccount: reqCtxInst.UserAccount,
+			UserSession: rc.UserSession,
+			UserAccount: rc.UserAccount,
 			LogoutPage:  logoutRoutes.ToLogoutPage(),
 			BackURL:     homeRoutes.HomePage,
 		}

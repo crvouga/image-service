@@ -1,7 +1,7 @@
 package editProject
 
 import (
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(projectRoutes.ProjectEdit, Respond(ac))
 }
 
@@ -22,7 +22,7 @@ type Data struct {
 	ProjectPage string
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
 			respondPost(ac, w, r)
@@ -32,7 +32,7 @@ func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func respondGet(ac *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
+func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	req := reqCtx.FromHttpRequest(ac, r)
 	logger := req.Logger
 
@@ -79,7 +79,7 @@ func respondGet(ac *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }
 
-func respondPost(ac *appContext.AppCtx, w http.ResponseWriter, r *http.Request) {
+func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	req := reqCtx.FromHttpRequest(ac, r)
 	logger := req.Logger
 

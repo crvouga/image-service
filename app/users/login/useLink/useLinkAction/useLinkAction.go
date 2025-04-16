@@ -2,7 +2,7 @@ package useLinkAction
 
 import (
 	"errors"
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
@@ -19,14 +19,14 @@ import (
 	"time"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(loginRoutes.UseLinkAction, Respond(ac))
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		reqCtxInst := reqCtx.FromHttpRequest(ac, r)
+		rc := reqCtx.FromHttpRequest(ac, r)
 
 		if err := r.ParseForm(); err != nil {
 			http.Error(w, "Failed to parse form", http.StatusBadRequest)
@@ -35,7 +35,7 @@ func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 
 		linkID := strings.TrimSpace(r.FormValue("linkID"))
 
-		if err := UseLink(ac, &reqCtxInst, linkID); err != nil {
+		if err := UseLink(ac, &rc, linkID); err != nil {
 			useLinkErrorPage.Redirect(w, r, err.Error())
 			return
 		}
@@ -45,8 +45,8 @@ func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func UseLink(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) error {
-	logger := reqCtx.Logger.With(slog.String("operation", "UseLink"))
+func UseLink(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx, maybeLinkID string) error {
+	logger := rc.Logger.With(slog.String("operation", "UseLink"))
 
 	logger.Info("Starting login with email link process", "linkID", maybeLinkID)
 
@@ -126,7 +126,7 @@ func UseLink(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		ID:        userSessionID.Gen(),
 		UserID:    account.UserID,
 		CreatedAt: time.Now(),
-		SessionID: reqCtx.SessionID,
+		SessionID: rc.SessionID,
 	}
 
 	if err := ac.UserSessionDB.Upsert(uow, sessionNew); err != nil {

@@ -3,16 +3,16 @@ package logoutAction
 import (
 	"net/http"
 
-	"imageresizerservice/app/ctx/appContext"
+	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/users/logout/logoutRoutes"
 )
 
-func Router(mux *http.ServeMux, ac *appContext.AppCtx) {
+func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(logoutRoutes.LogoutAction, Respond(ac))
 }
 
-func Respond(ac *appContext.AppCtx) http.HandlerFunc {
+func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -30,8 +30,8 @@ func Respond(ac *appContext.AppCtx) http.HandlerFunc {
 	}
 }
 
-func Logout(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx) error {
-	if reqCtx.UserSession == nil {
+func Logout(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx) error {
+	if rc.UserSession == nil {
 		return nil
 	}
 
@@ -41,7 +41,7 @@ func Logout(ac *appContext.AppCtx, reqCtx *reqCtx.ReqCtx) error {
 	}
 	defer uow.Rollback()
 
-	if err := ac.UserSessionDB.ZapBySessionID(uow, reqCtx.SessionID); err != nil {
+	if err := ac.UserSessionDB.ZapBySessionID(uow, rc.SessionID); err != nil {
 		return err
 	}
 
