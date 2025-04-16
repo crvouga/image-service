@@ -33,11 +33,11 @@ func Test_GetByID(t *testing.T) {
 	uow, _ := f.UowFactory.Begin()
 
 	// Create a project
-	projectNameInst, _ := projectName.New("Test Project")
+	projectNameVar, _ := projectName.New("Test Project")
 	proj := &project.Project{
 		ID:              projectID.Gen(),
 		CreatedByUserID: userID.Gen(),
-		Name:            projectNameInst,
+		Name:            projectNameVar,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 		AllowedDomains:  []url.URL{{Host: "example.com"}},
@@ -92,11 +92,11 @@ func Test_UpsertNewProject(t *testing.T) {
 	uow, _ := f.UowFactory.Begin()
 
 	// Create a project
-	projectNameInst, _ := projectName.New("Test Project")
+	projectNameVar, _ := projectName.New("Test Project")
 	proj := &project.Project{
 		ID:              projectID.Gen(),
 		CreatedByUserID: userID.Gen(),
-		Name:            projectNameInst,
+		Name:            projectNameVar,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 		AllowedDomains:  []url.URL{{Host: "example.com"}},
@@ -130,11 +130,11 @@ func Test_UpsertUpdateProject(t *testing.T) {
 	uow, _ := f.UowFactory.Begin()
 
 	// Create initial project
-	projectNameInst, _ := projectName.New("Test Project")
+	projectNameVar, _ := projectName.New("Test Project")
 	proj := &project.Project{
 		ID:              projectID.Gen(),
 		CreatedByUserID: userID.Gen(),
-		Name:            projectNameInst,
+		Name:            projectNameVar,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 		AllowedDomains:  []url.URL{{Host: "example.com"}},
@@ -147,11 +147,11 @@ func Test_UpsertUpdateProject(t *testing.T) {
 	}
 
 	// Update the project
-	updatedNameInst, _ := projectName.New("Updated Project")
+	updatedNameVar, _ := projectName.New("Updated Project")
 	updatedProject := &project.Project{
 		ID:              proj.ID,
 		CreatedByUserID: proj.CreatedByUserID,
-		Name:            updatedNameInst,
+		Name:            updatedNameVar,
 		CreatedAt:       proj.CreatedAt,
 		UpdatedAt:       time.Now(),
 		AllowedDomains:  []url.URL{{Host: "example.com"}, {Host: "test.com"}},
@@ -173,8 +173,8 @@ func Test_UpsertUpdateProject(t *testing.T) {
 		t.Fatal("Expected to retrieve project, got nil")
 	}
 
-	if retrieved.Name != updatedNameInst {
-		t.Errorf("Expected Name to be %s, got %s", updatedNameInst, retrieved.Name)
+	if retrieved.Name != updatedNameVar {
+		t.Errorf("Expected Name to be %s, got %s", updatedNameVar, retrieved.Name)
 	}
 
 	if len(retrieved.AllowedDomains) != 2 {
@@ -188,13 +188,13 @@ func Test_GetByCreatedByUserID(t *testing.T) {
 	f := newFixture()
 	uow, _ := f.UowFactory.Begin()
 
-	userIDInst := userID.Gen()
+	userIDVar := userID.Gen()
 
 	// Create multiple projects for the same user
 	projectName1, _ := projectName.New("Project 1")
 	proj1 := &project.Project{
 		ID:              projectID.Gen(),
-		CreatedByUserID: userIDInst,
+		CreatedByUserID: userIDVar,
 		Name:            projectName1,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
@@ -204,7 +204,7 @@ func Test_GetByCreatedByUserID(t *testing.T) {
 	projectName2, _ := projectName.New("Project 2")
 	proj2 := &project.Project{
 		ID:              projectID.Gen(),
-		CreatedByUserID: userIDInst,
+		CreatedByUserID: userIDVar,
 		Name:            projectName2,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
@@ -225,7 +225,7 @@ func Test_GetByCreatedByUserID(t *testing.T) {
 	uow.Commit()
 
 	// Get projects by user ID
-	projects, err := f.ProjectDB.GetByCreatedByUserID(userIDInst)
+	projects, err := f.ProjectDB.GetByCreatedByUserID(userIDVar)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -240,11 +240,11 @@ func Test_ZapByID(t *testing.T) {
 	uow, _ := f.UowFactory.Begin()
 
 	// Create a project
-	projectNameInst, _ := projectName.New("Test Project")
+	projectNameVar, _ := projectName.New("Test Project")
 	proj := &project.Project{
 		ID:              projectID.Gen(),
 		CreatedByUserID: userID.Gen(),
-		Name:            projectNameInst,
+		Name:            projectNameVar,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 		AllowedDomains:  []url.URL{{Host: "example.com"}},

@@ -2,7 +2,6 @@ package userAccountDB
 
 import (
 	"encoding/json"
-	"fmt"
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userID"
 	"imageresizerservice/library/email/emailAddress"
@@ -24,11 +23,11 @@ func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
 }
 
 func emailIndexKey(emailAddress emailAddress.EmailAddress) string {
-	return fmt.Sprintf("%s", emailAddress)
+	return string(emailAddress)
 }
 
 func userAccountKey(id userID.UserID) string {
-	return fmt.Sprintf("%s", id)
+	return string(id)
 }
 
 func (db ImplKeyValueDB) GetByUserID(id userID.UserID) (*userAccount.UserAccount, error) {

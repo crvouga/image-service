@@ -60,7 +60,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projectNameInst, err := projectName.New(projectNameMaybe)
+	projectNameVar, err := projectName.New(projectNameMaybe)
 
 	if err != nil {
 		logger.Error("invalid project name", "error", err)
@@ -79,7 +79,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	projectNew := project.Project{
 		ID:              projectID,
 		CreatedByUserID: req.UserSession.UserID,
-		Name:            projectNameInst,
+		Name:            projectNameVar,
 		CreatedAt:       time.Now(),
 		UpdatedAt:       time.Now(),
 		AllowedDomains:  allowedDomainsList,

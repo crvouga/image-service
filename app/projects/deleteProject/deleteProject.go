@@ -41,7 +41,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projectIDInst, err := projectID.New(projectIDMaybe)
+	projectIDVar, err := projectID.New(projectIDMaybe)
 	if err != nil {
 		logger.Error("invalid project ID", "error", err)
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
@@ -56,7 +56,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 	defer uow.Rollback()
 
-	project, err := ac.ProjectDB.GetByID(projectIDInst)
+	project, err := ac.ProjectDB.GetByID(projectIDVar)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 		http.Error(w, "Project not found", http.StatusNotFound)
@@ -71,7 +71,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	data := Data{
 		Project:     project.EnsureComputed(),
-		ProjectPage: projectRoutes.ToProjectPage(projectIDInst),
+		ProjectPage: projectRoutes.ToProjectPage(projectIDVar),
 	}
 
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
@@ -97,7 +97,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projectIDInst, err := projectID.New(projectIDMaybe)
+	projectIDVar, err := projectID.New(projectIDMaybe)
 	if err != nil {
 		logger.Error("invalid project ID", "error", err)
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
@@ -120,7 +120,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 	defer uow.Rollback()
 
-	existingProject, err := ac.ProjectDB.GetByID(projectIDInst)
+	existingProject, err := ac.ProjectDB.GetByID(projectIDVar)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 		http.Error(w, "Project not found", http.StatusNotFound)
@@ -133,9 +133,9 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Info("deleting project", "projectID", projectIDInst)
+	logger.Info("deleting project", "projectID", projectIDVar)
 
-	if err = ac.ProjectDB.ZapByID(uow, projectIDInst); err != nil {
+	if err = ac.ProjectDB.ZapByID(uow, projectIDVar); err != nil {
 		logger.Error("failed to delete project", "error", err)
 		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
 		return
@@ -147,6 +147,6 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Info("project deleted successfully", "projectID", projectIDInst)
+	logger.Info("project deleted successfully", "projectID", projectIDVar)
 	http.Redirect(w, r, projectRoutes.ToProjectListPage(), http.StatusSeeOther)
 }

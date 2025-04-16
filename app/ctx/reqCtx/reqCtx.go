@@ -31,43 +31,43 @@ func getUserSession(ac *appCtx.AppCtx, sessionID sessionID.SessionID) *userSessi
 	return userSession
 }
 
-func getUserAccount(ac *appCtx.AppCtx, userSessionInst *userSession.UserSession) *userAccount.UserAccount {
-	if userSessionInst == nil {
+func getUserAccount(ac *appCtx.AppCtx, userSessionVar *userSession.UserSession) *userAccount.UserAccount {
+	if userSessionVar == nil {
 		return nil
 	}
-	userAccount, err := ac.UserAccountDB.GetByUserID(userSessionInst.UserID)
+	userAccountVar, err := ac.UserAccountDB.GetByUserID(userSessionVar.UserID)
 	if err != nil {
 		return nil
 	}
-	if userAccount == nil {
+	if userAccountVar == nil {
 		return nil
 	}
-	return userAccount
+	return userAccountVar
 }
 
 // FromHttpRequest creates a new ReqCtx from an HTTP request.
 func FromHttpRequest(ac *appCtx.AppCtx, r *http.Request) ReqCtx {
-	sessionIDInst := sessionID.FromSessionIDCookie(r)
+	sessionIDVar := sessionID.FromSessionIDCookie(r)
 
-	traceIDInst := traceID.FromHttpRequest(r)
+	traceIDVar := traceID.FromHttpRequest(r)
 
 	baseURL := httpRequest.GetRequestBaseURL(r)
 
 	logger := slog.Default().With(
-		slog.String("traceID", string(traceIDInst)),
+		slog.String("traceID", string(traceIDVar)),
 	)
 
-	userSessionInst := getUserSession(ac, sessionIDInst)
+	userSessionVar := getUserSession(ac, sessionIDVar)
 
-	userAccountInst := getUserAccount(ac, userSessionInst)
+	userAccountVar := getUserAccount(ac, userSessionVar)
 
 	rc := ReqCtx{
 		BaseURL:     baseURL,
-		SessionID:   sessionIDInst,
-		TraceID:     traceIDInst,
+		SessionID:   sessionIDVar,
+		TraceID:     traceIDVar,
 		Logger:      logger,
-		UserSession: userSessionInst,
-		UserAccount: userAccountInst,
+		UserSession: userSessionVar,
+		UserAccount: userAccountVar,
 	}
 
 	return rc

@@ -43,7 +43,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projectIDInst, err := projectID.New(projectIDMaybe)
+	projectIDVar, err := projectID.New(projectIDMaybe)
 	if err != nil {
 		logger.Error("invalid project ID", "error", err)
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
@@ -58,7 +58,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 	defer uow.Rollback()
 
-	project, err := ac.ProjectDB.GetByID(projectIDInst)
+	project, err := ac.ProjectDB.GetByID(projectIDVar)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 		http.Error(w, "Project not found", http.StatusNotFound)
@@ -73,7 +73,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	data := Data{
 		Project:     project,
-		ProjectPage: projectRoutes.ToProjectPage(projectIDInst),
+		ProjectPage: projectRoutes.ToProjectPage(projectIDVar),
 	}
 
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
@@ -99,7 +99,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projectIDInst, err := projectID.New(projectIDMaybe)
+	projectIDVar, err := projectID.New(projectIDMaybe)
 	if err != nil {
 		logger.Error("invalid project ID", "error", err)
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
@@ -115,7 +115,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 	defer uow.Rollback()
 
-	existingProject, err := ac.ProjectDB.GetByID(projectIDInst)
+	existingProject, err := ac.ProjectDB.GetByID(projectIDVar)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 		http.Error(w, "Project not found", http.StatusNotFound)
@@ -137,7 +137,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	projectNameInst, err := projectName.New(projectNameMaybe)
+	projectNameVar, err := projectName.New(projectNameMaybe)
 	if err != nil {
 		logger.Error("invalid project name", "error", err)
 		http.Error(w, "Invalid project name", http.StatusBadRequest)
@@ -154,13 +154,13 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	updatedProject := project.Project{
 		ID:              existingProject.ID,
 		CreatedByUserID: existingProject.CreatedByUserID,
-		Name:            projectNameInst,
+		Name:            projectNameVar,
 		CreatedAt:       existingProject.CreatedAt,
 		UpdatedAt:       time.Now(),
 		AllowedDomains:  allowedDomainsList,
 	}
 
-	logger.Info("updating project", "projectID", projectIDInst)
+	logger.Info("updating project", "projectID", projectIDVar)
 
 	if err = ac.ProjectDB.Upsert(uow, &updatedProject); err != nil {
 		logger.Error("failed to update project", "error", err)
@@ -174,6 +174,6 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	logger.Info("project updated successfully", "projectID", projectIDInst)
-	http.Redirect(w, r, projectRoutes.ToProjectPage(projectIDInst), http.StatusSeeOther)
+	logger.Info("project updated successfully", "projectID", projectIDVar)
+	http.Redirect(w, r, projectRoutes.ToProjectPage(projectIDVar), http.StatusSeeOther)
 }

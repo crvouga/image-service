@@ -30,15 +30,15 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 		heightStr := r.URL.Query().Get("height")
 		projectIDMaybe := r.URL.Query().Get("projectID")
 
-		projectIDInst, err := projectID.New(projectIDMaybe)
+		projectIDVar, err := projectID.New(projectIDMaybe)
 		if err != nil {
 			http.Error(w, "Failed to parse projectID: "+err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		fmt.Println("projectID", projectIDInst)
+		fmt.Println("projectID", projectIDVar)
 
-		project, err := ac.ProjectDB.GetByID(projectIDInst)
+		project, err := ac.ProjectDB.GetByID(projectIDVar)
 
 		if err != nil {
 			http.Error(w, "Failed to get project: "+err.Error(), http.StatusInternalServerError)

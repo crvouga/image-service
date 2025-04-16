@@ -113,12 +113,12 @@ func (db ImplKeyValueDB) GetByCreatedByUserID(createdByUserID userID.UserID) ([]
 			continue
 		}
 
-		projectIDInst, err := projectID.New(idStr)
+		projectIDVar, err := projectID.New(idStr)
 		if err != nil {
 			return nil, err
 		}
 
-		project, err := db.GetByID(projectIDInst)
+		project, err := db.GetByID(projectIDVar)
 		if err != nil {
 			return nil, err
 		}
