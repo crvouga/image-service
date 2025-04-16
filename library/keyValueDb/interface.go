@@ -1,8 +1,8 @@
-package keyValueDb
+package keyValueDB
 
 import "imageresizerservice/library/uow"
 
-type KeyValueDb interface {
+type KeyValueDB interface {
 	// Get retrieves a value by key. Returns nil if key not found.
 	Get(key string) (*string, error)
 	// Put stores a key-value pair. Returns nil if key not found.

@@ -3,45 +3,45 @@ package appCtx
 import (
 	"database/sql"
 
-	"imageresizerservice/app/users/login/link/linkDb"
-	"imageresizerservice/app/users/userAccount/userAccountDb"
-	"imageresizerservice/app/users/userSession/userSessionDb"
+	"imageresizerservice/app/users/login/link/linkDB"
+	"imageresizerservice/app/users/userAccount/userAccountDB"
+	"imageresizerservice/app/users/userSession/userSessionDB"
 	"imageresizerservice/library/email/emailOutbox"
-	"imageresizerservice/library/keyValueDb"
+	"imageresizerservice/library/keyValueDB"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
 	"log/slog"
 )
 
 type AppCtx struct {
-	Db            *sql.DB
+	DB            *sql.DB
 	Logger        *slog.Logger
 	UowFactory    uow.UowFactory
-	LinkDb        linkDb.LinkDb
+	LinkDB        linkDB.LinkDB
 	EmailOutbox   emailOutbox.EmailOutbox
-	KeyValueDb    keyValueDb.KeyValueDb
-	UserSessionDb userSessionDb.UserSessionDb
-	UserAccountDb userAccountDb.UserAccountDb
+	KeyValueDB    keyValueDB.KeyValueDB
+	UserSessionDB userSessionDB.UserSessionDB
+	UserAccountDB userAccountDB.UserAccountDB
 }
 
 func (appCtx *AppCtx) CleanUp() {
-	appCtx.Db.Close()
+	appCtx.DB.Close()
 }
 
 func New() AppCtx {
 	db := sqlite.New()
 
-	keyValueDbFs := keyValueDb.NewImplFs("keyValueDb.json")
+	keyValueDBFs := keyValueDB.NewImplFs("keyValueDB.json")
 
 	return AppCtx{
 		UowFactory:    *uow.NewFactory(db),
-		Db:            db,
+		DB:            db,
 		Logger:        slog.Default(),
-		KeyValueDb:    keyValueDb.NewImplNamespaced(keyValueDbFs, "app"),
-		LinkDb:        linkDb.NewImplKeyValueDb(keyValueDbFs),
-		EmailOutbox:   emailOutbox.NewImplKeyValueDb(keyValueDbFs),
-		UserSessionDb: userSessionDb.NewImplKeyValueDb(keyValueDbFs),
-		UserAccountDb: userAccountDb.NewImplKeyValueDb(keyValueDbFs),
+		KeyValueDB:    keyValueDB.NewImplNamespaced(keyValueDBFs, "app"),
+		LinkDB:        linkDB.NewImplKeyValueDB(keyValueDBFs),
+		EmailOutbox:   emailOutbox.NewImplKeyValueDB(keyValueDBFs),
+		UserSessionDB: userSessionDB.NewImplKeyValueDB(keyValueDBFs),
+		UserAccountDB: userAccountDB.NewImplKeyValueDB(keyValueDBFs),
 	}
 
 }
@@ -49,16 +49,16 @@ func New() AppCtx {
 func NewTest() AppCtx {
 	db := sqlite.New()
 
-	keyValueDbHashMap := keyValueDb.ImplHashMap{}
+	keyValueDBHashMap := keyValueDB.ImplHashMap{}
 
 	return AppCtx{
 		UowFactory:    *uow.NewFactory(db),
-		Db:            db,
+		DB:            db,
 		Logger:        slog.Default(),
-		KeyValueDb:    &keyValueDbHashMap,
-		LinkDb:        linkDb.NewImplKeyValueDb(&keyValueDbHashMap),
-		EmailOutbox:   emailOutbox.NewImplKeyValueDb(&keyValueDbHashMap),
-		UserSessionDb: userSessionDb.NewImplKeyValueDb(&keyValueDbHashMap),
-		UserAccountDb: userAccountDb.NewImplKeyValueDb(&keyValueDbHashMap),
+		KeyValueDB:    &keyValueDBHashMap,
+		LinkDB:        linkDB.NewImplKeyValueDB(&keyValueDBHashMap),
+		EmailOutbox:   emailOutbox.NewImplKeyValueDB(&keyValueDBHashMap),
+		UserSessionDB: userSessionDB.NewImplKeyValueDB(&keyValueDBHashMap),
+		UserAccountDB: userAccountDB.NewImplKeyValueDB(&keyValueDBHashMap),
 	}
 }

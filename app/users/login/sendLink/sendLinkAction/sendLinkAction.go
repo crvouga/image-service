@@ -70,7 +70,7 @@ func SendLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, emailAddressInput st
 
 	linkNew := link.New(emailAddress, reqCtx.SessionID)
 
-	if err := appCtx.LinkDb.Upsert(uow, linkNew); err != nil {
+	if err := appCtx.LinkDB.Upsert(uow, linkNew); err != nil {
 		return err
 	}
 

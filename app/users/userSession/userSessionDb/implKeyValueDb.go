@@ -1,28 +1,28 @@
-package userSessionDb
+package userSessionDB
 
 import (
 	"encoding/json"
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/userSession"
-	"imageresizerservice/library/keyValueDb"
+	"imageresizerservice/library/keyValueDB"
 	"imageresizerservice/library/uow"
 )
 
-type ImplKeyValueDb struct {
-	db             keyValueDb.KeyValueDb
-	indexSessionID keyValueDb.KeyValueDb
+type ImplKeyValueDB struct {
+	db             keyValueDB.KeyValueDB
+	indexSessionID keyValueDB.KeyValueDB
 }
 
-var _ UserSessionDb = (*ImplKeyValueDb)(nil)
+var _ UserSessionDB = (*ImplKeyValueDB)(nil)
 
-func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
-	return &ImplKeyValueDb{
-		db:             keyValueDb.NewImplNamespaced(db, "userSession"),
-		indexSessionID: keyValueDb.NewImplNamespaced(db, "userSessionIndexSessionID"),
+func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
+	return &ImplKeyValueDB{
+		db:             keyValueDB.NewImplNamespaced(db, "userSession"),
+		indexSessionID: keyValueDB.NewImplNamespaced(db, "userSessionIndexSessionID"),
 	}
 }
 
-func (db *ImplKeyValueDb) GetBySessionID(sessionId sessionID.SessionID) (*userSession.UserSession, error) {
+func (db *ImplKeyValueDB) GetBySessionID(sessionId sessionID.SessionID) (*userSession.UserSession, error) {
 	userSessionId, err := db.indexSessionID.Get(string(sessionId))
 
 	if err != nil {
@@ -51,7 +51,7 @@ func (db *ImplKeyValueDb) GetBySessionID(sessionId sessionID.SessionID) (*userSe
 	return &session, nil
 }
 
-func (db *ImplKeyValueDb) Upsert(uow *uow.Uow, userSession userSession.UserSession) error {
+func (db *ImplKeyValueDB) Upsert(uow *uow.Uow, userSession userSession.UserSession) error {
 	// Check if db is initialized to prevent nil pointer dereference
 	if db.db == nil || db.indexSessionID == nil {
 		return nil
@@ -74,6 +74,6 @@ func (db *ImplKeyValueDb) Upsert(uow *uow.Uow, userSession userSession.UserSessi
 	return nil
 }
 
-func (db *ImplKeyValueDb) ZapBySessionID(uow *uow.Uow, sessionID sessionID.SessionID) error {
+func (db *ImplKeyValueDB) ZapBySessionID(uow *uow.Uow, sessionID sessionID.SessionID) error {
 	return db.indexSessionID.Zap(uow, string(sessionID))
 }

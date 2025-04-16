@@ -1,29 +1,29 @@
-package linkDb
+package linkDB
 
 import (
 	"encoding/json"
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
-	"imageresizerservice/library/keyValueDb"
+	"imageresizerservice/library/keyValueDB"
 	"imageresizerservice/library/uow"
 )
 
-type ImplKeyValueDb struct {
-	db                 keyValueDb.KeyValueDb
-	indexManySessionID keyValueDb.KeyValueDb
+type ImplKeyValueDB struct {
+	db                 keyValueDB.KeyValueDB
+	indexManySessionID keyValueDB.KeyValueDB
 }
 
-var _ LinkDb = ImplKeyValueDb{}
+var _ LinkDB = ImplKeyValueDB{}
 
-func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
-	return &ImplKeyValueDb{
-		db:                 keyValueDb.NewImplNamespaced(db, "link"),
-		indexManySessionID: keyValueDb.NewImplNamespaced(db, "link:indexManySessionID"),
+func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
+	return &ImplKeyValueDB{
+		db:                 keyValueDB.NewImplNamespaced(db, "link"),
+		indexManySessionID: keyValueDB.NewImplNamespaced(db, "link:indexManySessionID"),
 	}
 }
 
-func (db ImplKeyValueDb) GetByLinkID(id linkID.LinkID) (*link.Link, error) {
+func (db ImplKeyValueDB) GetByLinkID(id linkID.LinkID) (*link.Link, error) {
 	value, err := db.db.Get(string(id))
 	if err != nil {
 		return nil, err
@@ -41,7 +41,7 @@ func (db ImplKeyValueDb) GetByLinkID(id linkID.LinkID) (*link.Link, error) {
 	return &l, nil
 }
 
-func (db ImplKeyValueDb) Upsert(uow *uow.Uow, l link.Link) error {
+func (db ImplKeyValueDB) Upsert(uow *uow.Uow, l link.Link) error {
 	jsonData, err := json.Marshal(l)
 	if err != nil {
 		return err
@@ -82,7 +82,7 @@ func (db ImplKeyValueDb) Upsert(uow *uow.Uow, l link.Link) error {
 	return db.indexManySessionID.Put(uow, string(l.SessionID), string(indexData))
 }
 
-func (db ImplKeyValueDb) GetBySessionID(sessionID sessionID.SessionID) ([]*link.Link, error) {
+func (db ImplKeyValueDB) GetBySessionID(sessionID sessionID.SessionID) ([]*link.Link, error) {
 	value, err := db.indexManySessionID.Get(string(sessionID))
 	if err != nil {
 		return nil, err
@@ -100,4 +100,4 @@ func (db ImplKeyValueDb) GetBySessionID(sessionID sessionID.SessionID) ([]*link.
 	return links, nil
 }
 
-var _ LinkDb = (*ImplKeyValueDb)(nil)
+var _ LinkDB = (*ImplKeyValueDB)(nil)

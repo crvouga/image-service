@@ -1,4 +1,4 @@
-package keyValueDb
+package keyValueDB
 
 import (
 	"testing"
@@ -9,7 +9,7 @@ import (
 
 type Fixture struct {
 	UowFactory uow.UowFactory
-	KeyValueDb KeyValueDb
+	KeyValueDB KeyValueDB
 }
 
 func newFixtures() []*Fixture {
@@ -17,15 +17,15 @@ func newFixtures() []*Fixture {
 
 	fixtures := make([]*Fixture, 0)
 
-	keyValueDbs := []KeyValueDb{
+	keyValueDBs := []KeyValueDB{
 		NewImplHashMap(),
-		NewImplFs("keyValueDb.json"),
-		NewImplNamespaced(NewImplFs("keyValueDb.json"), "test"),
+		NewImplFs("keyValueDB.json"),
+		NewImplNamespaced(NewImplFs("keyValueDB.json"), "test"),
 	}
 
-	for _, keyValueDb := range keyValueDbs {
+	for _, keyValueDB := range keyValueDBs {
 		fixtures = append(fixtures, &Fixture{
-			KeyValueDb: keyValueDb,
+			KeyValueDB: keyValueDB,
 			UowFactory: *uow.NewFactory(db),
 		})
 	}
@@ -52,9 +52,9 @@ func Test_Interface(t *testing.T) {
 			t.Errorf("Expected no error, got %v", err)
 		}
 
-		f.KeyValueDb.Put(uow, "key", "value")
+		f.KeyValueDB.Put(uow, "key", "value")
 
-		value, err := f.KeyValueDb.Get("key")
+		value, err := f.KeyValueDB.Get("key")
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
@@ -74,13 +74,13 @@ func Test_UpdateValue(t *testing.T) {
 		uow, _ := f.UowFactory.Begin()
 
 		// Put initial value
-		f.KeyValueDb.Put(uow, "key", "initial")
+		f.KeyValueDB.Put(uow, "key", "initial")
 
 		// Update the value
-		f.KeyValueDb.Put(uow, "key", "updated")
+		f.KeyValueDB.Put(uow, "key", "updated")
 
 		// Verify the value was updated
-		value, err := f.KeyValueDb.Get("key")
+		value, err := f.KeyValueDB.Get("key")
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
@@ -98,7 +98,7 @@ func Test_GetNonExistentKey(t *testing.T) {
 
 	for _, f := range fixtures {
 		// Try to get a key that doesn't exist
-		value, err := f.KeyValueDb.Get("nonexistent")
+		value, err := f.KeyValueDB.Get("nonexistent")
 
 		if err != nil {
 			t.Errorf("Expected no error for nonexistent key, got %v", err)
@@ -117,11 +117,11 @@ func Test_ZapKey(t *testing.T) {
 		uow, _ := f.UowFactory.Begin()
 
 		// Put a value
-		f.KeyValueDb.Put(uow, "key-to-zap", "value")
+		f.KeyValueDB.Put(uow, "key-to-zap", "value")
 		uow.Commit()
 
 		// Verify it exists
-		value, err := f.KeyValueDb.Get("key-to-zap")
+		value, err := f.KeyValueDB.Get("key-to-zap")
 		if err != nil {
 			t.Errorf("Expected key to exist, got error: %v", err)
 		}
@@ -132,14 +132,14 @@ func Test_ZapKey(t *testing.T) {
 
 		// Zap the key
 		uow, _ = f.UowFactory.Begin()
-		err = f.KeyValueDb.Zap(uow, "key-to-zap")
+		err = f.KeyValueDB.Zap(uow, "key-to-zap")
 		if err != nil {
 			t.Errorf("Expected no error when zapping key, got %v", err)
 		}
 		uow.Commit()
 
 		// Verify it no longer exists
-		value, err = f.KeyValueDb.Get("key-to-zap")
+		value, err = f.KeyValueDB.Get("key-to-zap")
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
@@ -157,7 +157,7 @@ func Test_ZapNonExistentKey(t *testing.T) {
 		uow, _ := f.UowFactory.Begin()
 
 		// Try to zap a key that doesn't exist
-		err := f.KeyValueDb.Zap(uow, "nonexistent")
+		err := f.KeyValueDB.Zap(uow, "nonexistent")
 
 		// Should not error when zapping a non-existent key
 		if err != nil {

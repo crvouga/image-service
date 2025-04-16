@@ -1,4 +1,4 @@
-package userSessionDb
+package userSessionDB
 
 import (
 	"testing"
@@ -8,21 +8,21 @@ import (
 	"imageresizerservice/app/users/userID"
 	"imageresizerservice/app/users/userSession"
 	"imageresizerservice/app/users/userSession/userSessionID"
-	"imageresizerservice/library/keyValueDb"
+	"imageresizerservice/library/keyValueDB"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
 )
 
 type Fixture struct {
 	UowFactory uow.UowFactory
-	SessionDb  UserSessionDb
+	SessionDB  UserSessionDB
 }
 
 func newFixture() *Fixture {
 	db := sqlite.New()
 
 	return &Fixture{
-		SessionDb:  NewImplKeyValueDb(keyValueDb.NewImplHashMap()),
+		SessionDB:  NewImplKeyValueDB(keyValueDB.NewImplHashMap()),
 		UowFactory: *uow.NewFactory(db),
 	}
 }
@@ -40,13 +40,13 @@ func Test_GetBySessionID(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.SessionDb.Upsert(uow, session)
+	err := f.SessionDB.Upsert(uow, session)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Get the session
-	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
+	retrieved, err := f.SessionDB.GetBySessionID(session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -72,7 +72,7 @@ func Test_GetByIDNonExistent(t *testing.T) {
 	// Try to get a session that doesn't exist
 	nonexistentSessionID := sessionID.Gen()
 
-	retrieved, err := f.SessionDb.GetBySessionID(nonexistentSessionID)
+	retrieved, err := f.SessionDB.GetBySessionID(nonexistentSessionID)
 
 	if err != nil {
 		t.Errorf("Expected no error for nonexistent session, got %v", err)
@@ -96,13 +96,13 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.SessionDb.Upsert(uow, session)
+	err := f.SessionDB.Upsert(uow, session)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Verify it exists
-	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
+	retrieved, err := f.SessionDB.GetBySessionID(session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -131,7 +131,7 @@ func Test_UpsertUpdateSession(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.SessionDb.Upsert(uow, session)
+	err := f.SessionDB.Upsert(uow, session)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
@@ -146,13 +146,13 @@ func Test_UpsertUpdateSession(t *testing.T) {
 	}
 
 	// Update the session
-	err = f.SessionDb.Upsert(uow, updatedSession)
+	err = f.SessionDB.Upsert(uow, updatedSession)
 	if err != nil {
 		t.Errorf("Expected no error on update, got %v", err)
 	}
 
 	// Verify it was updated
-	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
+	retrieved, err := f.SessionDB.GetBySessionID(session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -181,7 +181,7 @@ func TestZapBySessionID(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.SessionDb.Upsert(uow, session)
+	err := f.SessionDB.Upsert(uow, session)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
@@ -193,7 +193,7 @@ func TestZapBySessionID(t *testing.T) {
 	uow, _ = f.UowFactory.Begin()
 
 	// Zap the session
-	err = f.SessionDb.ZapBySessionID(uow, session.SessionID)
+	err = f.SessionDB.ZapBySessionID(uow, session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on zap, got %v", err)
 	}
@@ -202,7 +202,7 @@ func TestZapBySessionID(t *testing.T) {
 	uow.Commit()
 
 	// Verify it was removed
-	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
+	retrieved, err := f.SessionDB.GetBySessionID(session.SessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval after zap, got %v", err)
 	}

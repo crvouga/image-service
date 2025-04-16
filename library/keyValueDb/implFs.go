@@ -1,4 +1,4 @@
-package keyValueDb
+package keyValueDB
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"sync"
 )
 
-// ImplFs implements the KeyValueDb interface using a single JSON file
+// ImplFs implements the KeyValueDB interface using a single JSON file
 type ImplFs struct {
 	filePath string
 	data     map[string]string
@@ -123,5 +123,5 @@ func (db *ImplFs) writeToFile() error {
 	return os.WriteFile(db.filePath, data, 0644)
 }
 
-// Ensure ImplFs implements KeyValueDb interface
-var _ KeyValueDb = (*ImplFs)(nil)
+// Ensure ImplFs implements KeyValueDB interface
+var _ KeyValueDB = (*ImplFs)(nil)

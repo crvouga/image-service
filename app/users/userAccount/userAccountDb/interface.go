@@ -1,4 +1,4 @@
-package userAccountDb
+package userAccountDB
 
 import (
 	"imageresizerservice/app/users/userAccount"
@@ -7,7 +7,7 @@ import (
 	"imageresizerservice/library/uow"
 )
 
-type UserAccountDb interface {
+type UserAccountDB interface {
 	GetByUserID(id userID.UserID) (*userAccount.UserAccount, error)
 	GetByEmailAddress(emailAddress emailAddress.EmailAddress) (*userAccount.UserAccount, error)
 	Upsert(uow *uow.Uow, userAccount userAccount.UserAccount) error

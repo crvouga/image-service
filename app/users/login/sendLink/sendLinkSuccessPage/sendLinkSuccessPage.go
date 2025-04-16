@@ -61,7 +61,7 @@ func toLatestLoginLink(appCtx *appCtx.AppCtx, ctx *reqCtx.ReqCtx) *link.Link {
 		return nil
 	}
 
-	links, err := appCtx.LinkDb.GetBySessionID(ctx.SessionID)
+	links, err := appCtx.LinkDB.GetBySessionID(ctx.SessionID)
 
 	if err != nil {
 		return nil

@@ -29,7 +29,7 @@ func getTraceID(r *http.Request) string {
 }
 
 func getUserSession(appCtx *appCtx.AppCtx, sessionID sessionID.SessionID) *userSession.UserSession {
-	userSession, err := appCtx.UserSessionDb.GetBySessionID(sessionID)
+	userSession, err := appCtx.UserSessionDB.GetBySessionID(sessionID)
 	if err != nil {
 		return nil
 	}

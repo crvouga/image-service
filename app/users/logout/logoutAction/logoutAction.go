@@ -41,7 +41,7 @@ func Logout(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx) error {
 	}
 	defer uow.Rollback()
 
-	if err := appCtx.UserSessionDb.ZapBySessionID(uow, reqCtx.SessionID); err != nil {
+	if err := appCtx.UserSessionDB.ZapBySessionID(uow, reqCtx.SessionID); err != nil {
 		return err
 	}
 

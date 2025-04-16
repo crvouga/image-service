@@ -1,19 +1,19 @@
-package keyValueDb
+package keyValueDB
 
 import (
 	"fmt"
 	"imageresizerservice/library/uow"
 )
 
-// ImplNamespaced implements the KeyValueDb interface by wrapping another KeyValueDb
+// ImplNamespaced implements the KeyValueDB interface by wrapping another KeyValueDB
 // and prefixing all keys with a namespace
 type ImplNamespaced struct {
-	db        KeyValueDb
+	db        KeyValueDB
 	namespace string
 }
 
 // NewImplNamespaced creates a new instance of ImplNamespaced
-func NewImplNamespaced(db KeyValueDb, namespace string) *ImplNamespaced {
+func NewImplNamespaced(db KeyValueDB, namespace string) *ImplNamespaced {
 	return &ImplNamespaced{
 		db:        db,
 		namespace: namespace,
@@ -43,5 +43,5 @@ func (db *ImplNamespaced) Zap(uow *uow.Uow, key string) error {
 	return db.db.Zap(uow, namespacedKey)
 }
 
-// Ensure ImplNamespaced implements KeyValueDb interface
-var _ KeyValueDb = (*ImplNamespaced)(nil)
+// Ensure ImplNamespaced implements KeyValueDB interface
+var _ KeyValueDB = (*ImplNamespaced)(nil)

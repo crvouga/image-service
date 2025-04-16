@@ -1,4 +1,4 @@
-package userAccountDb
+package userAccountDB
 
 import (
 	"testing"
@@ -7,22 +7,22 @@ import (
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userID"
 	"imageresizerservice/library/email/emailAddress"
-	"imageresizerservice/library/keyValueDb"
+	"imageresizerservice/library/keyValueDB"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
 )
 
 type Fixture struct {
 	UowFactory uow.UowFactory
-	Db         UserAccountDb
+	DB         UserAccountDB
 }
 
 func newFixture() *Fixture {
 	db := sqlite.New()
-	keyValueDb := &keyValueDb.ImplHashMap{}
+	keyValueDB := &keyValueDB.ImplHashMap{}
 
 	return &Fixture{
-		Db:         NewImplKeyValueDb(keyValueDb),
+		DB:         NewImplKeyValueDB(keyValueDB),
 		UowFactory: *uow.NewFactory(db),
 	}
 }
@@ -40,13 +40,13 @@ func Test_GetByUserID(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.Db.Upsert(uow, account)
+	err := f.DB.Upsert(uow, account)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Get the session
-	retrieved, err := f.Db.GetByUserID(account.ID)
+	retrieved, err := f.DB.GetByUserID(account.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -70,7 +70,7 @@ func Test_GetByIDNonExistent(t *testing.T) {
 	f := newFixture()
 
 	// Try to get a session that doesn't exist
-	retrieved, err := f.Db.GetByUserID("nonexistent")
+	retrieved, err := f.DB.GetByUserID("nonexistent")
 
 	if err != nil {
 		t.Errorf("Expected no error for nonexistent session, got %v", err)
@@ -94,13 +94,13 @@ func Test_UpsertNewSession(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.Db.Upsert(uow, account)
+	err := f.DB.Upsert(uow, account)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Verify it exists
-	retrieved, err := f.Db.GetByUserID(account.ID)
+	retrieved, err := f.DB.GetByUserID(account.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -129,7 +129,7 @@ func Test_UpsertUpdateSession(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.Db.Upsert(uow, account)
+	err := f.DB.Upsert(uow, account)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
@@ -143,13 +143,13 @@ func Test_UpsertUpdateSession(t *testing.T) {
 	}
 
 	// Update the session
-	err = f.Db.Upsert(uow, updatedAccount)
+	err = f.DB.Upsert(uow, updatedAccount)
 	if err != nil {
 		t.Errorf("Expected no error on update, got %v", err)
 	}
 
 	// Verify it was updated
-	retrieved, err := f.Db.GetByUserID("update-session")
+	retrieved, err := f.DB.GetByUserID("update-session")
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -178,13 +178,13 @@ func Test_GetByEmailAddress(t *testing.T) {
 	}
 
 	// Insert the session
-	err := f.Db.Upsert(uow, account)
+	err := f.DB.Upsert(uow, account)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Get the session
-	retrieved, err := f.Db.GetByEmailAddress(emailAddress.NewElsePanic("test@test.com"))
+	retrieved, err := f.DB.GetByEmailAddress(emailAddress.NewElsePanic("test@test.com"))
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}

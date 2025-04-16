@@ -61,7 +61,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 
 	linkID := linkID.New(cleaned)
 
-	found, err := appCtx.LinkDb.GetByLinkID(linkID)
+	found, err := appCtx.LinkDB.GetByLinkID(linkID)
 
 	if err != nil {
 		logger.Error("Error fetching link", "error", err.Error())
@@ -91,13 +91,13 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 	logger.Info("Marking link as used", "linkID", cleaned)
 	marked := link.MarkAsUsed(*found)
 
-	if err := appCtx.LinkDb.Upsert(uow, marked); err != nil {
+	if err := appCtx.LinkDB.Upsert(uow, marked); err != nil {
 		logger.Error("Failed to mark link as used", "error", err.Error())
 		return newDatabaseError(err)
 	}
 
 	logger.Info("Looking up user account by email", "email", found.EmailAddress)
-	account, err := appCtx.UserAccountDb.GetByEmailAddress(found.EmailAddress)
+	account, err := appCtx.UserAccountDB.GetByEmailAddress(found.EmailAddress)
 
 	if err != nil {
 		logger.Error("Error looking up user account", "error", err.Error())
@@ -116,7 +116,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		logger.Info("Found existing user account", "userID", account.ID)
 	}
 
-	if err := appCtx.UserAccountDb.Upsert(uow, *account); err != nil {
+	if err := appCtx.UserAccountDB.Upsert(uow, *account); err != nil {
 		logger.Error("Failed to save user account", "error", err.Error())
 		return newDatabaseError(err)
 	}
@@ -129,7 +129,7 @@ func UseLink(appCtx *appCtx.AppCtx, reqCtx *reqCtx.ReqCtx, maybeLinkID string) e
 		SessionID: reqCtx.SessionID,
 	}
 
-	if err := appCtx.UserSessionDb.Upsert(uow, sessionNew); err != nil {
+	if err := appCtx.UserSessionDB.Upsert(uow, sessionNew); err != nil {
 		logger.Error("Failed to create user session", "error", err.Error())
 		return newDatabaseError(err)
 	}

@@ -1,11 +1,11 @@
-package keyValueDb
+package keyValueDB
 
 import (
 	"imageresizerservice/library/uow"
 	"sync"
 )
 
-// ImplHashMap implements the KeyValueDb interface using a Go map
+// ImplHashMap implements the KeyValueDB interface using a Go map
 type ImplHashMap struct {
 	data  map[string]string
 	mutex sync.RWMutex
@@ -63,5 +63,5 @@ func (db *ImplHashMap) Zap(uow *uow.Uow, key string) error {
 	return nil
 }
 
-// Ensure ImplHashMap implements KeyValueDb interface
-var _ KeyValueDb = (*ImplHashMap)(nil)
+// Ensure ImplHashMap implements KeyValueDB interface
+var _ KeyValueDB = (*ImplHashMap)(nil)

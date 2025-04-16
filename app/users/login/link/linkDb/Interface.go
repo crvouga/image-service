@@ -1,4 +1,4 @@
-package linkDb
+package linkDB
 
 import (
 	"imageresizerservice/app/ctx/sessionID"
@@ -7,7 +7,7 @@ import (
 	"imageresizerservice/library/uow"
 )
 
-type LinkDb interface {
+type LinkDB interface {
 	GetByLinkID(id linkID.LinkID) (*link.Link, error)
 	GetBySessionID(sessionID sessionID.SessionID) ([]*link.Link, error)
 	Upsert(uow *uow.Uow, link link.Link) error

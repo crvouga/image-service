@@ -1,9 +1,12 @@
 {{define "page"}}
 {{ template "header" . }}
-<main>
-    <h1>
-        Dashboard
-    </h1>
+<main style="display: flex; flex-direction: column; gap: 48px;">
+    <section>
+        <h1>
+            Dashboard
+        </h1>
+    </section>
+
     <section>
         <h2>Your Account</h2>
         <a role="button" href={{.LogoutPage}}>Logout</a>
@@ -17,6 +20,7 @@
             CreatedAt: {{.UserSession.CreatedAt}}
         </p>
     </section>
+
     <section>
         <div>
             <h1>
@@ -29,5 +33,8 @@
         </div>
 
     </section>
+
+    <div style="width: 100%; height: 64px"></div>
 </main>
+
 {{end}}

@@ -1,4 +1,4 @@
-package linkDb
+package linkDB
 
 import (
 	"testing"
@@ -7,21 +7,21 @@ import (
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/library/email/emailAddress"
-	"imageresizerservice/library/keyValueDb"
+	"imageresizerservice/library/keyValueDB"
 	"imageresizerservice/library/sqlite"
 	"imageresizerservice/library/uow"
 )
 
 type Fixture struct {
 	UowFactory uow.UowFactory
-	LinkDb     LinkDb
+	LinkDB     LinkDB
 }
 
 func newFixture() *Fixture {
 	db := sqlite.New()
 
 	return &Fixture{
-		LinkDb:     NewImplKeyValueDb(keyValueDb.NewImplHashMap()),
+		LinkDB:     NewImplKeyValueDB(keyValueDB.NewImplHashMap()),
 		UowFactory: *uow.NewFactory(db),
 	}
 }
@@ -35,13 +35,13 @@ func Test_GetByLinkID(t *testing.T) {
 	testLink := link.New(email, sessionID.Gen())
 
 	// Insert the link
-	err := f.LinkDb.Upsert(uow, testLink)
+	err := f.LinkDB.Upsert(uow, testLink)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Get the link
-	retrieved, err := f.LinkDb.GetByLinkID(testLink.ID)
+	retrieved, err := f.LinkDB.GetByLinkID(testLink.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -67,7 +67,7 @@ func Test_GetByIDNonExistent(t *testing.T) {
 	// Try to get a link that doesn't exist
 	nonexistentLinkID := linkID.Gen()
 
-	retrieved, err := f.LinkDb.GetByLinkID(nonexistentLinkID)
+	retrieved, err := f.LinkDB.GetByLinkID(nonexistentLinkID)
 
 	if err != nil {
 		t.Errorf("Expected no error for nonexistent link, got %v", err)
@@ -87,13 +87,13 @@ func Test_UpsertNewLink(t *testing.T) {
 	testLink := link.New(email, sessionID.Gen())
 
 	// Insert the link
-	err := f.LinkDb.Upsert(uow, testLink)
+	err := f.LinkDB.Upsert(uow, testLink)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Verify it exists
-	retrieved, err := f.LinkDb.GetByLinkID(testLink.ID)
+	retrieved, err := f.LinkDB.GetByLinkID(testLink.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -118,7 +118,7 @@ func Test_UpsertUpdateLink(t *testing.T) {
 	testLink := link.New(email, sessionID.Gen())
 
 	// Insert the link
-	err := f.LinkDb.Upsert(uow, testLink)
+	err := f.LinkDB.Upsert(uow, testLink)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
@@ -127,13 +127,13 @@ func Test_UpsertUpdateLink(t *testing.T) {
 	updatedLink := link.MarkAsUsed(testLink)
 
 	// Update the link
-	err = f.LinkDb.Upsert(uow, updatedLink)
+	err = f.LinkDB.Upsert(uow, updatedLink)
 	if err != nil {
 		t.Errorf("Expected no error on update, got %v", err)
 	}
 
 	// Verify it was updated
-	retrieved, err := f.LinkDb.GetByLinkID(testLink.ID)
+	retrieved, err := f.LinkDB.GetByLinkID(testLink.ID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -159,13 +159,13 @@ func Test_GetBySessionID(t *testing.T) {
 	testLink := link.New(email, sessionID)
 
 	// Insert the link
-	err := f.LinkDb.Upsert(uow, testLink)
+	err := f.LinkDB.Upsert(uow, testLink)
 	if err != nil {
 		t.Errorf("Expected no error on insert, got %v", err)
 	}
 
 	// Retrieve the link by session ID
-	links, err := f.LinkDb.GetBySessionID(sessionID)
+	links, err := f.LinkDB.GetBySessionID(sessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}
@@ -204,18 +204,18 @@ func Test_GetBySessionIDMany(t *testing.T) {
 	testLink3 := link.New(email3, sharedSessionID)
 
 	// Insert all links
-	if err := f.LinkDb.Upsert(uow, testLink1); err != nil {
+	if err := f.LinkDB.Upsert(uow, testLink1); err != nil {
 		t.Errorf("Expected no error on insert for link1, got %v", err)
 	}
-	if err := f.LinkDb.Upsert(uow, testLink2); err != nil {
+	if err := f.LinkDB.Upsert(uow, testLink2); err != nil {
 		t.Errorf("Expected no error on insert for link2, got %v", err)
 	}
-	if err := f.LinkDb.Upsert(uow, testLink3); err != nil {
+	if err := f.LinkDB.Upsert(uow, testLink3); err != nil {
 		t.Errorf("Expected no error on insert for link3, got %v", err)
 	}
 
 	// Retrieve the links by session ID
-	links, err := f.LinkDb.GetBySessionID(sharedSessionID)
+	links, err := f.LinkDB.GetBySessionID(sharedSessionID)
 	if err != nil {
 		t.Errorf("Expected no error on retrieval, got %v", err)
 	}

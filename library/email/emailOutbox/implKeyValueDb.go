@@ -4,21 +4,21 @@ import (
 	"encoding/json"
 	"errors"
 	"imageresizerservice/library/email/email"
-	"imageresizerservice/library/keyValueDb"
+	"imageresizerservice/library/keyValueDB"
 	"imageresizerservice/library/uow"
 )
 
-type ImplKeyValueDb struct {
-	db keyValueDb.KeyValueDb
+type ImplKeyValueDB struct {
+	db keyValueDB.KeyValueDB
 }
 
-func NewImplKeyValueDb(db keyValueDb.KeyValueDb) *ImplKeyValueDb {
-	return &ImplKeyValueDb{
-		db: keyValueDb.NewImplNamespaced(db, "emailOutbox"),
+func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
+	return &ImplKeyValueDB{
+		db: keyValueDB.NewImplNamespaced(db, "emailOutbox"),
 	}
 }
 
-func (impl *ImplKeyValueDb) Add(uow *uow.Uow, email email.Email) error {
+func (impl *ImplKeyValueDB) Add(uow *uow.Uow, email email.Email) error {
 	emailJSON, err := json.Marshal(email)
 	if err != nil {
 		return err
@@ -26,7 +26,7 @@ func (impl *ImplKeyValueDb) Add(uow *uow.Uow, email email.Email) error {
 	return impl.db.Put(uow, "email", string(emailJSON))
 }
 
-func (impl *ImplKeyValueDb) GetUnsentEmails() ([]email.Email, error) {
+func (impl *ImplKeyValueDB) GetUnsentEmails() ([]email.Email, error) {
 	// This is a simplified implementation
 	// In a real implementation, we would need to query all emails that are not marked as sent
 	key := "unsent_emails"
@@ -48,12 +48,12 @@ func (impl *ImplKeyValueDb) GetUnsentEmails() ([]email.Email, error) {
 	return emails, nil
 }
 
-func (impl *ImplKeyValueDb) MarkAsSent(uow *uow.Uow, email email.Email) error {
+func (impl *ImplKeyValueDB) MarkAsSent(uow *uow.Uow, email email.Email) error {
 	// This is a simplified implementation
 	// In a real implementation, we would need to update the specific email
 	// For now, we'll just return an error indicating this needs to be implemented
 	return errors.New("MarkAsSent not implemented")
 }
 
-// Ensure ImplKeyValueDb implements EmailOutbox interface
-var _ EmailOutbox = (*ImplKeyValueDb)(nil)
+// Ensure ImplKeyValueDB implements EmailOutbox interface
+var _ EmailOutbox = (*ImplKeyValueDB)(nil)
