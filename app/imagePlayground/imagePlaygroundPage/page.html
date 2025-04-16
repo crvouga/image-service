@@ -1,0 +1,95 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <a href={{.BackURL}}>
+            Back
+        </a>
+        <h1>
+            Image Playground
+        </h1>
+    </section>
+
+    <section>
+        <h2>
+            Project
+        </h2>
+        <p>
+            Must select a project associated with requests made in the image playground.
+        </p>
+        <select id="project-select">
+            {{range .Projects}}
+            <option value="{{.ID}}">
+                {{.Name}}
+            </option>
+            {{end}}
+        </select>
+    </section>
+
+    <section>
+        <h2>
+            Resize
+        </h2>
+        <img id="output" style="background: #232323;" />
+
+        <div>
+            <label for="image-src">Image URL:</label>
+            <input type="text" id="image-src" placeholder="Enter image URL" />
+        </div>
+        <div>
+            <label for="image-width">Width:</label>
+            <input type="number" id="image-width" placeholder="Width in pixels" />
+        </div>
+        <div>
+            <label for="image-height">Height:</label>
+            <input type="number" id="image-height" placeholder="Height in pixels" />
+        </div>
+        <button id="resize-button">Resize Image</button>
+        <script>
+            const resizeButton = document.getElementById('resize-button');
+            const imageSrc = document.getElementById('image-src');
+            const imageWidthInput = document.getElementById('image-width');
+            const imageHeightInput = document.getElementById('image-height');
+            const outputImage = document.getElementById('output');
+            const DEFAULT_WIDTH = 600;
+            const DEFAULT_HEIGHT = 400;
+            const MIN_DIMENSION = 1;
+            const MAX_DIMENSION = 2000;
+
+
+            outputImage.width = DEFAULT_WIDTH;
+            outputImage.height = DEFAULT_HEIGHT;
+            imageWidthInput.value = DEFAULT_WIDTH;
+            imageWidthInput.min = MIN_DIMENSION;
+            imageWidthInput.max = MAX_DIMENSION;
+            imageHeightInput.value = DEFAULT_HEIGHT;
+            imageHeightInput.min = MIN_DIMENSION;
+            imageHeightInput.max = MAX_DIMENSION;
+
+            imageWidthInput.addEventListener('input', function () {
+                const width = parseInt(imageWidthInput.value);
+                const clampedWidth = clamp(width, MIN_DIMENSION, MAX_DIMENSION);
+                imageWidthInput.value = clampedWidth;
+                outputImage.width = clampedWidth;
+            });
+
+            imageHeightInput.addEventListener('input', function () {
+                const height = parseInt(imageHeightInput.value);
+                const clampedHeight = clamp(height, MIN_DIMENSION, MAX_DIMENSION);
+                imageHeightInput.value = clampedHeight;
+                outputImage.height = clampedHeight;
+            });
+
+            function clamp(value, min, max) {
+                if (value < min) {
+                    return min;
+                } else if (value > max) {
+                    return max;
+                }
+                return value;
+            }
+        </script>
+    </section>
+</main>
+
+{{end}}

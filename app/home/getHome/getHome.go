@@ -3,6 +3,7 @@ package getHome
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home/homeRoutes"
+	"imageresizerservice/app/imagePlayground/imagePlaygroundRoutes"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
@@ -15,15 +16,17 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	ProjectsPageHref    string
-	UserAccountPageHref string
+	ListProjectsURL    string
+	GetUserAccountURL  string
+	ImagePlaygroundURL string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			ProjectsPageHref:    projectRoutes.ToProjectListPage(),
-			UserAccountPageHref: userAccountRoutes.UserAccountPage,
+			ListProjectsURL:    projectRoutes.ToProjectListPage(),
+			GetUserAccountURL:  userAccountRoutes.UserAccountPage,
+			ImagePlaygroundURL: imagePlaygroundRoutes.ImagePlaygroundPage,
 		}
 
 		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)

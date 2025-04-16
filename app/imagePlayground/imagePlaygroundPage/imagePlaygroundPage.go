@@ -1,30 +1,29 @@
-package imageResizerPage
+package imagePlaygroundPage
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/imageResizer/imageResizerRoutes"
-	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/imagePlayground/imagePlaygroundRoutes"
+	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/users/userAccount/userAccountRoutes"
 	"imageresizerservice/library/static"
 	"net/http"
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(imageResizerRoutes.ImageResizerPage, Respond(ac))
+	mux.HandleFunc(imagePlaygroundRoutes.ImagePlaygroundPage, Respond(ac))
 }
 
 type Data struct {
-	ProjectsPageHref    string
-	UserAccountPageHref string
+	BackURL  string
+	Projects []project.Project
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			ProjectsPageHref:    projectRoutes.ToProjectListPage(),
-			UserAccountPageHref: userAccountRoutes.UserAccountPage,
+			BackURL:  homeRoutes.HomePage,
+			Projects: []project.Project{},
 		}
 
 		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)

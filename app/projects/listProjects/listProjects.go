@@ -17,10 +17,10 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	BackURL             string
-	UserAccountPageHref string
-	Projects            []*project.Project
-	CreateURL           string
+	BackURL           string
+	GetUserAccountURL string
+	Projects          []*project.Project
+	CreateURL         string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -51,10 +51,10 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		data := Data{
-			BackURL:             homeRoutes.HomePage,
-			UserAccountPageHref: userAccountRoutes.UserAccountPage,
-			Projects:            projects,
-			CreateURL:           projectRoutes.ToProjectCreate(),
+			BackURL:           homeRoutes.HomePage,
+			GetUserAccountURL: userAccountRoutes.UserAccountPage,
+			Projects:          projects,
+			CreateURL:         projectRoutes.ToProjectCreate(),
 		}
 
 		logger.Info("rendering project list page", "projectCount", len(projects))
