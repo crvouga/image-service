@@ -15,6 +15,14 @@ import (
 	"strings"
 )
 
+// ImageResizeParams defines all available query parameters for the image resize API
+type ImageResizeParams struct {
+	URL       string `query:"url" doc:"URL of the image to resize" required:"true"`
+	Width     int    `query:"width" doc:"Width in pixels (1-2000)" min:"1" max:"2000"`
+	Height    int    `query:"height" doc:"Height in pixels (1-2000)" min:"1" max:"2000"`
+	ProjectID string `query:"projectID" doc:"Project identifier" required:"true"`
+}
+
 // ApiImageResize handles image resizing requests
 func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -24,13 +32,19 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 			return
 		}
 
-		// Parse query parameters
-		imageURL := r.URL.Query().Get("url")
-		widthStr := r.URL.Query().Get("width")
-		heightStr := r.URL.Query().Get("height")
-		projectIDMaybe := r.URL.Query().Get("projectID")
+		params := ImageResizeParams{
+			URL:       r.URL.Query().Get("url"),
+			Width:     parseIntOrZero(r.URL.Query().Get("width")),
+			Height:    parseIntOrZero(r.URL.Query().Get("height")),
+			ProjectID: r.URL.Query().Get("projectID"),
+		}
 
-		projectIDVar, err := projectID.New(projectIDMaybe)
+		if err := validateParams(params); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		projectIDVar, err := projectID.New(params.ProjectID)
 		if err != nil {
 			http.Error(w, "Failed to parse projectID: "+err.Error(), http.StatusBadRequest)
 			return
@@ -47,23 +61,8 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		fmt.Println("project", project)
 
-		// Validate URL parameter
-		if imageURL == "" {
-			http.Error(w, "Missing image URL parameter", http.StatusBadRequest)
-			return
-		}
-
-		// Parse width and height parameters
-		width, height, err := parseResizeDimensions(widthStr, heightStr)
-		fmt.Println("width", width)
-		fmt.Println("height", height)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
 		// Fetch the image
-		resp, err := http.Get(imageURL)
+		resp, err := http.Get(params.URL)
 		if err != nil {
 			http.Error(w, "Failed to fetch image: "+err.Error(), http.StatusInternalServerError)
 			return
@@ -76,7 +75,7 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		// Decode the image
-		img, format, err := decodeImage(resp.Body, imageURL)
+		img, format, err := decodeImage(resp.Body, params.URL)
 		if err != nil {
 			http.Error(w, "Failed to decode image: "+err.Error(), http.StatusInternalServerError)
 			return
@@ -85,12 +84,12 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 		fmt.Println("img", img)
 		fmt.Println("format", format)
 
-		imgNew := imageExt.Resize(img, width, height)
+		imgNew := imageExt.Resize(img, params.Width, params.Height)
 
 		fmt.Println("imgNew", imgNew)
 
 		// Resize the image
-		// resizedImg := resize.Resize(uint(width), uint(height), img, resize.Lanczos3)
+		// resizedImg := resize.Resize(uint(params.Width), uint(params.Height), img, resize.Lanczos3)
 
 		// // Set content type based on image format
 		// w.Header().Set("Content-Type", "image/"+format)
@@ -104,40 +103,9 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 	}
 }
 
-// parseResizeDimensions parses and validates width and height parameters
-func parseResizeDimensions(widthStr, heightStr string) (int, int, error) {
-	var width, height int
-	var err error
-
-	// Parse width
-	if widthStr != "" {
-		width, err = strconv.Atoi(widthStr)
-		if err != nil {
-			return 0, 0, fmt.Errorf("invalid width parameter: %s", err)
-		}
-		if width <= 0 || width > 2000 {
-			return 0, 0, fmt.Errorf("width must be between 1 and 2000 pixels")
-		}
-	}
-
-	// Parse height
-	if heightStr != "" {
-		height, err = strconv.Atoi(heightStr)
-		if err != nil {
-			return 0, 0, fmt.Errorf("invalid height parameter: %s", err)
-		}
-		if height <= 0 || height > 2000 {
-			return 0, 0, fmt.Errorf("height must be between 1 and 2000 pixels")
-		}
-	}
-
-	// Ensure at least one dimension is specified
-	if width == 0 && height == 0 {
-		return 0, 0, fmt.Errorf("at least one of width or height must be specified")
-	}
-
-	return width, height, nil
-
+func parseIntOrZero(s string) int {
+	i, _ := strconv.Atoi(s)
+	return i
 }
 
 // decodeImage decodes an image from the provided reader
@@ -199,3 +167,19 @@ func decodeImage(r io.Reader, imageURL string) (image.Image, string, error) {
 // 		return fmt.Errorf("unsupported output format: %s", format)
 // 	}
 // }
+
+func validateParams(params ImageResizeParams) error {
+	if params.URL == "" {
+		return fmt.Errorf("url parameter is required")
+	}
+	if params.ProjectID == "" {
+		return fmt.Errorf("projectID parameter is required")
+	}
+	if params.Width < 1 || params.Width > 2000 {
+		return fmt.Errorf("width must be between 1 and 2000")
+	}
+	if params.Height < 1 || params.Height > 2000 {
+		return fmt.Errorf("height must be between 1 and 2000")
+	}
+	return nil
+}
