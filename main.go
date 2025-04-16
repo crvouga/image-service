@@ -3,6 +3,7 @@ package main
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/sessionID"
+	"imageresizerservice/app/dashboard"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/login/loginRoutes"
 	"imageresizerservice/library/static"
@@ -28,6 +29,7 @@ func main() {
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 	users.Router(mux, appCtx)
+	dashboard.Router(mux, appCtx)
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := static.ServeStaticAssets(w, r)
