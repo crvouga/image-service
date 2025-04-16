@@ -162,7 +162,7 @@ func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) 
 
 	logger.Info("updating project", "projectID", projectIDInst)
 
-	if err = appCtx.ProjectDB.Upsert(uow, updatedProject); err != nil {
+	if err = appCtx.ProjectDB.Upsert(uow, &updatedProject); err != nil {
 		logger.Error("failed to update project", "error", err)
 		http.Error(w, "Failed to update project", http.StatusInternalServerError)
 		return

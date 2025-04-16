@@ -99,7 +99,7 @@ func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) 
 
 	logger.Info("upserting project", "projectID", projectID, "createdByUserID", projectNew.CreatedByUserID)
 
-	if err = appCtx.ProjectDB.Upsert(uow, projectNew); err != nil {
+	if err = appCtx.ProjectDB.Upsert(uow, &projectNew); err != nil {
 		logger.Error("failed to upsert project", "error", err)
 		http.Error(w, "Failed to create project", http.StatusInternalServerError)
 		return

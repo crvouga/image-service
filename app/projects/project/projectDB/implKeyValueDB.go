@@ -1,0 +1,175 @@
+package projectDB
+
+import (
+	"encoding/json"
+	"imageresizerservice/app/projects/project"
+	"imageresizerservice/app/projects/project/projectID"
+	"imageresizerservice/app/users/userID"
+	"imageresizerservice/library/keyValueDB"
+	"imageresizerservice/library/uow"
+	"strings"
+	"time"
+)
+
+type ImplKeyValueDB struct {
+	entities                 keyValueDB.KeyValueDB
+	indexManyCreatedByUserID keyValueDB.KeyValueDB
+}
+
+func NewImplKeyValueDB(db keyValueDB.KeyValueDB) *ImplKeyValueDB {
+	return &ImplKeyValueDB{
+		entities:                 keyValueDB.NewImplNamespaced(db, "project"),
+		indexManyCreatedByUserID: keyValueDB.NewImplNamespaced(db, "project:user"),
+	}
+}
+
+func projectKey(id projectID.ProjectID) string {
+	return string(id)
+}
+
+func userIndexKey(userID userID.UserID) string {
+	return string(userID)
+}
+
+func (db ImplKeyValueDB) GetByID(projectID projectID.ProjectID) (*project.Project, error) {
+	value, err := db.entities.Get(projectKey(projectID))
+	if err != nil {
+		return nil, err
+	}
+
+	if value == nil {
+		return nil, nil
+	}
+
+	var proj project.Project
+	if err := json.Unmarshal([]byte(*value), &proj); err != nil {
+		return nil, err
+	}
+
+	return &proj, nil
+}
+
+func (db ImplKeyValueDB) Upsert(uow *uow.Uow, project *project.Project) error {
+	project.UpdatedAt = time.Now()
+
+	jsonData, err := json.Marshal(project)
+	if err != nil {
+		return err
+	}
+
+	// Store the project by ID
+	if err := db.entities.Put(uow, projectKey(project.ID), string(jsonData)); err != nil {
+		return err
+	}
+
+	// Update the index entry for user ID -> project IDs
+	// Get existing project IDs for this user
+	existingValue, err := db.indexManyCreatedByUserID.Get(userIndexKey(project.CreatedByUserID))
+	if err != nil {
+		return err
+	}
+
+	var projectIDs []string
+	if existingValue != nil {
+		projectIDs = strings.Split(*existingValue, ",")
+	}
+
+	// Check if project ID already exists in the list
+	projectIDStr := string(project.ID)
+	found := false
+	for _, id := range projectIDs {
+		if id == projectIDStr {
+			found = true
+			break
+		}
+	}
+
+	// If not found, add it to the list
+	if !found {
+		projectIDs = append(projectIDs, projectIDStr)
+	}
+
+	// Update the index
+	return db.indexManyCreatedByUserID.Put(uow, userIndexKey(project.CreatedByUserID), strings.Join(projectIDs, ","))
+}
+
+func (db ImplKeyValueDB) GetByCreatedByUserID(createdByUserID userID.UserID) ([]*project.Project, error) {
+	// Get the list of project IDs for this user
+	projectIDsValue, err := db.indexManyCreatedByUserID.Get(userIndexKey(createdByUserID))
+	if err != nil {
+		return nil, err
+	}
+
+	if projectIDsValue == nil {
+		return []*project.Project{}, nil
+	}
+
+	// Split the comma-separated list of project IDs
+	projectIDStrings := strings.Split(*projectIDsValue, ",")
+
+	var projects []*project.Project
+	for _, idStr := range projectIDStrings {
+		if idStr == "" {
+			continue
+		}
+
+		projectIDInst, err := projectID.New(idStr)
+		if err != nil {
+			return nil, err
+		}
+
+		project, err := db.GetByID(projectIDInst)
+		if err != nil {
+			return nil, err
+		}
+
+		if project != nil {
+			projects = append(projects, project)
+		}
+	}
+
+	return projects, nil
+}
+
+func (db ImplKeyValueDB) ZapByID(uow *uow.Uow, projectID projectID.ProjectID) error {
+	// Get the project first to remove from user index
+	proj, err := db.GetByID(projectID)
+	if err != nil {
+		return err
+	}
+
+	if proj == nil {
+		return nil // Already deleted or doesn't exist
+	}
+
+	// Delete from the main storage
+	if err := db.entities.Zap(uow, projectKey(projectID)); err != nil {
+		return err
+	}
+
+	// Remove the project ID from the user's project list
+	existingValue, err := db.indexManyCreatedByUserID.Get(userIndexKey(proj.CreatedByUserID))
+	if err != nil {
+		return err
+	}
+
+	if existingValue != nil {
+		projectIDs := strings.Split(*existingValue, ",")
+		projectIDStr := string(projectID)
+
+		// Create a new list without the deleted project ID
+		var updatedProjectIDs []string
+		for _, id := range projectIDs {
+			if id != projectIDStr {
+				updatedProjectIDs = append(updatedProjectIDs, id)
+			}
+		}
+
+		// Update the index with the new list
+		return db.indexManyCreatedByUserID.Put(uow, userIndexKey(proj.CreatedByUserID), strings.Join(updatedProjectIDs, ","))
+	}
+
+	return nil
+}
+
+var _ ProjectDB = (*ImplKeyValueDB)(nil)
