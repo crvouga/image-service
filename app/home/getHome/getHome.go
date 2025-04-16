@@ -1,4 +1,4 @@
-package homePage
+package getHome
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
@@ -26,7 +26,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 			UserAccountPageHref: userAccountRoutes.UserAccountPage,
 		}
 
-		page.Respond(static.GetSiblingPath("homePage.html"), data)(w, r)
+		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 	}
 }
 

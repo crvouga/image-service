@@ -1,18 +1,20 @@
-package projectDelete
+package editProject
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
+	"imageresizerservice/app/projects/project/projectName"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
+	"time"
 )
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectDelete, Respond(appCtx))
+	mux.HandleFunc(projectRoutes.ProjectEdit, Respond(appCtx))
 }
 
 type Data struct {
@@ -70,18 +72,18 @@ func respondGet(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := Data{
-		Project:     project.EnsureComputed(),
+		Project:     project,
 		ProjectPage: projectRoutes.ToProjectPage(projectIDInst),
 	}
 
-	page.Respond(static.GetSiblingPath("projectDelete.html"), data)(w, r)
+	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }
 
 func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	req := reqCtx.FromHttpRequest(appCtx, r)
 	logger := req.Logger
 
-	logger.Info("handling project delete request")
+	logger.Info("handling project edit request")
 
 	// Handle form submission
 	if err := r.ParseForm(); err != nil {
@@ -104,18 +106,11 @@ func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	confirmDelete := r.FormValue("confirmDelete")
-	if confirmDelete != "DELETE" {
-		logger.Error("delete confirmation not provided", "confirmation", confirmDelete)
-		http.Error(w, "You must type DELETE to confirm", http.StatusBadRequest)
-		return
-	}
-
 	// Get existing project
 	uow, err := appCtx.UowFactory.Begin()
 	if err != nil {
 		logger.Error("failed to begin transaction", "error", err)
-		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
+		http.Error(w, "Failed to update project", http.StatusInternalServerError)
 		return
 	}
 	defer uow.Rollback()
@@ -133,20 +128,52 @@ func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	logger.Info("deleting project", "projectID", projectIDInst)
+	projectNameMaybe := r.FormValue("projectName")
+	logger.Info("received project name", "projectName", projectNameMaybe)
 
-	if err = appCtx.ProjectDB.ZapByID(uow, projectIDInst); err != nil {
-		logger.Error("failed to delete project", "error", err)
-		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
+	if projectNameMaybe == "" {
+		logger.Error("empty project name")
+		http.Error(w, "Project name is required", http.StatusBadRequest)
+		return
+	}
+
+	projectNameInst, err := projectName.New(projectNameMaybe)
+	if err != nil {
+		logger.Error("invalid project name", "error", err)
+		http.Error(w, "Invalid project name", http.StatusBadRequest)
+		return
+	}
+
+	allowedDomainsLines := r.FormValue("allowedDomains")
+	logger.Info("received allowed domains", "allowedDomains", allowedDomainsLines)
+
+	allowedDomainsList := project.UrlLinesToUrlList(allowedDomainsLines)
+	logger.Info("parsed allowed domains", "count", len(allowedDomainsList))
+
+	// Update project with new values
+	updatedProject := project.Project{
+		ID:              existingProject.ID,
+		CreatedByUserID: existingProject.CreatedByUserID,
+		Name:            projectNameInst,
+		CreatedAt:       existingProject.CreatedAt,
+		UpdatedAt:       time.Now(),
+		AllowedDomains:  allowedDomainsList,
+	}
+
+	logger.Info("updating project", "projectID", projectIDInst)
+
+	if err = appCtx.ProjectDB.Upsert(uow, &updatedProject); err != nil {
+		logger.Error("failed to update project", "error", err)
+		http.Error(w, "Failed to update project", http.StatusInternalServerError)
 		return
 	}
 
 	if err = uow.Commit(); err != nil {
 		logger.Error("failed to commit transaction", "error", err)
-		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
+		http.Error(w, "Failed to update project", http.StatusInternalServerError)
 		return
 	}
 
-	logger.Info("project deleted successfully", "projectID", projectIDInst)
-	http.Redirect(w, r, projectRoutes.ToProjectListPage(), http.StatusSeeOther)
+	logger.Info("project updated successfully", "projectID", projectIDInst)
+	http.Redirect(w, r, projectRoutes.ToProjectPage(projectIDInst), http.StatusSeeOther)
 }

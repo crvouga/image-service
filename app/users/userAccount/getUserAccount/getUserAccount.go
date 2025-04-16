@@ -1,4 +1,4 @@
-package userAccountPage
+package getUserAccount
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
@@ -21,7 +21,7 @@ type Data struct {
 	UserSession *userSession.UserSession
 	LogoutPage  string
 	UserAccount *userAccount.UserAccount
-	HomePage    string
+	BackURL     string
 }
 
 func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
@@ -32,10 +32,10 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 			UserSession: reqCtxInst.UserSession,
 			UserAccount: reqCtxInst.UserAccount,
 			LogoutPage:  logoutRoutes.ToLogoutPage(),
-			HomePage:    homeRoutes.HomePage,
+			BackURL:     homeRoutes.HomePage,
 		}
 
-		page.Respond(static.GetSiblingPath("userAccountPage.html"), data)(w, r)
+		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 	}
 }
 

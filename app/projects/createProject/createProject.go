@@ -1,4 +1,4 @@
-package projectCreate
+package createProject
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
@@ -36,7 +36,7 @@ func respondGet(w http.ResponseWriter, r *http.Request) {
 	data := Data{
 		HomePage: homeRoutes.HomePage,
 	}
-	page.Respond(static.GetSiblingPath("projectCreate.html"), data)(w, r)
+	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }
 func respondPost(appCtx *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	req := reqCtx.FromHttpRequest(appCtx, r)

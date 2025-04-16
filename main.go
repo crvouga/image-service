@@ -5,7 +5,8 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/home"
-	"imageresizerservice/app/home/homePage"
+	"imageresizerservice/app/home/getHome"
+
 	"imageresizerservice/app/projects"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/auth"
@@ -59,7 +60,7 @@ func MuxLoggedIn(appCtx *appCtx.AppCtx) *http.ServeMux {
 	projects.Router(mux, appCtx)
 	api.Router(mux, appCtx)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		homePage.Redirect(w, r)
+		getHome.Redirect(w, r)
 	})
 	return mux
 }

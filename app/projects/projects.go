@@ -2,18 +2,19 @@ package projects
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/projects/projectCreate"
-	"imageresizerservice/app/projects/projectDelete"
-	"imageresizerservice/app/projects/projectEdit"
-	"imageresizerservice/app/projects/projectListPage"
-	"imageresizerservice/app/projects/projectPage"
+	"imageresizerservice/app/projects/createProject"
+	"imageresizerservice/app/projects/deleteProject"
+	"imageresizerservice/app/projects/editProject"
+	"imageresizerservice/app/projects/getProject"
+	"imageresizerservice/app/projects/listProjects"
+
 	"net/http"
 )
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
-	projectCreate.Router(mux, appCtx)
-	projectEdit.Router(mux, appCtx)
-	projectDelete.Router(mux, appCtx)
-	projectPage.Router(mux, appCtx)
-	projectListPage.Router(mux, appCtx)
+	createProject.Router(mux, appCtx)
+	editProject.Router(mux, appCtx)
+	deleteProject.Router(mux, appCtx)
+	listProjects.Router(mux, appCtx)
+	getProject.Router(mux, appCtx)
 }

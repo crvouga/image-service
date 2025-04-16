@@ -1,4 +1,4 @@
-package projectPage
+package getProject
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
@@ -86,6 +86,6 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		logger.Info("rendering project page")
-		page.Respond(static.GetSiblingPath("projectPage.html"), data)(w, r)
+		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 	}
 }
