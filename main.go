@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/dashboard"
 	"imageresizerservice/app/dashboard/dashboardPage"
+	"imageresizerservice/app/projects"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/auth"
 	"imageresizerservice/app/users/login/sendLink/sendLinkPage"
@@ -54,6 +55,7 @@ func RouterLoggedIn(appCtx *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.Router(mux, appCtx)
 	dashboard.Router(mux, appCtx)
+	projects.Router(mux, appCtx)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		dashboardPage.Redirect(w, r)
 	})
