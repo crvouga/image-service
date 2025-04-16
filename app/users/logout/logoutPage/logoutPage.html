@@ -1,0 +1,14 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <h1>
+            Logout
+        </h1>
+        <form action="{{.LogoutAction}}" method="POST">
+            <p>Are you sure you want to logout?</p>
+            <button type="submit">Confirm Logout</button>
+        </form>
+    </section>
+</main>
+{{end}}

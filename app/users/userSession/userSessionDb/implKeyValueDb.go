@@ -73,3 +73,7 @@ func (db *ImplKeyValueDb) Upsert(uow *uow.Uow, userSession userSession.UserSessi
 
 	return nil
 }
+
+func (db *ImplKeyValueDb) ZapBySessionID(uow *uow.Uow, sessionID sessionID.SessionID) error {
+	return db.indexSessionID.Zap(uow, string(sessionID))
+}

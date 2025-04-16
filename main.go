@@ -41,7 +41,9 @@ func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 
 		ctx := reqCtx.FromHttpRequest(appCtx, r)
 
-		log.Printf("Request context: UserID=%v, SessionID=%v", ctx.UserSession.UserID, ctx.UserSession.SessionID)
+		if ctx.UserSession != nil {
+			log.Printf("Request context: UserID=%v, SessionID=%v", ctx.UserSession.UserID, ctx.UserSession.SessionID)
+		}
 
 		if ctx.UserSession == nil {
 			http.Redirect(w, r, loginRoutes.SendLinkPage, http.StatusSeeOther)

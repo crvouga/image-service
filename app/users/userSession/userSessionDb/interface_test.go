@@ -167,3 +167,47 @@ func Test_UpsertUpdateSession(t *testing.T) {
 
 	uow.Commit()
 }
+
+func TestZapBySessionID(t *testing.T) {
+	f := newFixture()
+	uow, _ := f.UowFactory.Begin()
+
+	// Create initial session
+	session := userSession.UserSession{
+		ID:        userSessionID.Gen(),
+		UserID:    userID.Gen(),
+		SessionID: sessionID.Gen(),
+		CreatedAt: time.Now(),
+	}
+
+	// Insert the session
+	err := f.SessionDb.Upsert(uow, session)
+	if err != nil {
+		t.Errorf("Expected no error on insert, got %v", err)
+	}
+
+	// Commit the session
+	uow.Commit()
+
+	// Start a new UOW for the zap operation
+	uow, _ = f.UowFactory.Begin()
+
+	// Zap the session
+	err = f.SessionDb.ZapBySessionID(uow, session.SessionID)
+	if err != nil {
+		t.Errorf("Expected no error on zap, got %v", err)
+	}
+
+	// Commit the zap
+	uow.Commit()
+
+	// Verify it was removed
+	retrieved, err := f.SessionDb.GetBySessionID(session.SessionID)
+	if err != nil {
+		t.Errorf("Expected no error on retrieval after zap, got %v", err)
+	}
+
+	if retrieved != nil {
+		t.Errorf("Expected session to be removed, but it was retrieved: %+v", retrieved)
+	}
+}
