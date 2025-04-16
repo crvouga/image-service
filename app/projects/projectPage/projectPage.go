@@ -3,6 +3,7 @@ package projectPage
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/error/errorPage"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
@@ -35,7 +36,7 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		if projectIDMaybe == "" {
 			logger.Error("missing project ID", "error", "Project ID is required")
-			http.Error(w, "Project ID is required", http.StatusBadRequest)
+			errorPage.Redirect(w, r, "Project ID is required")
 			return
 		}
 
@@ -45,14 +46,14 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		if err != nil {
 			logger.Error("invalid project ID", "error", err)
-			http.Error(w, "Invalid project ID", http.StatusBadRequest)
+			errorPage.Redirect(w, r, "Invalid project ID")
 			return
 		}
 
 		uow, err := appCtx.UowFactory.Begin()
 		if err != nil {
 			logger.Error("database access failed", "error", err)
-			http.Error(w, "Failed to access database", http.StatusInternalServerError)
+			errorPage.Redirect(w, r, "Failed to access database")
 			return
 		}
 		defer uow.Rollback()
@@ -61,13 +62,17 @@ func Respond(appCtx *appCtx.AppCtx) http.HandlerFunc {
 
 		if err != nil {
 			logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
-			http.Error(w, "Project not found", http.StatusNotFound)
+			page.Respond(static.GetSiblingPath("notFound.html"), Data{
+				BackURL: projectRoutes.ToProjectListPage(),
+			})(w, r)
 			return
 		}
 
 		if project == nil {
 			logger.Error("project not found", "projectID", projectIDMaybe)
-			http.Error(w, "Project not found", http.StatusNotFound)
+			page.Respond(static.GetSiblingPath("notFound.html"), Data{
+				BackURL: projectRoutes.ToProjectListPage(),
+			})(w, r)
 			return
 		}
 

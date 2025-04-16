@@ -1,0 +1,25 @@
+{{define "page"}}
+{{ template "header" . }}
+<main style="display: flex; flex-direction: column; gap: 64px; align-items: center; text-align: center; padding: 2rem;">
+    <section>
+        <a href="{{.BackURL}}">Back to Projects</a>
+        <h1>
+            Project Not Found
+        </h1>
+    </section>
+
+    <section>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <p>
+                Sorry, the project you are looking for could not be found.
+            </p>
+            <p>
+                The project may have been deleted or you might not have permission to access it.
+            </p>
+        </div>
+    </section>
+
+    <div style="width: 100%; height: 64px"></div>
+</main>
+
+{{end}}
