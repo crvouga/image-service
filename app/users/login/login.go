@@ -9,6 +9,10 @@ import (
 )
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
+	useLink.Router(mux, appCtx)
+}
+
+func RouterLoggedOut(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
 	sendLink.Router(mux, appCtx)
 	useLink.Router(mux, appCtx)
 }

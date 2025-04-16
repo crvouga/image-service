@@ -2,12 +2,12 @@ package main
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/ctx/sessionID"
 	"imageresizerservice/app/dashboard"
-	"imageresizerservice/app/dashboard/dashboardRoutes"
+	"imageresizerservice/app/dashboard/dashboardPage"
 	"imageresizerservice/app/users"
-	"imageresizerservice/app/users/login/loginRoutes"
+	"imageresizerservice/app/users/auth"
+	"imageresizerservice/app/users/login/sendLink/sendLinkPage"
 	"imageresizerservice/library/static"
 	"log"
 	"net/http"
@@ -30,26 +30,42 @@ func main() {
 }
 
 func Router(mux *http.ServeMux, appCtx *appCtx.AppCtx) {
-	users.Router(mux, appCtx)
-	dashboard.Router(mux, appCtx)
+	loggedInMux := RouterLoggedIn(appCtx)
+	loggedOutMux := RouterLoggedOut(appCtx)
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		err := static.ServeStaticAssets(w, r)
 		if err == nil {
 			return
 		}
-
-		ctx := reqCtx.FromHttpRequest(appCtx, r)
-
-		if ctx.UserSession != nil {
-			log.Printf("Request context: UserID=%v, SessionID=%v", ctx.UserSession.UserID, ctx.UserSession.SessionID)
-		}
-
-		if ctx.UserSession == nil {
-			http.Redirect(w, r, loginRoutes.SendLinkPage, http.StatusSeeOther)
+		if auth.IsLoggedIn(appCtx, r) {
+			loggedInMux.ServeHTTP(w, r)
 			return
 		}
-
-		http.Redirect(w, r, dashboardRoutes.DashboardPage, http.StatusSeeOther)
+		loggedOutMux.ServeHTTP(w, r)
 	})
+	mux.Handle("/", handler)
+}
+
+func RouterLoggedIn(appCtx *appCtx.AppCtx) *http.ServeMux {
+	mux := http.NewServeMux()
+	users.Router(mux, appCtx)
+	dashboard.Router(mux, appCtx)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		dashboardPage.Redirect(w, r)
+	})
+
+	return mux
+}
+
+func RouterLoggedOut(appCtx *appCtx.AppCtx) *http.ServeMux {
+	mux := http.NewServeMux()
+	users.RouterLoggedOut(mux, appCtx)
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		sendLinkPage.Redirect(w, r)
+	})
+	return mux
 }
