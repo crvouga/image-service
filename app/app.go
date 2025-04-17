@@ -1,11 +1,13 @@
 package app
 
 import (
+	"imageresizerservice/app/admin"
 	"imageresizerservice/app/api"
 	"imageresizerservice/app/apiDocs"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home"
 	"imageresizerservice/app/home/homePage"
+	"imageresizerservice/app/result/resultPage"
 	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/traceID"
 
@@ -59,6 +61,8 @@ func newMuxLoggedIn(ac *appCtx.AppCtx) *http.ServeMux {
 	home.Router(mux, ac)
 	projects.Router(mux, ac)
 	apiDocs.Router(mux, ac)
+	resultPage.Router(mux)
+	admin.Router(mux, ac)
 	api.Router(mux, ac)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		homePage.Redirect(w, r)
@@ -71,6 +75,7 @@ func newMuxLoggedOut(ac *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.RouterLoggedOut(mux, ac)
 	api.Router(mux, ac)
+	resultPage.Router(mux)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		sendLinkPage.Redirect(w, r)
 	})

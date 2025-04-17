@@ -1,0 +1,14 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <h1>
+            {{.Headline}}
+        </h1>
+        <p>
+            {{.Body}}
+        </p>
+        <a href="{{.NextURL}}" role="button">{{.NextText}}</a>
+    </section>
+</main>
+{{end}}

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"imageresizerservice/app/users/userAccount"
+	"imageresizerservice/app/users/userAccount/userRole"
 	"imageresizerservice/app/users/userID"
 	"imageresizerservice/library/email/emailAddress"
 	"imageresizerservice/library/keyValueDB"
@@ -195,6 +196,86 @@ func Test_GetByEmailAddress(t *testing.T) {
 
 	if retrieved.UserID != account.UserID {
 		t.Errorf("Expected ID to be %s, got %s", account.UserID, retrieved.UserID)
+	}
+
+	uow.Commit()
+}
+
+func Test_GetByRole(t *testing.T) {
+	f := newFixture()
+	uow, _ := f.UowFactory.Begin()
+
+	// Create accounts with different roles
+	account1 := userAccount.UserAccount{
+		UserID:       userID.Gen(),
+		EmailAddress: emailAddress.NewElsePanic("admin@test.com"),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+		Role:         userRole.Admin,
+	}
+
+	account2 := userAccount.UserAccount{
+		UserID:       userID.Gen(),
+		EmailAddress: emailAddress.NewElsePanic("standard@test.com"),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+		Role:         userRole.Standard,
+	}
+
+	account3 := userAccount.UserAccount{
+		UserID:       userID.Gen(),
+		EmailAddress: emailAddress.NewElsePanic("admin2@test.com"),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
+		Role:         userRole.Admin,
+	}
+
+	// Insert the accounts
+	err := f.DB.Upsert(uow, account1)
+	if err != nil {
+		t.Errorf("Expected no error on insert account1, got %v", err)
+	}
+
+	err = f.DB.Upsert(uow, account2)
+	if err != nil {
+		t.Errorf("Expected no error on insert account2, got %v", err)
+	}
+
+	err = f.DB.Upsert(uow, account3)
+	if err != nil {
+		t.Errorf("Expected no error on insert account3, got %v", err)
+	}
+
+	// Get accounts by role
+	adminAccounts, err := f.DB.GetByRole(userRole.Admin)
+	if err != nil {
+		t.Errorf("Expected no error on retrieval, got %v", err)
+	}
+
+	if len(adminAccounts) != 2 {
+		t.Errorf("Expected to retrieve 2 admin accounts, got %d", len(adminAccounts))
+	}
+
+	standardAccounts, err := f.DB.GetByRole(userRole.Standard)
+	if err != nil {
+		t.Errorf("Expected no error on retrieval, got %v", err)
+	}
+
+	if len(standardAccounts) != 1 {
+		t.Errorf("Expected to retrieve 1 standard account, got %d", len(standardAccounts))
+	}
+
+	// Verify the accounts have the correct role
+	for _, account := range adminAccounts {
+		if account.Role != userRole.Admin {
+			t.Errorf("Expected role to be %s, got %s", userRole.Admin, account.Role)
+		}
+	}
+
+	for _, account := range standardAccounts {
+		if account.Role != userRole.Standard {
+			t.Errorf("Expected role to be %s, got %s", userRole.Standard, account.Role)
+		}
 	}
 
 	uow.Commit()

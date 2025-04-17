@@ -30,13 +30,12 @@
   </section>
 
   {{if eq .IsSendEmailConfigured "false"}}
-  <article style="margin-top:360px;">
+  <article>
+    <h2>Authentication is not configured</h2>
     <p>
-      Authentication is disabled. The admin must configure an email provider to use this feature.
+      The admin has not enabled authentication for this system.
     </p>
-    <p>
-      <a href="{{.LoginLink}}" aria-label="Login link">Use login link</a>
-    </p>
+    <a role="button" href="{{.LoginLink}}" aria-label="Login link">Use login link</a>
   </article>
   {{end}}
 
