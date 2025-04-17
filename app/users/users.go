@@ -4,14 +4,14 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/users/login"
 	"imageresizerservice/app/users/logout"
-	"imageresizerservice/app/users/userAccount/getUserAccount"
+	"imageresizerservice/app/users/userAccount/accountPage"
 	"net/http"
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	logout.Router(mux, ac)
 	login.Router(mux, ac)
-	getUserAccount.Router(mux, ac)
+	accountPage.Router(mux, ac)
 }
 
 func RouterLoggedOut(mux *http.ServeMux, ac *appCtx.AppCtx) {

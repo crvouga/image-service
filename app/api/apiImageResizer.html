@@ -7,7 +7,8 @@
         <div>
             <div>
                 <label for="project-select">Project: <span class="required">*</span></label>
-                <select id="project-select" name="project" required {{if not .Projects}}aria-invalid="true" {{end}}>
+                <select id="project-select" name="projectID" required {{if not .Projects}}aria-invalid="true" {{end}}>
+                    <option value="">Select a project</option>
                     {{range .Projects}}
                     <option value="{{.ID}}">
                         {{.Name}}
@@ -80,7 +81,7 @@
             params.set('url', imageURL);
             params.set('width', width.toString());
             params.set('height', height.toString());
-            params.set('projectID', projectID ?? "");
+            params.set('projectID', projectID);
             const endpoint = ENDPOINT + '?' + params.toString();
             return endpoint;
         }

@@ -58,6 +58,6 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		logger.Info("rendering project list page", "projectCount", len(projects))
-		page.Respond(data, static.GetSiblingPath("page.html"))(w, r)
+		page.Respond(data, static.GetSiblingPath("listProjects.html"))(w, r)
 	}
 }
