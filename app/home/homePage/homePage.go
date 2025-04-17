@@ -9,6 +9,7 @@ import (
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/ui/pageHeader"
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
 	"imageresizerservice/app/users/userAccount/userRole"
@@ -28,6 +29,7 @@ type Data struct {
 	NoAdmins      bool
 	UserAccount   userAccount.UserAccount
 	AdminURL      string
+	PageHeader    pageHeader.PageHeader
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -42,6 +44,9 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		data := Data{
+			PageHeader: pageHeader.PageHeader{
+				Title: "Home",
+			},
 			ProjectsURL:   projectRoutes.ToListProjects(),
 			AccountURL:    userAccountRoutes.UserAccountPage,
 			ApiDocsURL:    apiDocsRoutes.ApiDocsPage,

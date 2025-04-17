@@ -1,6 +1,5 @@
 {{define "breadcrumbs"}}
-{{if .Breadcrumbs}}
-{{if gt (len .Breadcrumbs) 0}}
+{{if and .Breadcrumbs (gt (len .Breadcrumbs) 0)}}
 <nav aria-label="breadcrumb">
     <ul>
         {{range .Breadcrumbs}}
@@ -14,6 +13,5 @@
         {{end}}
     </ul>
 </nav>
-{{end}}
 {{end}}
 {{end}}

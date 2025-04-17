@@ -1,6 +1,6 @@
 package adminRoutes
 
 const (
-	ClaimAdmin = "/claim-admin"
+	ClaimAdmin = "/admin/claim"
 	AdminPage  = "/admin"
 )
