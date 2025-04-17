@@ -6,33 +6,33 @@ import (
 )
 
 const (
-	ProjectListPage = "/projects-list-page"
-	ProjectCreate   = "/projects-create"
-	ProjectEdit     = "/projects-edit"
-	ProjectDelete   = "/projects-delete"
-	ProjectPage     = "/projects"
+	CreateProject = "/projects/create"
+	EditProject   = "/projects/edit"
+	DeleteProject = "/projects/delete"
+	ListProjects  = "/projects/list"
+	Project       = "/projects"
 )
 
 func withProjectID(route string, projectID projectID.ProjectID) string {
 	return fmt.Sprintf("%s?projectID=%s", route, projectID)
 }
 
-func ToProjectListPage() string {
-	return ProjectListPage
+func ToListProjects() string {
+	return ListProjects
 }
 
-func ToProjectEdit(projectID projectID.ProjectID) string {
-	return withProjectID(ProjectEdit, projectID)
+func ToEditProject(projectID projectID.ProjectID) string {
+	return withProjectID(EditProject, projectID)
 }
 
-func ToProjectPage(projectID projectID.ProjectID) string {
-	return withProjectID(ProjectPage, projectID)
+func ToGetProject(projectID projectID.ProjectID) string {
+	return withProjectID(Project, projectID)
 }
 
-func ToProjectCreate() string {
-	return ProjectCreate
+func ToCreateProject() string {
+	return CreateProject
 }
 
-func ToProjectDelete(projectID projectID.ProjectID) string {
-	return withProjectID(ProjectDelete, projectID)
+func ToDeleteProject(projectID projectID.ProjectID) string {
+	return withProjectID(DeleteProject, projectID)
 }

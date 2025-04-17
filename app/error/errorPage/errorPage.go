@@ -2,6 +2,7 @@ package errorPage
 
 import (
 	"imageresizerservice/app/error/errorRoutes"
+	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -14,6 +15,7 @@ func Router(mux *http.ServeMux) {
 
 type Data struct {
 	ErrorMessage string
+	HomeURL      string
 }
 
 func Respond() http.HandlerFunc {
@@ -21,6 +23,7 @@ func Respond() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			ErrorMessage: r.URL.Query().Get("error"),
+			HomeURL:      homeRoutes.HomePage,
 		}
 
 		page.Respond(htmlPath, data)(w, r)

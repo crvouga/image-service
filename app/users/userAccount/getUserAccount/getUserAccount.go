@@ -18,10 +18,10 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
+	LogoutURL   string
+	HomeURL     string
 	UserSession *userSession.UserSession
-	LogoutPage  string
 	UserAccount *userAccount.UserAccount
-	BackURL     string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -31,8 +31,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		data := Data{
 			UserSession: rc.UserSession,
 			UserAccount: rc.UserAccount,
-			LogoutPage:  logoutRoutes.ToLogoutPage(),
-			BackURL:     homeRoutes.HomePage,
+			LogoutURL:   logoutRoutes.ToLogoutPage(),
+			HomeURL:     homeRoutes.HomePage,
 		}
 
 		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)

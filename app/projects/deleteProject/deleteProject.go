@@ -12,7 +12,7 @@ import (
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectDelete, Respond(ac))
+	mux.HandleFunc(projectRoutes.DeleteProject, Respond(ac))
 }
 
 type Data struct {
@@ -71,7 +71,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	data := Data{
 		Project:     project.EnsureComputed(),
-		ProjectPage: projectRoutes.ToProjectPage(projectIDVar),
+		ProjectPage: projectRoutes.ToGetProject(projectIDVar),
 	}
 
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
@@ -148,5 +148,5 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("project deleted successfully", "projectID", projectIDVar)
-	http.Redirect(w, r, projectRoutes.ToProjectListPage(), http.StatusSeeOther)
+	http.Redirect(w, r, projectRoutes.ToListProjects(), http.StatusSeeOther)
 }

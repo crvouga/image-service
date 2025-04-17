@@ -38,6 +38,6 @@ func UrlLinesToUrlList(urls string) []url.URL {
 }
 
 func (p *Project) EnsureComputed() *Project {
-	p.PageURL = projectRoutes.ToProjectPage(p.ID)
+	p.PageURL = projectRoutes.ToGetProject(p.ID)
 	return p
 }

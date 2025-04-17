@@ -18,13 +18,22 @@
             <div>
                 <div>
                     <label for="project-select">Project:</label>
-                    <select id="project-select" name="project" required>
+                    <select id="project-select" name="project" required
+                        aria-invalid="{{if .Projects}}false{{else}}true{{end}}">
                         {{range .Projects}}
                         <option value="{{.ID}}">
                             {{.Name}}
                         </option>
                         {{end}}
                     </select>
+
+                    {{if .Projects}}
+                    {{else}}
+                    <small class="warning" id="project-select-helper">
+                        No projects have been created yet. Please <a href="{{.CreateProjectURL}}">create a project</a>
+                        first.
+                    </small>
+                    {{end}}
                 </div>
                 <div>
                     <label for="image-src">Image URL:</label>

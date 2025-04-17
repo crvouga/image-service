@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/imagePlayground/imagePlaygroundRoutes"
 	"imageresizerservice/app/projects/project"
+	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -15,15 +16,17 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	BackURL  string
-	Projects []project.Project
+	BackURL          string
+	Projects         []project.Project
+	CreateProjectURL string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			BackURL:  homeRoutes.HomePage,
-			Projects: []project.Project{},
+			BackURL:          homeRoutes.HomePage,
+			Projects:         []project.Project{},
+			CreateProjectURL: projectRoutes.ToCreateProject(),
 		}
 
 		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)

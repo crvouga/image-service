@@ -13,7 +13,7 @@ import (
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectPage, Respond(ac))
+	mux.HandleFunc(projectRoutes.Project, Respond(ac))
 }
 
 type Data struct {
@@ -63,7 +63,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		if err != nil {
 			logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 			page.Respond(static.GetSiblingPath("notFound.html"), Data{
-				BackURL: projectRoutes.ToProjectListPage(),
+				BackURL: projectRoutes.ToListProjects(),
 			})(w, r)
 			return
 		}
@@ -71,7 +71,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		if project == nil {
 			logger.Error("project not found", "projectID", projectIDMaybe)
 			page.Respond(static.GetSiblingPath("notFound.html"), Data{
-				BackURL: projectRoutes.ToProjectListPage(),
+				BackURL: projectRoutes.ToListProjects(),
 			})(w, r)
 			return
 		}
@@ -79,10 +79,10 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		logger.Info("project found", "projectID", projectIDMaybe)
 
 		data := Data{
-			BackURL:   projectRoutes.ToProjectListPage(),
+			BackURL:   projectRoutes.ToListProjects(),
 			Project:   project.EnsureComputed(),
-			EditURL:   projectRoutes.ToProjectEdit(projectIDNew),
-			DeleteURL: projectRoutes.ToProjectDelete(projectIDNew),
+			EditURL:   projectRoutes.ToEditProject(projectIDNew),
+			DeleteURL: projectRoutes.ToDeleteProject(projectIDNew),
 		}
 
 		logger.Info("rendering project page")

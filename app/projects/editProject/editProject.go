@@ -14,7 +14,7 @@ import (
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectEdit, Respond(ac))
+	mux.HandleFunc(projectRoutes.EditProject, Respond(ac))
 }
 
 type Data struct {
@@ -73,7 +73,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	data := Data{
 		Project:     project,
-		ProjectPage: projectRoutes.ToProjectPage(projectIDVar),
+		ProjectPage: projectRoutes.ToGetProject(projectIDVar),
 	}
 
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
@@ -175,5 +175,5 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("project updated successfully", "projectID", projectIDVar)
-	http.Redirect(w, r, projectRoutes.ToProjectPage(projectIDVar), http.StatusSeeOther)
+	http.Redirect(w, r, projectRoutes.ToGetProject(projectIDVar), http.StatusSeeOther)
 }

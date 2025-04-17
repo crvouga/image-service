@@ -1,8 +1,14 @@
 {{define "page"}}
 {{ template "header" . }}
 <main style="display: flex; flex-direction: column; gap: 64px;">
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{.HomeURL}}">Home</a></li>
+            <li>Projects</li>
+        </ul>
+    </nav>
+
     <section>
-        <a href="{{.BackURL}}">Back</a>
         <h1>Projects</h1>
     </section>
 

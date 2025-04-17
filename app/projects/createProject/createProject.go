@@ -15,7 +15,7 @@ import (
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(projectRoutes.ProjectCreate, Respond(ac))
+	mux.HandleFunc(projectRoutes.CreateProject, Respond(ac))
 }
 
 type Data struct {
@@ -112,5 +112,5 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("project created successfully", "projectID", projectID)
-	http.Redirect(w, r, projectRoutes.ToProjectPage(projectID), http.StatusSeeOther)
+	http.Redirect(w, r, projectRoutes.ToGetProject(projectID), http.StatusSeeOther)
 }

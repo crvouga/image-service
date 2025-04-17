@@ -16,16 +16,16 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	ListProjectsURL    string
-	GetUserAccountURL  string
+	ProjectsURL        string
+	AccountURL         string
 	ImagePlaygroundURL string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			ListProjectsURL:    projectRoutes.ToProjectListPage(),
-			GetUserAccountURL:  userAccountRoutes.UserAccountPage,
+			ProjectsURL:        projectRoutes.ToListProjects(),
+			AccountURL:         userAccountRoutes.UserAccountPage,
 			ImagePlaygroundURL: imagePlaygroundRoutes.ImagePlaygroundPage,
 		}
 
