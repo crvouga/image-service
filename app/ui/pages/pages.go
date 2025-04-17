@@ -1,4 +1,4 @@
-package ui
+package pages
 
 import (
 	"imageresizerservice/app/ui/confirmationPage"

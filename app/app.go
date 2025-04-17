@@ -8,15 +8,14 @@ import (
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home"
 	"imageresizerservice/app/home/homePage"
-	"imageresizerservice/app/ui"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/traceID"
-
 	"imageresizerservice/app/projects"
+	"imageresizerservice/app/ui/pages"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/auth"
 	"imageresizerservice/app/users/login/sendLink"
+	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/static"
+	"imageresizerservice/library/traceID"
 	"net/http"
 )
 
@@ -66,7 +65,7 @@ func newMuxLoggedIn(ac *appCtx.AppCtx) *http.ServeMux {
 	home.Router(mux, ac)
 	projects.Router(mux, ac)
 	apiDocs.Router(mux, ac)
-	ui.Router(mux)
+	pages.Router(mux)
 	admin.Router(mux, ac)
 	api.Router(mux, ac)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -80,7 +79,7 @@ func newMuxLoggedOut(ac *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.RouterLoggedOut(mux, ac)
 	api.Router(mux, ac)
-	ui.Router(mux)
+	pages.Router(mux)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		sendLink.Redirect(w, r)
 	})

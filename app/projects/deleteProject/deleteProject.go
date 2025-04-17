@@ -8,9 +8,9 @@ import (
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/breadcrumbs"
+	"imageresizerservice/app/ui/confirmationPage"
 	"imageresizerservice/app/ui/errorPage"
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/library/static"
 	"net/http"
 )
 
@@ -73,13 +73,23 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data := Data{
-		Project:     project.EnsureComputed(),
-		HomeURL:     homeRoutes.HomePage,
-		ProjectsURL: projectRoutes.ListProjects,
-	}
-
-	page.Respond(data, static.GetSiblingPath("deleteProject.html"))(w, r)
+	confirmationPage.ConfirmationPage{
+		Headline:    "Delete Project",
+		Body:        "Are you sure you want to delete project '" + project.EnsureComputed().Name.String() + "'?",
+		ConfirmURL:  r.URL.Path,
+		ConfirmText: "Delete Project",
+		CancelURL:   projectRoutes.ListProjects,
+		CancelText:  "Cancel",
+		HiddenForm: map[string]string{
+			"projectID": projectIDVar.String(),
+		},
+		Breadcrumbs: []breadcrumbs.Breadcrumb{
+			{Label: "Home", Href: homeRoutes.HomePage},
+			{Label: "Projects", Href: projectRoutes.ListProjects},
+			{Label: project.Name.String(), Href: project.EnsureComputed().URL},
+			{Label: "Delete"},
+		},
+	}.Render(w, r)
 }
 
 func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {

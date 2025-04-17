@@ -17,3 +17,7 @@ func New(id string) (ProjectID, error) {
 	}
 	return ProjectID(id), nil
 }
+
+func (p ProjectID) String() string {
+	return string(p)
+}

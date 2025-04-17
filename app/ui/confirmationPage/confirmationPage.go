@@ -1,6 +1,7 @@
 package confirmationPage
 
 import (
+	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -20,6 +21,7 @@ type ConfirmationPage struct {
 	ConfirmURL  string
 	ConfirmText string
 	HiddenForm  map[string]string
+	Breadcrumbs []breadcrumbs.Breadcrumb
 }
 
 func (d ConfirmationPage) ToQueryParams() url.Values {
@@ -34,6 +36,13 @@ func (d ConfirmationPage) ToQueryParams() url.Values {
 	for key, value := range d.HiddenForm {
 		q.Set("hidden_"+key, value)
 	}
+
+	breadcrumbParams := breadcrumbs.ToQueryParams(d.Breadcrumbs)
+	for key, values := range breadcrumbParams {
+		for _, value := range values {
+			q.Add(key, value)
+		}
+	}
 	return q
 }
 
@@ -45,6 +54,8 @@ func FromQueryParams(query url.Values) ConfirmationPage {
 		}
 	}
 
+	breadcrumbs := breadcrumbs.FromQueryParams(query)
+
 	return ConfirmationPage{
 		Headline:    query.Get("headline"),
 		Body:        query.Get("body"),
@@ -53,6 +64,7 @@ func FromQueryParams(query url.Values) ConfirmationPage {
 		CancelURL:   query.Get("cancelURL"),
 		CancelText:  query.Get("cancelText"),
 		HiddenForm:  hiddenForm,
+		Breadcrumbs: breadcrumbs,
 	}
 }
 

@@ -10,6 +10,7 @@ func Respond(pageData any, templatePaths ...string) http.HandlerFunc {
 		// Always include base templates
 		allTemplatePaths := []string{
 			"./app/ui/page/page.html",
+			"./app/ui/breadcrumbs/breadcrumbs.html",
 			"./app/ui/icons.html",
 			"./app/ui/header.html",
 		}

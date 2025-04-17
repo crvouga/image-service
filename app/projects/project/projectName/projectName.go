@@ -12,3 +12,7 @@ func New(name string) (ProjectName, error) {
 	}
 	return ProjectName(name), nil
 }
+
+func (p ProjectName) String() string {
+	return string(p)
+}

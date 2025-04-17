@@ -1,6 +1,8 @@
 {{define "page"}}
 {{ template "header" . }}
 <main class="container">
+    {{ template "breadcrumbs" . }}
+
     <section>
         <h1>
             {{.Headline}}
