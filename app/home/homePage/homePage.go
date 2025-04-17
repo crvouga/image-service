@@ -7,8 +7,8 @@ import (
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/ui/resultPage"
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
 	"imageresizerservice/app/users/userAccount/userRole"
@@ -37,7 +37,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		admins, err := ac.UserAccountDB.GetByRole(userRole.Admin)
 
 		if err != nil {
-			resultPage.NewErrorPage(err).Redirect(w, r)
+			errorPage.New(err).Redirect(w, r)
 			return
 		}
 

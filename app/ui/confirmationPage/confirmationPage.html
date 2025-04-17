@@ -1,6 +1,6 @@
 {{define "page"}}
 {{ template "header" . }}
-<main>
+<main class="container">
     <section>
         <h1>
             {{.Headline}}
@@ -8,9 +8,12 @@
         <p>
             {{.Body}}
         </p>
-        <div style="display: flex; gap: 12px;">
-            <a href="{{.ConfirmURL}}" role="button">{{.ConfirmText}}</a>
-            <a href="{{.CancelURL}}" role="button">{{.CancelText}}</a>
+
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <a href="{{.CancelURL}}" role="button" class="secondary">{{.CancelText}}</a>
+            <form action="{{.ConfirmURL}}" method="POST">
+                <button type="submit" role="button" style="margin: 0;">{{.ConfirmText}}</button>
+            </form>
         </div>
     </section>
 </main>

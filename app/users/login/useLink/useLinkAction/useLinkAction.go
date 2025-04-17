@@ -4,6 +4,7 @@ import (
 	"errors"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/app/users/login/loginRoutes"
@@ -29,7 +30,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		rc := reqCtx.FromHttpRequest(ac, r)
 
 		if err := r.ParseForm(); err != nil {
-			http.Error(w, "Failed to parse form", http.StatusBadRequest)
+			errorPage.New(errors.New("failed to parse form")).Redirect(w, r)
 			return
 		}
 

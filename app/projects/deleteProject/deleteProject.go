@@ -1,12 +1,14 @@
 package deleteProject
 
 import (
+	"errors"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -39,21 +41,21 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	projectIDMaybe := r.URL.Query().Get("projectID")
 	if projectIDMaybe == "" {
 		logger.Error("missing project ID")
-		http.Error(w, "Project ID is required", http.StatusBadRequest)
+		errorPage.New(errors.New("project id is required")).Redirect(w, r)
 		return
 	}
 
 	projectIDVar, err := projectID.New(projectIDMaybe)
 	if err != nil {
 		logger.Error("invalid project ID", "error", err)
-		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		errorPage.New(errors.New("invalid project id")).Redirect(w, r)
 		return
 	}
 
 	uow, err := ac.UowFactory.Begin()
 	if err != nil {
 		logger.Error("database access failed", "error", err)
-		http.Error(w, "Failed to access database", http.StatusInternalServerError)
+		errorPage.New(errors.New("failed to access database")).Redirect(w, r)
 		return
 	}
 	defer uow.Rollback()
@@ -61,13 +63,13 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	project, err := ac.ProjectDB.GetByID(projectIDVar)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
-		http.Error(w, "Project not found", http.StatusNotFound)
+		errorPage.New(errors.New("project not found")).Redirect(w, r)
 		return
 	}
 
 	if project == nil {
 		logger.Error("project not found", "projectID", projectIDMaybe)
-		http.Error(w, "Project not found", http.StatusNotFound)
+		errorPage.New(errors.New("project not found")).Redirect(w, r)
 		return
 	}
 
@@ -89,21 +91,21 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	// Handle form submission
 	if err := r.ParseForm(); err != nil {
 		logger.Error("failed to parse form", "error", err)
-		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+		errorPage.New(errors.New("failed to parse form")).Redirect(w, r)
 		return
 	}
 
 	projectIDMaybe := r.FormValue("projectID")
 	if projectIDMaybe == "" {
 		logger.Error("missing project ID")
-		http.Error(w, "Project ID is required", http.StatusBadRequest)
+		errorPage.New(errors.New("project id is required")).Redirect(w, r)
 		return
 	}
 
 	projectIDVar, err := projectID.New(projectIDMaybe)
 	if err != nil {
 		logger.Error("invalid project ID", "error", err)
-		http.Error(w, "Invalid project ID", http.StatusBadRequest)
+		errorPage.New(errors.New("invalid project id")).Redirect(w, r)
 		return
 	}
 
@@ -111,7 +113,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	uow, err := ac.UowFactory.Begin()
 	if err != nil {
 		logger.Error("failed to begin transaction", "error", err)
-		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
+		errorPage.New(errors.New("failed to delete project")).Redirect(w, r)
 		return
 	}
 	defer uow.Rollback()
@@ -119,13 +121,13 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	existingProject, err := ac.ProjectDB.GetByID(projectIDVar)
 	if err != nil {
 		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
-		http.Error(w, "Project not found", http.StatusNotFound)
+		errorPage.New(errors.New("project not found")).Redirect(w, r)
 		return
 	}
 
 	if existingProject == nil {
 		logger.Error("project not found", "projectID", projectIDMaybe)
-		http.Error(w, "Project not found", http.StatusNotFound)
+		errorPage.New(errors.New("project not found")).Redirect(w, r)
 		return
 	}
 
@@ -133,13 +135,13 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	if err = ac.ProjectDB.ZapByID(uow, projectIDVar); err != nil {
 		logger.Error("failed to delete project", "error", err)
-		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
+		errorPage.New(errors.New("failed to delete project")).Redirect(w, r)
 		return
 	}
 
 	if err = uow.Commit(); err != nil {
 		logger.Error("failed to commit transaction", "error", err)
-		http.Error(w, "Failed to delete project", http.StatusInternalServerError)
+		errorPage.New(errors.New("failed to delete project")).Redirect(w, r)
 		return
 	}
 

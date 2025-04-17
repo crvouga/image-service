@@ -1,10 +1,12 @@
 package logoutAction
 
 import (
+	"errors"
 	"net/http"
 
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/users/logout/logoutRoutes"
 )
 
@@ -15,14 +17,14 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			errorPage.New(errors.New("method not allowed")).Redirect(w, r)
 			return
 		}
 
 		req := reqCtx.FromHttpRequest(ac, r)
 
 		if err := Logout(ac, &req); err != nil {
-			http.Error(w, "Failed to logout", http.StatusInternalServerError)
+			errorPage.New(errors.New("failed to logout")).Redirect(w, r)
 			return
 		}
 

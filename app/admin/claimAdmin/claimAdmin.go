@@ -5,19 +5,17 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/ui/confirmationPage"
+	"imageresizerservice/app/ui/errorPage"
+	"imageresizerservice/app/ui/successPage"
+
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userAccount/userRole"
-	"imageresizerservice/library/static"
 	"net/http"
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(adminRoutes.ClaimAdmin, Respond(ac))
-}
-
-type Data struct {
-	HomeURL string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -26,22 +24,20 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		admins, err := ac.UserAccountDB.GetByRole(userRole.Admin)
 		if err != nil {
-			http.Error(w, "Failed to get admins", http.StatusInternalServerError)
+			errorPage.New(err).Redirect(w, r)
 			return
 		}
 
 		if len(admins) > 0 {
-			http.Redirect(w, r, homeRoutes.HomePage, http.StatusSeeOther)
+			successPage.New("You are already an admin", homeRoutes.HomePage, "Go Home").Redirect(w, r)
 			return
 		}
 
-		// Handle POST request to claim admin
 		if r.Method == http.MethodPost && rc.UserAccount != nil {
 			handlePost(ac, &rc, w, r)
 			return
 		}
 
-		// For GET requests or if user is not logged in
 		handleGet(w, r)
 	}
 }
@@ -49,12 +45,11 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 func handlePost(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx, w http.ResponseWriter, r *http.Request) {
 	uow, err := ac.UowFactory.Begin()
 	if err != nil {
-		http.Error(w, "Failed to start transaction", http.StatusInternalServerError)
+		errorPage.New(err).Redirect(w, r)
 		return
 	}
 	defer uow.Rollback()
 
-	// Update the user to be an admin
 	userAccountNew := userAccount.UserAccount{
 		UserID:       rc.UserAccount.UserID,
 		EmailAddress: rc.UserAccount.EmailAddress,
@@ -64,22 +59,25 @@ func handlePost(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx, w http.ResponseWriter, r *
 	}
 
 	if err = ac.UserAccountDB.Upsert(uow, userAccountNew); err != nil {
-		http.Error(w, "Failed to update user as admin", http.StatusInternalServerError)
+		errorPage.New(err).Redirect(w, r)
 		return
 	}
 
 	if err = uow.Commit(); err != nil {
-		http.Error(w, "Failed to commit transaction", http.StatusInternalServerError)
+		errorPage.New(err).Redirect(w, r)
 		return
 	}
 
-	http.Redirect(w, r, homeRoutes.HomePage, http.StatusSeeOther)
+	successPage.New("You are now an admin", homeRoutes.HomePage, "Go Home").Redirect(w, r)
 }
 
 func handleGet(w http.ResponseWriter, r *http.Request) {
-	data := Data{
-		HomeURL: homeRoutes.HomePage,
-	}
-
-	page.Respond(data, static.GetSiblingPath("claimAdmin.html"))(w, r)
+	confirmationPage.ConfirmationPage{
+		Headline:    "Claim Admin",
+		Body:        "Are you sure you want to claim admin?",
+		ConfirmURL:  adminRoutes.ClaimAdmin,
+		ConfirmText: "Claim",
+		CancelURL:   homeRoutes.HomePage,
+		CancelText:  "Cancel",
+	}.Redirect(w, r)
 }

@@ -1,6 +1,6 @@
 {{define "page"}}
 {{ template "header" . }}
-<main>
+<main class="container">
   <section aria-labelledby="email-notification">
     {{template "icon-circle-check" . }}
     <style>
@@ -33,7 +33,7 @@
   <article>
     <h2>Authentication is not configured</h2>
     <p>
-      The admin has not enabled authentication for this system.
+      The admin has not enabled authentication for this app.
     </p>
     <a role="button" href="{{.LoginLink}}" aria-label="Login link">Use login link</a>
   </article>

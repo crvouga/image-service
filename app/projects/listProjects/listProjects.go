@@ -6,6 +6,7 @@ import (
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
 	"imageresizerservice/library/static"
@@ -33,8 +34,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		uow, err := ac.UowFactory.Begin()
 		if err != nil {
-			logger.Error("database access failed", "error", err)
-			http.Error(w, "Failed to access database", http.StatusInternalServerError)
+			logger.Error("failed to fetch projects", "userID", createdByUserID, "error", err)
+			errorPage.New(err).Redirect(w, r)
 			return
 		}
 		defer uow.Rollback()
@@ -42,7 +43,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		projects, err := ac.ProjectDB.GetByCreatedByUserID(createdByUserID)
 		if err != nil {
 			logger.Error("failed to fetch projects", "userID", createdByUserID, "error", err)
-			http.Error(w, "Failed to fetch projects", http.StatusInternalServerError)
+			errorPage.New(err).Redirect(w, r)
 			return
 		}
 

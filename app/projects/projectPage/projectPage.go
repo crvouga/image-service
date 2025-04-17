@@ -1,13 +1,15 @@
 package projectPage
 
 import (
+	"errors"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/error/errorPage"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/errorPage"
+	"imageresizerservice/app/ui/notFoundPage"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -24,8 +26,7 @@ type Data struct {
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
-	html := static.GetSiblingPath("projectPage.html")
-	notFoundHTML := static.GetSiblingPath("notFound.html")
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := reqCtx.FromHttpRequest(ac, r)
 		logger := req.Logger
@@ -38,7 +39,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		if projectIDMaybe == "" {
 			logger.Error("missing project ID", "error", "Project ID is required")
-			errorPage.Redirect(w, r, "Project ID is required")
+			errorPage.New(errors.New("project ID is required")).Redirect(w, r)
 			return
 		}
 
@@ -48,14 +49,14 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		if err != nil {
 			logger.Error("invalid project ID", "error", err)
-			errorPage.Redirect(w, r, "Invalid project ID")
+			errorPage.New(errors.New("invalid project ID")).Redirect(w, r)
 			return
 		}
 
 		uow, err := ac.UowFactory.Begin()
 		if err != nil {
 			logger.Error("database access failed", "error", err)
-			errorPage.Redirect(w, r, "Failed to access database")
+			errorPage.New(errors.New("failed to access database")).Redirect(w, r)
 			return
 		}
 		defer uow.Rollback()
@@ -64,19 +65,12 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		if err != nil {
 			logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
-			page.Respond(Data{
-				HomeURL:     homeRoutes.HomePage,
-				ProjectsURL: projectRoutes.ListProjects,
-			}, notFoundHTML)(w, r)
+			notFoundPage.New(projectRoutes.ListProjects, "Back to Projects").Redirect(w, r)
 			return
 		}
 
 		if project == nil {
-			logger.Error("project not found", "projectID", projectIDMaybe)
-			page.Respond(Data{
-				HomeURL:     homeRoutes.HomePage,
-				ProjectsURL: projectRoutes.ListProjects,
-			}, notFoundHTML)(w, r)
+			notFoundPage.New(projectRoutes.ListProjects, "Back to Projects").Redirect(w, r)
 			return
 		}
 
@@ -89,6 +83,6 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		logger.Info("rendering project page")
-		page.Respond(data, html)(w, r)
+		page.Respond(data, static.GetSiblingPath("projectPage.html"))(w, r)
 	}
 }

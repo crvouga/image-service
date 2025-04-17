@@ -1,6 +1,7 @@
 package createProject
 
 import (
+	"errors"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
@@ -8,6 +9,7 @@ import (
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/project/projectName"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -49,7 +51,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	// Handle form submission
 	if err := r.ParseForm(); err != nil {
 		logger.Error("failed to parse form", "error", err)
-		http.Error(w, "Failed to parse form", http.StatusBadRequest)
+		errorPage.New(errors.New("failed to parse form")).Redirect(w, r)
 		return
 	}
 
@@ -58,7 +60,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	if projectNameMaybe == "" {
 		logger.Error("empty project name")
-		http.Error(w, "Project name is required", http.StatusBadRequest)
+		errorPage.New(errors.New("project name is required")).Redirect(w, r)
 		return
 	}
 
@@ -66,7 +68,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		logger.Error("invalid project name", "error", err)
-		http.Error(w, "Invalid project name", http.StatusBadRequest)
+		errorPage.New(errors.New("invalid project name")).Redirect(w, r)
 		return
 	}
 
@@ -95,7 +97,7 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		logger.Error("failed to begin transaction", "error", err)
-		http.Error(w, "Failed to create project", http.StatusInternalServerError)
+		errorPage.New(errors.New("failed to create project")).Redirect(w, r)
 		return
 	}
 
@@ -103,13 +105,13 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	if err = ac.ProjectDB.Upsert(uow, &projectNew); err != nil {
 		logger.Error("failed to upsert project", "error", err)
-		http.Error(w, "Failed to create project", http.StatusInternalServerError)
+		errorPage.New(errors.New("failed to create project")).Redirect(w, r)
 		return
 	}
 
 	if err = uow.Commit(); err != nil {
 		logger.Error("failed to commit transaction", "error", err)
-		http.Error(w, "Failed to create project", http.StatusInternalServerError)
+		errorPage.New(errors.New("failed to create project")).Redirect(w, r)
 		return
 	}
 

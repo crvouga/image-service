@@ -20,7 +20,7 @@ type ConfirmationPage struct {
 	ConfirmText string
 }
 
-func (d *ConfirmationPage) Redirect(w http.ResponseWriter, r *http.Request) {
+func (d ConfirmationPage) Redirect(w http.ResponseWriter, r *http.Request) {
 	u, _ := url.Parse(ConfirmationPageRoute)
 	q := u.Query()
 	q.Set("headline", d.Headline)

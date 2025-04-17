@@ -1,7 +1,10 @@
 {{define "page"}}
 {{ template "header" . }}
-<main>
+<main class="container">
     <section>
+        <div class="icon-container">
+            {{ template "icon-circle-check" }}
+        </div>
         <h1>
             {{.Headline}}
         </h1>

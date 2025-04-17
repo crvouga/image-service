@@ -1,12 +1,14 @@
 package sendLinkAction
 
 import (
+	"errors"
 	"net/http"
 	"strings"
 
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/email/sendEmailFactory"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/app/users/login/loginRoutes"
@@ -24,7 +26,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+			errorPage.New(errors.New("method not allowed")).Redirect(w, r)
 			return
 		}
 

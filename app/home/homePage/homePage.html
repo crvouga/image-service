@@ -1,46 +1,45 @@
 {{define "page"}}
 {{ template "header" . }}
-<main>
+<main class="container">
     <section>
         <h1>Home</h1>
         <ul>
             {{if .UserAccount.IsRoleAdmin}}
             <li>
-                <a href={{.AdminURL}} class="card">
+                <a href={{.AdminURL}}>
                     <strong>Admin</strong>
                 </a>
-                <p>Manage the system</p>
+                <p>Manage the app</p>
+            </li>
+            {{end}}
+            {{if .NoAdmins}}
+            <li>
+                <a href={{.ClaimAdminURL}} role="button">
+                    <strong>Claim Admin</strong>
+                </a>
+                <p>No admins configured, claim admin to manage the app</p>
             </li>
             {{end}}
             <li>
-                <a href={{.AccountURL}} class="card">
+                <a href={{.AccountURL}}>
                     <strong>Account</strong>
                 </a>
                 <p>Manage your account</p>
             </li>
             <li>
-                <a href={{.ProjectsURL}} class="card">
+                <a href={{.ProjectsURL}}>
                     <strong>Projects</strong>
                 </a>
                 <p>Manage your projects</p>
             </li>
             <li>
-                <a href={{.ApiDocsURL}} class="card">
+                <a href={{.ApiDocsURL}}>
                     <strong>API Docs</strong>
                 </a>
                 <p>View the API docs</p>
             </li>
         </ul>
     </section>
-    {{if .NoAdmins}}
-    <section>
-        <article>
-            <h2>No Admin Configured</h2>
-            <p>Your system currently has no admin accounts configured</p>
-            <a href="{{.ClaimAdminURL}}" role="button">Claim Admin</a>
-        </article>
-    </section>
-    {{end}}
 </main>
 
 {{end}}

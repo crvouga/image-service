@@ -1,16 +1,10 @@
 {
-  "link:71aa1bf72d96ef5cf499fd7a109ce7aa": "{\"ID\":\"71aa1bf72d96ef5cf499fd7a109ce7aa\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-16T21:25:12.77165-07:00\",\"UsedAt\":\"2025-04-16T21:25:38.707448-07:00\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\"}",
-  "link:97783c383507d041a211b6cbc342666b": "{\"ID\":\"97783c383507d041a211b6cbc342666b\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-16T21:23:31.571323-07:00\",\"UsedAt\":\"2025-04-16T21:23:33.509391-07:00\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\"}",
-  "link:b385aa33a6d52e3dc698a751d224746d": "{\"ID\":\"b385aa33a6d52e3dc698a751d224746d\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T11:16:50.504484-07:00\",\"UsedAt\":\"0001-01-01T00:00:00Z\",\"SessionID\":\"d564ad0b6aa2769211f8e263759a7b73\"}",
-  "link:index:linkIDsBySessionID:7a3ae254a06108834227bd1c0eece06d": "[\"97783c383507d041a211b6cbc342666b\",\"71aa1bf72d96ef5cf499fd7a109ce7aa\"]",
-  "link:index:linkIDsBySessionID:d564ad0b6aa2769211f8e263759a7b73": "[\"b385aa33a6d52e3dc698a751d224746d\"]",
-  "project:30e18e540cfe779f37278cc2ba761a16": "{\"ID\":\"30e18e540cfe779f37278cc2ba761a16\",\"CreatedByUserID\":\"2d1f80190b597bdab6f5d34d8c3ece5a\",\"CreatedAt\":\"2025-04-16T21:29:07.005148-07:00\",\"UpdatedAt\":\"2025-04-16T21:29:07.005303-07:00\",\"Name\":\"moviefinder.app123\",\"AllowedDomains\":null,\"URL\":\"\",\"EditURL\":\"\",\"DeleteURL\":\"\",\"AllowedDomainsString\":\"\"}",
-  "project:index:projectIDsByCreatedByUserID:2d1f80190b597bdab6f5d34d8c3ece5a": "30e18e540cfe779f37278cc2ba761a16",
-  "userAccount:2d1f80190b597bdab6f5d34d8c3ece5a": "{\"UserID\":\"2d1f80190b597bdab6f5d34d8c3ece5a\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-16T21:23:33.511115-07:00\",\"UpdatedAt\":\"2025-04-16T21:25:57.224449-07:00\",\"Role\":\"ADMIN\"}",
-  "userAccount:index:userIDByEmailAddress:crvouga@gmail.com": "2d1f80190b597bdab6f5d34d8c3ece5a",
-  "userAccount:index:userIDsByRole:": "[\"2d1f80190b597bdab6f5d34d8c3ece5a\"]",
-  "userAccount:index:userIDsByRole:ADMIN": "[\"2d1f80190b597bdab6f5d34d8c3ece5a\"]",
-  "userSession:ba0821561775f7ae0b36f5c7708a89e2": "{\"ID\":\"ba0821561775f7ae0b36f5c7708a89e2\",\"UserID\":\"2d1f80190b597bdab6f5d34d8c3ece5a\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\",\"CreatedAt\":\"2025-04-16T21:25:38.71017-07:00\",\"EndedAt\":\"0001-01-01T00:00:00Z\"}",
-  "userSession:f33739de622c6865c3cda05c98712c0b": "{\"ID\":\"f33739de622c6865c3cda05c98712c0b\",\"UserID\":\"2d1f80190b597bdab6f5d34d8c3ece5a\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\",\"CreatedAt\":\"2025-04-16T21:23:33.512125-07:00\",\"EndedAt\":\"0001-01-01T00:00:00Z\"}",
-  "userSession:index:userSessionIDBySessionID:7a3ae254a06108834227bd1c0eece06d": "ba0821561775f7ae0b36f5c7708a89e2"
+  "link:78473f41faa3210ba476a470b366dec4": "{\"ID\":\"78473f41faa3210ba476a470b366dec4\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T11:38:42.533049-07:00\",\"UsedAt\":\"2025-04-17T11:38:45.428405-07:00\",\"SessionID\":\"d564ad0b6aa2769211f8e263759a7b73\"}",
+  "link:index:linkIDsBySessionID:d564ad0b6aa2769211f8e263759a7b73": "[\"78473f41faa3210ba476a470b366dec4\"]",
+  "userAccount:407d5f14237d00244bda6bef986178f7": "{\"UserID\":\"407d5f14237d00244bda6bef986178f7\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T11:38:45.430818-07:00\",\"UpdatedAt\":\"2025-04-17T11:41:03.886644-07:00\",\"Role\":\"ADMIN\",\"IsRoleAdmin\":false,\"IsRoleStandard\":false}",
+  "userAccount:index:userIDByEmailAddress:crvouga@gmail.com": "407d5f14237d00244bda6bef986178f7",
+  "userAccount:index:userIDsByRole:": "[\"407d5f14237d00244bda6bef986178f7\"]",
+  "userAccount:index:userIDsByRole:ADMIN": "[\"407d5f14237d00244bda6bef986178f7\"]",
+  "userSession:6812ee106746f623833c15b836b1164e": "{\"ID\":\"6812ee106746f623833c15b836b1164e\",\"UserID\":\"407d5f14237d00244bda6bef986178f7\",\"SessionID\":\"d564ad0b6aa2769211f8e263759a7b73\",\"CreatedAt\":\"2025-04-17T11:38:45.431958-07:00\",\"EndedAt\":\"0001-01-01T00:00:00Z\"}",
+  "userSession:index:userSessionIDBySessionID:d564ad0b6aa2769211f8e263759a7b73": "6812ee106746f623833c15b836b1164e"
 }

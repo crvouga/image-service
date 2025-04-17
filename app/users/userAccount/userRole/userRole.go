@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Role represents a user role in the system
+// Role represents a user role in the app
 type Role string
 
 const (

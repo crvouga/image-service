@@ -3,10 +3,11 @@ package apiDocsPage
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/error/errorPage"
+
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
 	"net/http"
@@ -29,7 +30,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		projects, err := ac.ProjectDB.GetByCreatedByUserID(rc.UserSession.UserID)
 
 		if err != nil {
-			errorPage.Redirect(w, r, err.Error())
+			errorPage.New(err).Redirect(w, r)
 			return
 		}
 
