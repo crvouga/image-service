@@ -15,7 +15,7 @@ import (
 	"imageresizerservice/app/projects"
 	"imageresizerservice/app/users"
 	"imageresizerservice/app/users/auth"
-	"imageresizerservice/app/users/login/sendLink/sendLinkPage"
+	"imageresizerservice/app/users/login/sendLink"
 	"imageresizerservice/library/static"
 	"net/http"
 )
@@ -82,7 +82,7 @@ func newMuxLoggedOut(ac *appCtx.AppCtx) *http.ServeMux {
 	api.Router(mux, ac)
 	ui.Router(mux)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		sendLinkPage.Redirect(w, r)
+		sendLink.Redirect(w, r)
 	})
 	return mux
 }

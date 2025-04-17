@@ -1,48 +1,75 @@
-package useLinkAction
+package useLink
 
 import (
 	"errors"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/home/homeRoutes"
+	"imageresizerservice/app/ui/confirmationPage"
 	"imageresizerservice/app/ui/errorPage"
+	"imageresizerservice/app/ui/successPage"
 	"imageresizerservice/app/users/login/link"
 	"imageresizerservice/app/users/login/link/linkID"
 	"imageresizerservice/app/users/login/loginRoutes"
-	"imageresizerservice/app/users/login/useLink/useLinkErrorPage"
-	"imageresizerservice/app/users/login/useLink/useLinkSuccessPage"
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userID"
 	"imageresizerservice/app/users/userSession"
 	"imageresizerservice/app/users/userSession/userSessionID"
 	"log/slog"
 	"net/http"
+	"net/url"
 	"strings"
 	"time"
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(loginRoutes.UseLinkAction, Respond(ac))
+	mux.HandleFunc(loginRoutes.UseLinkPage, Respond(ac))
+}
+
+type Data struct {
+	Action string
+	LinkID linkID.LinkID
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
+
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		rc := reqCtx.FromHttpRequest(ac, r)
-
-		if err := r.ParseForm(); err != nil {
-			errorPage.New(errors.New("failed to parse form")).Redirect(w, r)
+		if r.Method == http.MethodGet {
+			confirmationPage.ConfirmationPage{
+				Headline:    "Login",
+				Body:        "Use this link to login to your account",
+				ConfirmURL:  loginRoutes.UseLinkPage,
+				ConfirmText: "Login",
+				CancelURL:   homeRoutes.HomePage,
+				CancelText:  "Cancel",
+				HiddenForm: map[string]string{
+					"linkID": r.URL.Query().Get("linkID"),
+				},
+			}.Render(w, r)
 			return
 		}
 
-		linkID := strings.TrimSpace(r.FormValue("linkID"))
+		if r.Method == http.MethodPost {
+			// Handle POST request - process the link
+			rc := reqCtx.FromHttpRequest(ac, r)
 
-		if err := UseLink(ac, &rc, linkID); err != nil {
-			useLinkErrorPage.Redirect(w, r, err.Error())
+			if err := r.ParseForm(); err != nil {
+				errorPage.New(errors.New("failed to parse form")).Redirect(w, r)
+				return
+			}
+
+			linkID := strings.TrimSpace(r.FormValue("linkID"))
+
+			if err := UseLink(ac, &rc, linkID); err != nil {
+				errorPage.New(err).Redirect(w, r)
+				return
+			}
+
+			successPage.New("Login successful", homeRoutes.HomePage, "Home").Redirect(w, r)
 			return
 		}
 
-		useLinkSuccessPage.Redirect(w, r)
-
+		errorPage.New(errors.New("method not allowed")).Redirect(w, r)
 	}
 }
 
@@ -147,4 +174,18 @@ func UseLink(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx, maybeLinkID string) error {
 
 func newDatabaseError(err error) error {
 	return errors.New("database error: " + err.Error())
+}
+
+func ToUrl(rc *reqCtx.ReqCtx, linkID linkID.LinkID) string {
+	path := ToPath(linkID)
+	u, _ := url.Parse(rc.BaseURL + path)
+	return u.String()
+}
+
+func ToPath(linkID linkID.LinkID) string {
+	u, _ := url.Parse(loginRoutes.UseLinkPage)
+	q := u.Query()
+	q.Set("linkID", string(linkID))
+	u.RawQuery = q.Encode()
+	return u.String()
 }

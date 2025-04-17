@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/users/login/sendLink/sendLink"
-	"imageresizerservice/app/users/login/useLink/useLink"
+	"imageresizerservice/app/users/login/sendLink"
+	"imageresizerservice/app/users/login/useLink"
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {

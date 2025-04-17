@@ -11,14 +11,14 @@ const (
 	ErrorRoute = "/error"
 )
 
-type ErrorPageData struct {
+type ErrorPage struct {
 	Headline string
 	Body     string
 	NextURL  string
 	NextText string
 }
 
-func (d ErrorPageData) Redirect(w http.ResponseWriter, r *http.Request) {
+func (d ErrorPage) Redirect(w http.ResponseWriter, r *http.Request) {
 	u, _ := url.Parse(ErrorRoute)
 	q := u.Query()
 	q.Set("headline", d.Headline)
@@ -29,12 +29,12 @@ func (d ErrorPageData) Redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, u.String(), http.StatusFound)
 }
 
-func New(err error) *ErrorPageData {
-	return &ErrorPageData{
+func New(err error) *ErrorPage {
+	return &ErrorPage{
 		Headline: "Error",
 		Body:     err.Error(),
 		NextURL:  "/",
-		NextText: "Go Home",
+		NextText: "Home",
 	}
 }
 
@@ -45,7 +45,7 @@ func Router(mux *http.ServeMux) {
 func Respond() http.HandlerFunc {
 	htmlPath := static.GetSiblingPath("errorPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
-		data := ErrorPageData{
+		data := ErrorPage{
 			Headline: r.URL.Query().Get("headline"),
 			Body:     r.URL.Query().Get("body"),
 			NextURL:  r.URL.Query().Get("nextURL"),

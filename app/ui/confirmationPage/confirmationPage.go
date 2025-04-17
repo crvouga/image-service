@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/library/static"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 const (
@@ -18,6 +19,7 @@ type ConfirmationPage struct {
 	CancelText  string
 	ConfirmURL  string
 	ConfirmText string
+	HiddenForm  map[string]string
 }
 
 func (d ConfirmationPage) ToQueryParams() url.Values {
@@ -28,10 +30,21 @@ func (d ConfirmationPage) ToQueryParams() url.Values {
 	q.Set("cancelText", d.CancelText)
 	q.Set("confirmURL", d.ConfirmURL)
 	q.Set("confirmText", d.ConfirmText)
+
+	for key, value := range d.HiddenForm {
+		q.Set("hidden_"+key, value)
+	}
 	return q
 }
 
 func FromQueryParams(query url.Values) ConfirmationPage {
+	hiddenForm := make(map[string]string)
+	for key, values := range query {
+		if strings.HasPrefix(key, "hidden_") {
+			hiddenForm[strings.TrimPrefix(key, "hidden_")] = values[0]
+		}
+	}
+
 	return ConfirmationPage{
 		Headline:    query.Get("headline"),
 		Body:        query.Get("body"),
@@ -39,6 +52,7 @@ func FromQueryParams(query url.Values) ConfirmationPage {
 		ConfirmText: query.Get("confirmText"),
 		CancelURL:   query.Get("cancelURL"),
 		CancelText:  query.Get("cancelText"),
+		HiddenForm:  hiddenForm,
 	}
 }
 

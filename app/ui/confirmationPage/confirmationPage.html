@@ -12,6 +12,9 @@
         <div style="display: flex; gap: 16px; align-items: center;">
             <a href="{{.CancelURL}}" role="button" class="secondary">{{.CancelText}}</a>
             <form action="{{.ConfirmURL}}" method="POST">
+                {{range $key, $value := .HiddenForm}}
+                <input type="hidden" name="{{$key}}" value="{{$value}}">
+                {{end}}
                 <button type="submit" role="button" style="margin: 0;">{{.ConfirmText}}</button>
             </form>
         </div>

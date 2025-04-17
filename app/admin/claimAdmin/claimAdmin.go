@@ -29,7 +29,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		if len(admins) > 0 {
-			successPage.New("You are already an admin", homeRoutes.HomePage, "Go Home").Redirect(w, r)
+			successPage.New("You are already an admin", homeRoutes.HomePage, "Home").Redirect(w, r)
 			return
 		}
 
@@ -68,7 +68,7 @@ func handlePost(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx, w http.ResponseWriter, r *
 		return
 	}
 
-	successPage.New("You are now an admin", homeRoutes.HomePage, "Go Home").Redirect(w, r)
+	successPage.New("You are now an admin", homeRoutes.HomePage, "Home").Redirect(w, r)
 }
 
 func handleGet(w http.ResponseWriter, r *http.Request) {
