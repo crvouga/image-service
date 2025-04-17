@@ -1,5 +1,5 @@
 package homeRoutes
 
 const (
-	HomePage = "/home-page"
+	HomePage = "/home"
 )

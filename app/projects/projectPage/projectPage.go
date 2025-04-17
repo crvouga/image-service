@@ -1,4 +1,4 @@
-package getProject
+package projectPage
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
@@ -24,6 +24,8 @@ type Data struct {
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
+	html := static.GetSiblingPath("projectPage.html")
+	notFoundHTML := static.GetSiblingPath("notFound.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		req := reqCtx.FromHttpRequest(ac, r)
 		logger := req.Logger
@@ -65,7 +67,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			page.Respond(Data{
 				HomeURL:     homeRoutes.HomePage,
 				ProjectsURL: projectRoutes.ListProjects,
-			}, static.GetSiblingPath("notFound.html"))(w, r)
+			}, notFoundHTML)(w, r)
 			return
 		}
 
@@ -74,7 +76,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			page.Respond(Data{
 				HomeURL:     homeRoutes.HomePage,
 				ProjectsURL: projectRoutes.ListProjects,
-			}, static.GetSiblingPath("notFound.html"))(w, r)
+			}, notFoundHTML)(w, r)
 			return
 		}
 
@@ -87,6 +89,6 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		logger.Info("rendering project page")
-		page.Respond(data, static.GetSiblingPath("page.html"))(w, r)
+		page.Respond(data, html)(w, r)
 	}
 }

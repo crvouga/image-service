@@ -2,6 +2,8 @@ package apiDocsPage
 
 import (
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/error/errorPage"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/projectRoutes"
@@ -16,19 +18,28 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 
 type Data struct {
 	HomeURL          string
-	Projects         []project.Project
+	Projects         []*project.Project
 	CreateProjectURL string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		rc := reqCtx.FromHttpRequest(ac, r)
+
+		projects, err := ac.ProjectDB.GetByCreatedByUserID(rc.UserSession.UserID)
+
+		if err != nil {
+			errorPage.Redirect(w, r, err.Error())
+			return
+		}
+
 		data := Data{
 			HomeURL:          homeRoutes.HomePage,
-			Projects:         []project.Project{},
+			Projects:         projects,
 			CreateProjectURL: projectRoutes.ToCreateProject(),
 		}
 
-		page.Respond(data, static.GetSiblingPath("page.html"), "./app/api/apiImageResizer.html")(w, r)
+		page.Respond(data, static.GetSiblingPath("apiDocsPage.html"), "./app/api/apiImageResizer.html")(w, r)
 	}
 }
 

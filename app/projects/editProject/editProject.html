@@ -24,11 +24,8 @@
 
             <div class="form-group">
                 <label for="allowedDomains">Allowed Domains:</label>
-                <textarea id="allowedDomains" name="allowedDomains" placeholder="Enter domains, one per line">
-                    {{- range .Project.AllowedDomains -}}
-                    {{.String}}
-                    {{- end -}}
-                </textarea>
+                <textarea id="allowedDomains" name="allowedDomains"
+                    placeholder="Enter domains, one per line">{{.Project.AllowedDomainsString}}</textarea>
                 <small>Enter full URLs including protocol (e.g., https://example.com)</small>
             </div>
 

@@ -11,15 +11,16 @@ import (
 )
 
 type Project struct {
-	ID              projectID.ProjectID
-	CreatedByUserID userID.UserID
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	Name            projectName.ProjectName
-	AllowedDomains  []url.URL
-	URL             string
-	EditURL         string
-	DeleteURL       string
+	ID                   projectID.ProjectID
+	CreatedByUserID      userID.UserID
+	CreatedAt            time.Time
+	UpdatedAt            time.Time
+	Name                 projectName.ProjectName
+	AllowedDomains       []url.URL
+	URL                  string
+	EditURL              string
+	DeleteURL            string
+	AllowedDomainsString string
 }
 
 func UrlLinesToUrlList(urls string) []url.URL {
@@ -43,5 +44,10 @@ func (p *Project) EnsureComputed() *Project {
 	p.URL = projectRoutes.ToGetProject(p.ID)
 	p.EditURL = projectRoutes.ToEditProject(p.ID)
 	p.DeleteURL = projectRoutes.ToDeleteProject(p.ID)
+	var domains []string
+	for _, domain := range p.AllowedDomains {
+		domains = append(domains, domain.String())
+	}
+	p.AllowedDomainsString = strings.Join(domains, "\n")
 	return p
 }

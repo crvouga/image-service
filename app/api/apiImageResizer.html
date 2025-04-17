@@ -7,8 +7,7 @@
         <div>
             <div>
                 <label for="project-select">Project: <span class="required">*</span></label>
-                <select id="project-select" name="project" required
-                    aria-invalid="{{if .Projects}}false{{else}}true{{end}}">
+                <select id="project-select" name="project" required {{if not .Projects}}aria-invalid="true" {{end}}>
                     {{range .Projects}}
                     <option value="{{.ID}}">
                         {{.Name}}
