@@ -1,0 +1,16 @@
+{{define "pageHeader"}}
+<nav>
+    <ul>
+        <li>
+            <h1 style="margin: 0;">{{.PageHeader.Title}}</h1>
+        </li>
+    </ul>
+    <ul>
+        {{range .PageHeader.Actions}}
+        <li>
+            <a role="button" href="{{.URL}}">{{.Label}}</a>
+        </li>
+        {{end}}
+    </ul>
+</nav>
+{{end}}

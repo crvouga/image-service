@@ -12,6 +12,7 @@ import (
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/notFoundPage"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/ui/pageHeader"
 	"imageresizerservice/library/static"
 	"net/http"
 )
@@ -23,6 +24,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 type Data struct {
 	Project     *project.Project
 	Breadcrumbs []breadcrumbs.Breadcrumb
+	PageHeader  pageHeader.PageHeader
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -82,6 +84,19 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 				{Label: "Home", Href: homeRoutes.HomePage},
 				{Label: "Projects", Href: projectRoutes.ListProjects},
 				{Label: project.EnsureComputed().Name.String()},
+			},
+			PageHeader: pageHeader.PageHeader{
+				Title: project.EnsureComputed().Name.String(),
+				Actions: []pageHeader.Action{
+					{
+						Label: "Edit",
+						URL:   project.EnsureComputed().EditURL,
+					},
+					{
+						Label: "Delete",
+						URL:   project.EnsureComputed().DeleteURL,
+					},
+				},
 			},
 		}
 

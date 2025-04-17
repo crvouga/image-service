@@ -2,17 +2,8 @@
 {{ template "header" . }}
 <main class="container">
     {{ template "breadcrumbs" . }}
+    {{ template "pageHeader" . }}
 
-
-    <nav>
-        <ul>
-            <li>
-                <h1 style="margin: 0;">
-                    API Docs
-                </h1>
-            </li>
-        </ul>
-    </nav>
 
     {{template "apiImageResizer" .}}
 </main>

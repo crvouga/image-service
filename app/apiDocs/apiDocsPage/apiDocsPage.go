@@ -10,6 +10,7 @@ import (
 	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/ui/pageHeader"
 	"imageresizerservice/library/static"
 	"net/http"
 )
@@ -21,6 +22,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 type Data struct {
 	Projects         []*project.Project
 	CreateProjectURL string
+	PageHeader       pageHeader.PageHeader
 	Breadcrumbs      []breadcrumbs.Breadcrumb
 }
 
@@ -41,6 +43,10 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			Breadcrumbs: []breadcrumbs.Breadcrumb{
 				{Label: "Home", Href: homeRoutes.HomePage},
 				{Label: "API Docs"},
+			},
+			PageHeader: pageHeader.PageHeader{
+				Title:   "API Docs",
+				Actions: []pageHeader.Action{},
 			},
 		}
 

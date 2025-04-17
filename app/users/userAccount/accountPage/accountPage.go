@@ -6,6 +6,7 @@ import (
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/ui/pageHeader"
 	"imageresizerservice/app/users/logout/logoutRoutes"
 	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
@@ -19,10 +20,10 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	LogoutURL   string
 	UserSession *userSession.UserSession
 	UserAccount *userAccount.UserAccount
 	Breadcrumbs []breadcrumbs.Breadcrumb
+	PageHeader  pageHeader.PageHeader
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -32,10 +33,18 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		data := Data{
 			UserSession: rc.UserSession,
 			UserAccount: rc.UserAccount,
-			LogoutURL:   logoutRoutes.Logout,
 			Breadcrumbs: []breadcrumbs.Breadcrumb{
 				{Label: "Home", Href: homeRoutes.HomePage},
 				{Label: "Account"},
+			},
+			PageHeader: pageHeader.PageHeader{
+				Title: "Account",
+				Actions: []pageHeader.Action{
+					{
+						Label: "Logout",
+						URL:   logoutRoutes.Logout,
+					},
+				},
 			},
 		}
 

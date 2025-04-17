@@ -13,6 +13,7 @@ func Respond(pageData any, templatePaths ...string) http.HandlerFunc {
 			"./app/ui/breadcrumbs/breadcrumbs.html",
 			"./app/ui/icons.html",
 			"./app/ui/header.html",
+			"./app/ui/pageHeader/pageHeader.html",
 		}
 
 		// Add any additional template paths

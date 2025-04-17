@@ -2,20 +2,8 @@
 {{ template "header" . }}
 <main class="container">
     {{ template "breadcrumbs" . }}
-    <nav>
-        <ul>
-            <li>
-                <h1 style="margin: 0;">
-                    Account
-                </h1>
-            </li>
-        </ul>
-        <ul>
-            <li>
-                <a role="button" href="{{.LogoutURL}}">Logout</a>
-            </li>
-        </ul>
-    </nav>
+    {{ template "pageHeader" . }}
+
 
     <section>
         <p>

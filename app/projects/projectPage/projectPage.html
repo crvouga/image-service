@@ -2,22 +2,9 @@
 {{ template "header" . }}
 <main class="container">
     {{ template "breadcrumbs" . }}
+    {{ template "pageHeader" . }}
 
-    <nav>
-        <ul>
-            <li>
-                <h1 style="margin: 0;">{{.Project.Name}}</h1>
-            </li>
-        </ul>
-        <ul>
-            <li>
-                <a role="button" href="{{.Project.EditURL}}">Edit</a>
-            </li>
-            <li>
-                <a role="button" href="{{.Project.DeleteURL}}">Delete</a>
-            </li>
-        </ul>
-    </nav>
+
 
     <section>
         <p>
