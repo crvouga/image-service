@@ -1,6 +1,7 @@
 {{define "page"}}
 {{ template "header" . }}
-<main style="display: flex; flex-direction: column; gap: 64px;">
+<main>
+
     <nav aria-label="breadcrumb">
         <ul>
             <li><a href="{{.HomeURL}}">Home</a></li>
@@ -8,22 +9,22 @@
         </ul>
     </nav>
 
-    <section>
-        <h1>Projects</h1>
-    </section>
+    <nav>
+        <ul>
+            <li>
+                <h1 style="margin: 0;">Projects</h1>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a role="button" href="{{.CreateURL}}">Create</a>
+            </li>
+        </ul>
+    </nav>
 
     <section>
-        <h2>Create Project</h2>
-        <a role="button" href="{{.CreateURL}}">Create New Project</a>
-    </section>
-
-    <section>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2>Your Projects</h2>
-        </div>
-
         {{if .Projects}}
-        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 24px;">
+        <div>
             {{range .Projects}}
             <article>
                 <h3>{{.Name}}</h3>
@@ -31,9 +32,12 @@
                     <p><strong>Project ID:</strong> {{.ID}}</p>
                     <p><strong>Created At:</strong> {{.CreatedAt}}</p>
                     <p><strong>Last Updated:</strong> {{.UpdatedAt}}</p>
+                    <p><strong>Allowed Domains:</strong> {{len .AllowedDomains}}</p>
                 </div>
-                <div style="margin-top: 16px;">
-                    <a href="{{.PageURL}}">View</a>
+                <div style="margin-top: 16px; display: flex; gap: 8px;">
+                    <a role="button" href="{{.PageURL}}">View</a>
+                    <a role="button" href="{{.EditURL}}">Edit</a>
+                    <a role="button" href="{{.DeleteURL}}">Delete</a>
                 </div>
             </article>
             {{end}}
@@ -44,6 +48,7 @@
         </div>
         {{end}}
     </section>
+
 
     <div style="width: 100%; height: 64px"></div>
 </main>

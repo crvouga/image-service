@@ -19,7 +19,8 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	HomePage string
+	HomeURL     string
+	ProjectsURL string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -34,7 +35,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 func respondGet(w http.ResponseWriter, r *http.Request) {
 	data := Data{
-		HomePage: homeRoutes.HomePage,
+		HomeURL:     homeRoutes.HomePage,
+		ProjectsURL: projectRoutes.ListProjects,
 	}
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
 }

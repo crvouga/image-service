@@ -1,12 +1,18 @@
 {{define "page"}}
 {{ template "header" . }}
 <main>
-    <section>
-        <a href="{{.Project.PageURL}}">Back</a>
-        <h1>
-            Delete Project
-        </h1>
-    </section>
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{.HomeURL}}">Home</a></li>
+            <li><a href="{{.ProjectsURL}}">Projects</a></li>
+            <li><a href="{{.Project.PageURL}}">{{.Project.Name}}</a></li>
+            <li>Delete</li>
+        </ul>
+    </nav>
+
+    <h1>
+        Delete Project
+    </h1>
     <section>
         <form method="POST" action="">
             <input type="hidden" name="projectID" value="{{.Project.ID}}">
@@ -24,12 +30,6 @@
                     <li><strong>Created:</strong> {{.Project.CreatedAt}}</li>
                     <li><strong>Allowed Domains:</strong> {{len .Project.AllowedDomains}}</li>
                 </ul>
-            </div>
-
-            <div class="form-group">
-                <label for="confirmDelete">Type "DELETE" to confirm:</label>
-                <input type="text" id="confirmDelete" name="confirmDelete" required pattern="DELETE">
-                <small>You must type DELETE in all caps to confirm</small>
             </div>
 
             <div class="form-actions">

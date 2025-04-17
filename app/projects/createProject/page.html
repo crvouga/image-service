@@ -1,13 +1,17 @@
 {{define "page"}}
 {{ template "header" . }}
 <main>
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{.HomeURL}}">Home</a></li>
+            <li><a href="{{.ProjectsURL}}">Projects</a></li>
+            <li>Create</li>
+        </ul>
+    </nav>
     <section>
-        <a href="{{.HomePage}}">Back</a>
         <h1>
             Create Project
         </h1>
-    </section>
-    <section>
         <form method="POST" action="">
             <div class="form-group">
                 <label for="projectName">Project Name:</label>

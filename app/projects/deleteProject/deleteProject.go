@@ -3,6 +3,7 @@ package deleteProject
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
@@ -16,8 +17,9 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
+	HomeURL     string
+	ProjectsURL string
 	Project     *project.Project
-	ProjectPage string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -71,7 +73,8 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 
 	data := Data{
 		Project:     project.EnsureComputed(),
-		ProjectPage: projectRoutes.ToGetProject(projectIDVar),
+		HomeURL:     homeRoutes.HomePage,
+		ProjectsURL: projectRoutes.ListProjects,
 	}
 
 	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
@@ -101,13 +104,6 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		logger.Error("invalid project ID", "error", err)
 		http.Error(w, "Invalid project ID", http.StatusBadRequest)
-		return
-	}
-
-	confirmDelete := r.FormValue("confirmDelete")
-	if confirmDelete != "DELETE" {
-		logger.Error("delete confirmation not provided", "confirmation", confirmDelete)
-		http.Error(w, "You must type DELETE to confirm", http.StatusBadRequest)
 		return
 	}
 

@@ -4,6 +4,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/error/errorPage"
+	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
@@ -17,10 +18,9 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	BackURL   string
-	Project   *project.Project
-	EditURL   string
-	DeleteURL string
+	Project     *project.Project
+	HomeURL     string
+	ProjectsURL string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -63,7 +63,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		if err != nil {
 			logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
 			page.Respond(static.GetSiblingPath("notFound.html"), Data{
-				BackURL: projectRoutes.ToListProjects(),
+				HomeURL:     homeRoutes.HomePage,
+				ProjectsURL: projectRoutes.ListProjects,
 			})(w, r)
 			return
 		}
@@ -71,7 +72,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		if project == nil {
 			logger.Error("project not found", "projectID", projectIDMaybe)
 			page.Respond(static.GetSiblingPath("notFound.html"), Data{
-				BackURL: projectRoutes.ToListProjects(),
+				HomeURL:     homeRoutes.HomePage,
+				ProjectsURL: projectRoutes.ListProjects,
 			})(w, r)
 			return
 		}
@@ -79,10 +81,9 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		logger.Info("project found", "projectID", projectIDMaybe)
 
 		data := Data{
-			BackURL:   projectRoutes.ToListProjects(),
-			Project:   project.EnsureComputed(),
-			EditURL:   projectRoutes.ToEditProject(projectIDNew),
-			DeleteURL: projectRoutes.ToDeleteProject(projectIDNew),
+			HomeURL:     homeRoutes.HomePage,
+			ProjectsURL: projectRoutes.ListProjects,
+			Project:     project.EnsureComputed(),
 		}
 
 		logger.Info("rendering project page")

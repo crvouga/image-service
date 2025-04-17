@@ -1,61 +1,59 @@
 {{define "page"}}
 {{ template "header" . }}
-<main style="display: flex; flex-direction: column; gap: 64px;">
-    <section>
-        <a href="{{.BackURL}}">Back</a>
-        <h1>
-            {{.Project.Name}}
-        </h1>
-    </section>
+<main>
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{.HomeURL}}">Home</a></li>
+            <li><a href="{{.ProjectsURL}}">Projects</a></li>
+            <li>{{.Project.Name}}</li>
+        </ul>
+    </nav>
+
+    <nav>
+        <ul>
+            <li>
+                <h1 style="margin: 0;">{{.Project.Name}}</h1>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a role="button" href="{{.Project.EditURL}}">Edit</a>
+            </li>
+            <li>
+                <a role="button" href="{{.Project.DeleteURL}}">Delete</a>
+            </li>
+        </ul>
+    </nav>
 
     <section>
-        <h2>Information</h2>
-        <div style="display: flex; flex-direction: column; gap: 16px;">
-            <p>
-                <strong>Project ID:</strong> {{.Project.ID}}
-            </p>
-            <p>
-                <strong>Name:</strong> {{.Project.Name}}
-            </p>
-            <p>
-                <strong>Created By:</strong> {{.Project.CreatedByUserID}}
-            </p>
-            <p>
-                <strong>Created At:</strong> {{.Project.CreatedAt}}
-            </p>
-            <p>
-                <strong>Last Updated:</strong> {{.Project.UpdatedAt}}
-            </p>
-        </div>
+        <p>
+            <strong>Project ID:</strong> {{.Project.ID}}
+        </p>
+        <p>
+            <strong>Name:</strong> {{.Project.Name}}
+        </p>
+        <p>
+            <strong>Created By:</strong> {{.Project.CreatedByUserID}}
+        </p>
+        <p>
+            <strong>Created At:</strong> {{.Project.CreatedAt}}
+        </p>
+        <p>
+            <strong>Last Updated:</strong> {{.Project.UpdatedAt}}
+        </p>
     </section>
-
     <section>
-        <h2>Allowed Domains</h2>
-        <div>
-            {{if .Project.AllowedDomains}}
-            <ul>
-                {{range .Project.AllowedDomains}}
-                <li>{{.String}}</li>
-                {{end}}
-            </ul>
-            {{else}}
-            <p>No domains configured</p>
+        <h3>Allowed Domains:</h3>
+        {{if .Project.AllowedDomains}}
+        <ul>
+            {{range .Project.AllowedDomains}}
+            <li>{{.String}}</li>
             {{end}}
-        </div>
+        </ul>
+        {{else}}
+        <p>No domains configured</p>
+        {{end}}
     </section>
-
-
-    <section>
-        <h2>Edit Project</h2>
-        <a role="button" href="{{.EditURL}}">Edit</a>
-    </section>
-
-    <section>
-        <h2>Delete Project</h2>
-        <a role="button" href="{{.DeleteURL}}">Delete</a>
-    </section>
-
-    <div style="width: 100%; height: 64px"></div>
 </main>
 
 {{end}}
