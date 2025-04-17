@@ -14,40 +14,44 @@
         <h2>
             Resize
         </h2>
-        <div>
+        <form id="resize-form">
             <div>
-                <label for="project-select">Project:</label>
-                <select id="project-select">
-                    {{range .Projects}}
-                    <option value="{{.ID}}">
-                        {{.Name}}
-                    </option>
-                    {{end}}
-                </select>
+                <div>
+                    <label for="project-select">Project:</label>
+                    <select id="project-select" name="project" required>
+                        {{range .Projects}}
+                        <option value="{{.ID}}">
+                            {{.Name}}
+                        </option>
+                        {{end}}
+                    </select>
+                </div>
+                <div>
+                    <label for="image-src">Image URL:</label>
+                    <input type="url" id="image-src" name="imageUrl" placeholder="Enter image URL" required />
+                </div>
+                <div>
+                    <label for="image-width">Width:</label>
+                    <input type="number" id="image-width" name="width" placeholder="Width in pixels" min="1" max="1000"
+                        value="600" required />
+                </div>
+                <div>
+                    <label for="image-height">Height:</label>
+                    <input type="number" id="image-height" name="height" placeholder="Height in pixels" min="1"
+                        max="1000" value="400" required />
+                </div>
+                <div>
+                    <button type="submit" id="resize-button">Resize</button>
+                </div>
             </div>
-            <div>
-                <label for="image-src">Image URL:</label>
-                <input type="text" id="image-src" placeholder="Enter image URL" />
-            </div>
-            <div>
-                <label for="image-width">Width:</label>
-                <input type="number" id="image-width" placeholder="Width in pixels" min="1" max="1000" value="600" />
-            </div>
-            <div>
-                <label for="image-height">Height:</label>
-                <input type="number" id="image-height" placeholder="Height in pixels" min="1" max="1000" value="400" />
-            </div>
-            <div>
-                <button id="resize-button">Resize</button>
-            </div>
-        </div>
+        </form>
         <div style="padding-top: 32px;">
             <article style="width: fit-content; height: fit-content;">
                 <img id="output" style="border: none; outline: none;" />
             </article>
         </div>
         <script>
-            const resizeButton = document.getElementById('resize-button');
+            const resizeForm = document.getElementById('resize-form');
             const imageSrcInput = document.getElementById('image-src');
             const imageWidthInput = document.getElementById('image-width');
             const imageHeightInput = document.getElementById('image-height');
@@ -70,7 +74,9 @@
                 outputImage.height = getHeight();
             });
 
-            resizeButton.addEventListener('click', () => {
+            resizeForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+
                 const projectID = projectSelect.value;
                 const imageURL = imageSrcInput.value;
                 const width = getWidth();
