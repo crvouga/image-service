@@ -31,7 +31,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		data := Data{
 			UserSession: rc.UserSession,
 			UserAccount: rc.UserAccount,
-			LogoutURL:   logoutRoutes.ToLogoutPage(),
+			LogoutURL:   logoutRoutes.Logout,
 			HomeURL:     homeRoutes.HomePage,
 		}
 

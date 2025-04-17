@@ -2,9 +2,16 @@
 {{ template "header" . }}
 <main class="container">
     <section>
-        <div class="icon-container">
-            {{ template "icon-circle-check" }}
-        </div>
+
+        {{ template "icon-circle-check" }}
+        <style>
+            .icon-circle-check {
+                width: 52px;
+                height: 52px;
+                margin-bottom: 12px;
+            }
+        </style>
+
         <h1>
             {{.Headline}}
         </h1>

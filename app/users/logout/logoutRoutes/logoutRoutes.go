@@ -1,10 +1,5 @@
 package logoutRoutes
 
 const (
-	LogoutPage   = "/user-session/logout"
-	LogoutAction = "/user-session/logout-action"
+	Logout = "/logout"
 )
-
-func ToLogoutPage() string {
-	return LogoutPage
-}
