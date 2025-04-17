@@ -75,8 +75,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 			if !isSendEmailConfigured {
 				errorPage.ErrorPage{
-					Headline: "Authentication is not enabled",
-					Body:     "The admin of this app has not enabled authentication. You can use the email you sent a login link to without authentication.",
+					Headline: "Authentication is not configured",
+					Body:     "The admin of this app has not configured authentication. You can use the email you sent a login link to without authentication.",
 					NextURL:  loginLink,
 					NextText: "Use login link",
 				}.Redirect(w, r)
