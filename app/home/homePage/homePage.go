@@ -4,10 +4,12 @@ import (
 	"imageresizerservice/app/admin/adminRoutes"
 	"imageresizerservice/app/apiDocs/apiDocsRoutes"
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/result/resultPage"
 	"imageresizerservice/app/ui/page"
+	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
 	"imageresizerservice/app/users/userAccount/userRole"
 	"imageresizerservice/library/static"
@@ -24,10 +26,14 @@ type Data struct {
 	ApiDocsURL    string
 	ClaimAdminURL string
 	NoAdmins      bool
+	UserAccount   userAccount.UserAccount
+	AdminURL      string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		rc := reqCtx.FromHttpRequest(ac, r)
+
 		admins, err := ac.UserAccountDB.GetByRole(userRole.Admin)
 
 		if err != nil {
@@ -41,6 +47,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			ApiDocsURL:    apiDocsRoutes.ApiDocsPage,
 			NoAdmins:      len(admins) == 0,
 			ClaimAdminURL: adminRoutes.ClaimAdmin,
+			UserAccount:   rc.UserAccount.EnsureComputed(),
+			AdminURL:      adminRoutes.AdminPage,
 		}
 
 		page.Respond(data, static.GetSiblingPath("homePage.html"))(w, r)

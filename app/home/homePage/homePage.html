@@ -4,6 +4,14 @@
     <section>
         <h1>Home</h1>
         <ul>
+            {{if .UserAccount.IsRoleAdmin}}
+            <li>
+                <a href={{.AdminURL}} class="card">
+                    <strong>Admin</strong>
+                </a>
+                <p>Manage the system</p>
+            </li>
+            {{end}}
             <li>
                 <a href={{.AccountURL}} class="card">
                     <strong>Account</strong>
