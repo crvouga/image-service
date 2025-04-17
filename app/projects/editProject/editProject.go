@@ -3,6 +3,7 @@ package editProject
 import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/project/projectName"
@@ -17,11 +18,6 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(projectRoutes.EditProject, Respond(ac))
 }
 
-type Data struct {
-	Project     *project.Project
-	ProjectPage string
-}
-
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodPost {
@@ -30,6 +26,12 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			respondGet(ac, w, r)
 		}
 	}
+}
+
+type Data struct {
+	Project     *project.Project
+	ProjectsURL string
+	HomeURL     string
 }
 
 func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
@@ -72,11 +74,12 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := Data{
-		Project:     project,
-		ProjectPage: projectRoutes.ToGetProject(projectIDVar),
+		Project:     project.EnsureComputed(),
+		ProjectsURL: projectRoutes.ToListProjects(),
+		HomeURL:     homeRoutes.HomePage,
 	}
 
-	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
+	page.Respond(data, static.GetSiblingPath("editProject.html"))(w, r)
 }
 
 func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {

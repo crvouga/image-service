@@ -30,7 +30,7 @@ func Respond() http.HandlerFunc {
 			EmailError: r.URL.Query().Get("ErrorEmail"),
 		}
 
-		page.Respond(htmlPath, data)(w, r)
+		page.Respond(data, htmlPath)(w, r)
 	}
 }
 

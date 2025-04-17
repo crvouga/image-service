@@ -17,7 +17,7 @@ type Project struct {
 	UpdatedAt       time.Time
 	Name            projectName.ProjectName
 	AllowedDomains  []url.URL
-	PageURL         string
+	URL             string
 	EditURL         string
 	DeleteURL       string
 }
@@ -40,7 +40,7 @@ func UrlLinesToUrlList(urls string) []url.URL {
 }
 
 func (p *Project) EnsureComputed() *Project {
-	p.PageURL = projectRoutes.ToGetProject(p.ID)
+	p.URL = projectRoutes.ToGetProject(p.ID)
 	p.EditURL = projectRoutes.ToEditProject(p.ID)
 	p.DeleteURL = projectRoutes.ToDeleteProject(p.ID)
 	return p

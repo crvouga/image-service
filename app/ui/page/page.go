@@ -5,10 +5,19 @@ import (
 	"net/http"
 )
 
-func Respond(pageTemplatePath string, pageData any) http.HandlerFunc {
+func Respond(pageData any, templatePaths ...string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tmpl, err := template.ParseFiles("./app/ui/page/page.html", "./app/ui/icons.html", "./app/ui/header.html", pageTemplatePath)
+		// Always include base templates
+		allTemplatePaths := []string{
+			"./app/ui/page/page.html",
+			"./app/ui/icons.html",
+			"./app/ui/header.html",
+		}
 
+		// Add any additional template paths
+		allTemplatePaths = append(allTemplatePaths, templatePaths...)
+
+		tmpl, err := template.ParseFiles(allTemplatePaths...)
 		if err != nil {
 			errStr := err.Error()
 			http.Error(w, errStr, http.StatusInternalServerError)

@@ -1,7 +1,6 @@
 package apiDocsPage
 
 import (
-	"imageresizerservice/app/apiDocs/apiDocsRoutes"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/project"
@@ -12,7 +11,7 @@ import (
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(apiDocsRoutes.ApiDocsPage, Respond(ac))
+	mux.HandleFunc("/api-docs", Respond(ac))
 }
 
 type Data struct {
@@ -29,7 +28,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			CreateProjectURL: projectRoutes.ToCreateProject(),
 		}
 
-		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
+		page.Respond(data, static.GetSiblingPath("page.html"), "./app/api/apiImageResizer.html")(w, r)
 	}
 }
 

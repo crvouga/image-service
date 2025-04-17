@@ -26,7 +26,7 @@ func Respond() http.HandlerFunc {
 			HomeURL:      homeRoutes.HomePage,
 		}
 
-		page.Respond(htmlPath, data)(w, r)
+		page.Respond(data, htmlPath)(w, r)
 	}
 }
 

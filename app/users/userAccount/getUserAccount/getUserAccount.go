@@ -35,7 +35,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			HomeURL:     homeRoutes.HomePage,
 		}
 
-		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
+		page.Respond(data, static.GetSiblingPath("page.html"))(w, r)
 	}
 }
 

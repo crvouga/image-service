@@ -1,0 +1,117 @@
+{{define "apiImageResizer"}}
+<section>
+    <h2>
+        <code id="resize-title"></code>
+    </h2>
+    <form id="resize-form">
+        <div>
+            <div>
+                <label for="project-select">Project: <span class="required">*</span></label>
+                <select id="project-select" name="project" required
+                    aria-invalid="{{if .Projects}}false{{else}}true{{end}}">
+                    {{range .Projects}}
+                    <option value="{{.ID}}">
+                        {{.Name}}
+                    </option>
+                    {{end}}
+                </select>
+
+                {{if .Projects}}
+                {{else}}
+                <small class="warning" id="project-select-helper">
+                    No projects have been created yet. Please <a href="{{.CreateProjectURL}}">create a project</a>
+                    first.
+                </small>
+                {{end}}
+            </div>
+            <div>
+                <label for="image-src">Image URL: <span class="required">*</span></label>
+                <input type="url" id="image-src" name="imageUrl" placeholder="Enter image URL" required />
+            </div>
+            <div>
+                <label for="image-width">Width: <span class="required">*</span></label>
+                <input type="number" id="image-width" name="width" placeholder="Width in pixels" min="1" max="1000"
+                    value="600" required />
+            </div>
+            <div>
+                <label for="image-height">Height: <span class="required">*</span></label>
+                <input type="number" id="image-height" name="height" placeholder="Height in pixels" min="1" max="1000"
+                    value="400" required />
+            </div>
+            <div>
+                <button type="submit" id="resize-button">Resize</button>
+            </div>
+        </div>
+    </form>
+    <div>
+        <p>
+            <strong>Endpoint:</strong>
+            <code id="api-endpoint"></code>
+        </p>
+    </div>
+    <div>
+        <p>
+            <strong>Output:</strong>
+        </p>
+        <img id="output" style="border: none; outline: none;" />
+    </div>
+    <script>
+        const resizeForm = document.getElementById('resize-form');
+        const imageSrcInput = document.getElementById('image-src');
+        const imageWidthInput = document.getElementById('image-width');
+        const imageHeightInput = document.getElementById('image-height');
+        const projectSelect = document.getElementById('project-select');
+        const outputImage = document.getElementById('output');
+        const apiEndpoint = document.getElementById('api-endpoint');
+        const resizeTitle = document.getElementById('resize-title');
+        const getMinWidth = () => parseInt(imageWidthInput.getAttribute('min'));
+        const getMaxWidth = () => parseInt(imageWidthInput.getAttribute('max'));
+        const getMinHeight = () => parseInt(imageHeightInput.getAttribute('min'));
+        const getMaxHeight = () => parseInt(imageHeightInput.getAttribute('max'));
+        const getWidth = () => parseInt(imageWidthInput.value);
+        const getHeight = () => parseInt(imageHeightInput.value);
+
+        const ENDPOINT = '/api/image/resize';
+        const getApiEndpoint = () => {
+            const projectID = projectSelect.value;
+            const imageURL = imageSrcInput.value;
+            const width = getWidth();
+            const height = getHeight();
+            const params = new URLSearchParams();
+            params.set('url', imageURL);
+            params.set('width', width.toString());
+            params.set('height', height.toString());
+            params.set('projectID', projectID ?? "");
+            const endpoint = ENDPOINT + '?' + params.toString();
+            return endpoint;
+        }
+
+
+        const updateUI = () => {
+            outputImage.width = getWidth();
+            outputImage.height = getHeight();
+            apiEndpoint.textContent = getApiEndpoint();
+            resizeTitle.textContent = ENDPOINT;
+        }
+
+        updateUI()
+        imageWidthInput.addEventListener('input', updateUI);
+        imageHeightInput.addEventListener('input', updateUI);
+        projectSelect.addEventListener('change', updateUI);
+        imageSrcInput.addEventListener('input', updateUI);
+
+
+        resizeForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const endpoint = getApiEndpoint();
+            fetch(endpoint)
+                .then(response => response.blob())
+                .then(blob => {
+                    const image = new Image();
+                    image.src = URL.createObjectURL(blob);
+                    outputImage.src = image.src;
+                });
+        });
+    </script>
+</section>
+{{end}}

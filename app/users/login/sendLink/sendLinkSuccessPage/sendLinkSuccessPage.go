@@ -41,7 +41,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			LoginLink:             loginLink,
 		}
 
-		page.Respond(htmlPath, data)(w, r)
+		page.Respond(data, htmlPath)(w, r)
 	}
 }
 

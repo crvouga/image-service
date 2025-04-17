@@ -28,6 +28,6 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			LogoutAction: logoutRoutes.LogoutAction,
 		}
 
-		page.Respond(static.GetSiblingPath("logoutPage.html"), data)(w, r)
+		page.Respond(data, static.GetSiblingPath("logoutPage.html"))(w, r)
 	}
 }

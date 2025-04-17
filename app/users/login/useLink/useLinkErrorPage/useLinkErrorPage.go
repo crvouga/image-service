@@ -17,13 +17,12 @@ type Data struct {
 }
 
 func Respond() http.HandlerFunc {
-	htmlPath := static.GetSiblingPath("useLinkErrorPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
 			Error: r.URL.Query().Get("error"),
 		}
 
-		page.Respond(htmlPath, data)(w, r)
+		page.Respond(data, static.GetSiblingPath("useLinkErrorPage.html"))(w, r)
 	}
 }
 

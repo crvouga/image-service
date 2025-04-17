@@ -29,7 +29,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			ApiDocsURL:  apiDocsRoutes.ApiDocsPage,
 		}
 
-		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
+		page.Respond(data, static.GetSiblingPath("page.html"))(w, r)
 	}
 }
 

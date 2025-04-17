@@ -62,19 +62,19 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		if err != nil {
 			logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
-			page.Respond(static.GetSiblingPath("notFound.html"), Data{
+			page.Respond(Data{
 				HomeURL:     homeRoutes.HomePage,
 				ProjectsURL: projectRoutes.ListProjects,
-			})(w, r)
+			}, static.GetSiblingPath("notFound.html"))(w, r)
 			return
 		}
 
 		if project == nil {
 			logger.Error("project not found", "projectID", projectIDMaybe)
-			page.Respond(static.GetSiblingPath("notFound.html"), Data{
+			page.Respond(Data{
 				HomeURL:     homeRoutes.HomePage,
 				ProjectsURL: projectRoutes.ListProjects,
-			})(w, r)
+			}, static.GetSiblingPath("notFound.html"))(w, r)
 			return
 		}
 
@@ -87,6 +87,6 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		logger.Info("rendering project page")
-		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
+		page.Respond(data, static.GetSiblingPath("page.html"))(w, r)
 	}
 }

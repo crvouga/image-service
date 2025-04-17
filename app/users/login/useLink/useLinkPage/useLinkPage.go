@@ -27,7 +27,7 @@ func Respond() http.HandlerFunc {
 			LinkID: linkID.New(r.URL.Query().Get("linkID")),
 		}
 
-		page.Respond(htmlPath, data)(w, r)
+		page.Respond(data, htmlPath)(w, r)
 	}
 }
 

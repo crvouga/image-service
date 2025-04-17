@@ -23,7 +23,7 @@ func Respond() http.HandlerFunc {
 			Home: homeRoutes.HomePage,
 		}
 
-		page.Respond(htmlPath, data)(w, r)
+		page.Respond(data, htmlPath)(w, r)
 	}
 }
 

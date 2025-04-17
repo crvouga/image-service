@@ -77,7 +77,7 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		ProjectsURL: projectRoutes.ListProjects,
 	}
 
-	page.Respond(static.GetSiblingPath("page.html"), data)(w, r)
+	page.Respond(data, static.GetSiblingPath("page.html"))(w, r)
 }
 
 func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
