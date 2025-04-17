@@ -1,4 +1,4 @@
-package getHome
+package homePage
 
 import (
 	"imageresizerservice/app/apiDocs/apiDocsRoutes"

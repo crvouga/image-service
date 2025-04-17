@@ -1,0 +1,29 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <h1>Home</h1>
+        <ul>
+            <li>
+                <a href={{.AccountURL}} class="card">
+                    <strong>Account</strong>
+                </a>
+                <p>Manage your account</p>
+            </li>
+            <li>
+                <a href={{.ProjectsURL}} class="card">
+                    <strong>Projects</strong>
+                </a>
+                <p>Manage your projects</p>
+            </li>
+            <li>
+                <a href={{.ApiDocsURL}} class="card">
+                    <strong>API Docs</strong>
+                </a>
+                <p>View the API docs</p>
+            </li>
+        </ul>
+    </section>
+</main>
+
+{{end}}

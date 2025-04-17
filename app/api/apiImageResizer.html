@@ -104,13 +104,7 @@
         resizeForm.addEventListener('submit', (event) => {
             event.preventDefault();
             const endpoint = getApiEndpoint();
-            fetch(endpoint)
-                .then(response => response.blob())
-                .then(blob => {
-                    const image = new Image();
-                    image.src = URL.createObjectURL(blob);
-                    outputImage.src = image.src;
-                });
+            outputImage.src = endpoint;
         });
     </script>
 </section>
