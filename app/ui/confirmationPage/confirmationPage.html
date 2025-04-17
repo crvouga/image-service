@@ -1,0 +1,17 @@
+{{define "page"}}
+{{ template "header" . }}
+<main>
+    <section>
+        <h1>
+            {{.Headline}}
+        </h1>
+        <p>
+            {{.Body}}
+        </p>
+        <div style="display: flex; gap: 12px;">
+            <a href="{{.ConfirmURL}}" role="button">{{.ConfirmText}}</a>
+            <a href="{{.CancelURL}}" role="button">{{.CancelText}}</a>
+        </div>
+    </section>
+</main>
+{{end}}

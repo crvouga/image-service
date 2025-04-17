@@ -5,9 +5,10 @@ import (
 	"imageresizerservice/app/api"
 	"imageresizerservice/app/apiDocs"
 	"imageresizerservice/app/ctx/appCtx"
+	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home"
 	"imageresizerservice/app/home/homePage"
-	"imageresizerservice/app/result/resultPage"
+	"imageresizerservice/app/ui"
 	"imageresizerservice/library/sessionID"
 	"imageresizerservice/library/traceID"
 
@@ -37,18 +38,22 @@ func router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	muxLoggedIn := newMuxLoggedIn(ac)
 	muxLoggedOut := newMuxLoggedOut(ac)
 	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		rc := reqCtx.FromHttpRequest(ac, r)
+		rc.Logger.Info("request received", "path", r.URL.Path)
+
 		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
 
-		err := static.ServeStaticAssets(w, r)
-		if err == nil {
+		if err := static.ServeStaticAssets(w, r); err == nil {
 			return
 		}
+
 		if auth.IsLoggedIn(ac, r) {
 			muxLoggedIn.ServeHTTP(w, r)
 			return
 		}
+
 		muxLoggedOut.ServeHTTP(w, r)
 	})
 	mux.Handle("/", handler)
@@ -61,7 +66,7 @@ func newMuxLoggedIn(ac *appCtx.AppCtx) *http.ServeMux {
 	home.Router(mux, ac)
 	projects.Router(mux, ac)
 	apiDocs.Router(mux, ac)
-	resultPage.Router(mux)
+	ui.Router(mux)
 	admin.Router(mux, ac)
 	api.Router(mux, ac)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -75,7 +80,7 @@ func newMuxLoggedOut(ac *appCtx.AppCtx) *http.ServeMux {
 	mux := http.NewServeMux()
 	users.RouterLoggedOut(mux, ac)
 	api.Router(mux, ac)
-	resultPage.Router(mux)
+	ui.Router(mux)
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		sendLinkPage.Redirect(w, r)
 	})

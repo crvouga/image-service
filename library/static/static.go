@@ -2,7 +2,6 @@ package static
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -26,8 +25,6 @@ func hasValidSuffix(requestPath string) bool {
 
 func ServeStaticAssets(w http.ResponseWriter, r *http.Request) error {
 	requestPath := r.URL.Path
-
-	log.Println("requestPath " + requestPath)
 
 	if !hasValidSuffix(requestPath) {
 		return ErrInvalidSuffix
