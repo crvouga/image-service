@@ -1,0 +1,14 @@
+{{ define "mainMenu" }}
+<section>
+    <ul>
+        {{range .MainMenu.Items}}
+        <li>
+            <a href={{.URL}}>
+                <strong>{{.Label}}</strong>
+            </a>
+            <p>{{.Description}}</p>
+        </li>
+        {{end}}
+    </ul>
+</section>
+{{ end }}

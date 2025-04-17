@@ -5,6 +5,12 @@ import (
 	"net/url"
 )
 
+type Breadcrumbs = []Breadcrumb
+
+func New(items ...Breadcrumb) Breadcrumbs {
+	return items
+}
+
 type Breadcrumb struct {
 	Label string
 	Href  string // Optional

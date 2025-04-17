@@ -22,7 +22,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	Breadcrumbs []breadcrumbs.Breadcrumb
+	Breadcrumbs breadcrumbs.Breadcrumbs
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {

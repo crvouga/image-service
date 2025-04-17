@@ -8,9 +8,9 @@ import (
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/errorPage"
+	"imageresizerservice/app/ui/mainMenu"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/ui/pageHeader"
-	"imageresizerservice/app/users/userAccount"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
 	"imageresizerservice/app/users/userAccount/userRole"
 	"imageresizerservice/library/static"
@@ -22,14 +22,8 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	ProjectsURL   string
-	AccountURL    string
-	ApiDocsURL    string
-	ClaimAdminURL string
-	NoAdmins      bool
-	UserAccount   userAccount.UserAccount
-	AdminURL      string
-	PageHeader    pageHeader.PageHeader
+	PageHeader pageHeader.PageHeader
+	MainMenu   mainMenu.MainMenu
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -43,17 +37,45 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			return
 		}
 
+		mainMenuData := mainMenu.MainMenu{
+			Items: []mainMenu.MainMenuItem{
+				{
+					Label:       "Projects",
+					Description: "Manage your projects",
+					URL:         projectRoutes.ToListProjects(),
+				},
+				{
+					Label:       "Account",
+					Description: "Manage your account",
+					URL:         userAccountRoutes.UserAccountPage,
+				},
+				{
+					Label:       "API Docs",
+					Description: "View the API documentation",
+					URL:         apiDocsRoutes.ApiDocsPage,
+				},
+			},
+		}
+
+		if rc.UserAccount.EnsureComputed().IsRoleAdmin {
+			mainMenuData.Items = append(mainMenuData.Items, mainMenu.MainMenuItem{
+				Label:       "Admin",
+				Description: "Manage the admin",
+				URL:         adminRoutes.AdminPage,
+			})
+		} else if len(admins) == 0 {
+			mainMenuData.Items = append(mainMenuData.Items, mainMenu.MainMenuItem{
+				Label:       "Claim Admin",
+				Description: "Claim the admin role",
+				URL:         adminRoutes.ClaimAdmin,
+			})
+		}
+
 		data := Data{
 			PageHeader: pageHeader.PageHeader{
 				Title: "Home",
 			},
-			ProjectsURL:   projectRoutes.ToListProjects(),
-			AccountURL:    userAccountRoutes.UserAccountPage,
-			ApiDocsURL:    apiDocsRoutes.ApiDocsPage,
-			NoAdmins:      len(admins) == 0,
-			ClaimAdminURL: adminRoutes.ClaimAdmin,
-			UserAccount:   rc.UserAccount.EnsureComputed(),
-			AdminURL:      adminRoutes.AdminPage,
+			MainMenu: mainMenuData,
 		}
 
 		page.Respond(data, static.GetSiblingPath("homePage.html"))(w, r)

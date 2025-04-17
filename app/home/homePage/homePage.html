@@ -2,44 +2,7 @@
 {{ template "header" . }}
 <main class="container">
     {{ template "pageHeader" . }}
-    <section>
-        <ul>
-            {{if .UserAccount.IsRoleAdmin}}
-            <li>
-                <a href={{.AdminURL}}>
-                    <strong>Admin</strong>
-                </a>
-                <p>Manage the app</p>
-            </li>
-            {{end}}
-            {{if .NoAdmins}}
-            <li>
-                <a href={{.ClaimAdminURL}} role="button">
-                    <strong>Claim Admin</strong>
-                </a>
-                <p>No admins configured, claim admin to manage the app</p>
-            </li>
-            {{end}}
-            <li>
-                <a href={{.AccountURL}}>
-                    <strong>Account</strong>
-                </a>
-                <p>Manage your account</p>
-            </li>
-            <li>
-                <a href={{.ProjectsURL}}>
-                    <strong>Projects</strong>
-                </a>
-                <p>Manage your projects</p>
-            </li>
-            <li>
-                <a href={{.ApiDocsURL}}>
-                    <strong>API Docs</strong>
-                </a>
-                <p>View the API docs</p>
-            </li>
-        </ul>
-    </section>
+    {{ template "mainMenu". }}
 </main>
 
 {{end}}

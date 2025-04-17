@@ -14,6 +14,7 @@ func Respond(pageData any, templatePaths ...string) http.HandlerFunc {
 			"./app/ui/icons.html",
 			"./app/ui/header.html",
 			"./app/ui/pageHeader/pageHeader.html",
+			"./app/ui/mainMenu/mainMenu.html",
 		}
 
 		// Add any additional template paths

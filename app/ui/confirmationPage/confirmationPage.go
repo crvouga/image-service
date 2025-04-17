@@ -21,7 +21,7 @@ type ConfirmationPage struct {
 	ConfirmURL  string
 	ConfirmText string
 	HiddenForm  map[string]string
-	Breadcrumbs []breadcrumbs.Breadcrumb
+	Breadcrumbs breadcrumbs.Breadcrumbs
 }
 
 func (d ConfirmationPage) ToQueryParams() url.Values {

@@ -20,7 +20,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 
 type Data struct {
 	Projects    []*project.Project
-	Breadcrumbs []breadcrumbs.Breadcrumb
+	Breadcrumbs breadcrumbs.Breadcrumbs
 	PageHeader  pageHeader.PageHeader
 }
 

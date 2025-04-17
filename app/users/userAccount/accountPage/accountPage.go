@@ -22,7 +22,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 type Data struct {
 	UserSession *userSession.UserSession
 	UserAccount *userAccount.UserAccount
-	Breadcrumbs []breadcrumbs.Breadcrumb
+	Breadcrumbs breadcrumbs.Breadcrumbs
 	PageHeader  pageHeader.PageHeader
 }
 

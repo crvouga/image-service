@@ -34,7 +34,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 type Data struct {
 	Project     *project.Project
-	Breadcrumbs []breadcrumbs.Breadcrumb
+	Breadcrumbs breadcrumbs.Breadcrumbs
 }
 
 func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
