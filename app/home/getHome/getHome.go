@@ -1,9 +1,9 @@
 package getHome
 
 import (
+	"imageresizerservice/app/apiDocs/apiDocsRoutes"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/imagePlayground/imagePlaygroundRoutes"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
@@ -16,17 +16,17 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	ProjectsURL        string
-	AccountURL         string
-	ImagePlaygroundURL string
+	ProjectsURL string
+	AccountURL  string
+	ApiDocsURL  string
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			ProjectsURL:        projectRoutes.ToListProjects(),
-			AccountURL:         userAccountRoutes.UserAccountPage,
-			ImagePlaygroundURL: imagePlaygroundRoutes.ImagePlaygroundPage,
+			ProjectsURL: projectRoutes.ToListProjects(),
+			AccountURL:  userAccountRoutes.UserAccountPage,
+			ApiDocsURL:  apiDocsRoutes.ApiDocsPage,
 		}
 
 		page.Respond(static.GetSiblingPath("page.html"), data)(w, r)

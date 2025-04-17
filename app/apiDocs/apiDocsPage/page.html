@@ -1,23 +1,31 @@
 {{define "page"}}
 {{ template "header" . }}
 <main>
-    <section>
-        <a href={{.BackURL}}>
-            Back
-        </a>
-        <h1>
-            Image Playground
-        </h1>
-    </section>
+    <nav aria-label="breadcrumb">
+        <ul>
+            <li><a href="{{.HomeURL}}">Home</a></li>
+            <li>API Docs</li>
+        </ul>
+    </nav>
+
+    <nav>
+        <ul>
+            <li>
+                <h1 style="margin: 0;">
+                    API Docs
+                </h1>
+            </li>
+        </ul>
+    </nav>
 
     <section>
-        <h2>
-            Resize
+        <h2 id="resize-title">
+            <code>/api/image/resize</code>
         </h2>
         <form id="resize-form">
             <div>
                 <div>
-                    <label for="project-select">Project:</label>
+                    <label for="project-select">Project: <span class="required">*</span></label>
                     <select id="project-select" name="project" required
                         aria-invalid="{{if .Projects}}false{{else}}true{{end}}">
                         {{range .Projects}}
@@ -36,16 +44,16 @@
                     {{end}}
                 </div>
                 <div>
-                    <label for="image-src">Image URL:</label>
+                    <label for="image-src">Image URL: <span class="required">*</span></label>
                     <input type="url" id="image-src" name="imageUrl" placeholder="Enter image URL" required />
                 </div>
                 <div>
-                    <label for="image-width">Width:</label>
+                    <label for="image-width">Width: <span class="required">*</span></label>
                     <input type="number" id="image-width" name="width" placeholder="Width in pixels" min="1" max="1000"
                         value="600" required />
                 </div>
                 <div>
-                    <label for="image-height">Height:</label>
+                    <label for="image-height">Height: <span class="required">*</span></label>
                     <input type="number" id="image-height" name="height" placeholder="Height in pixels" min="1"
                         max="1000" value="400" required />
                 </div>
@@ -54,10 +62,17 @@
                 </div>
             </div>
         </form>
-        <div style="padding-top: 32px;">
-            <article style="width: fit-content; height: fit-content;">
-                <img id="output" style="border: none; outline: none;" />
-            </article>
+        <div>
+            <p>
+                <strong>Endpoint:</strong>
+                <code id="api-endpoint"></code>
+            </p>
+        </div>
+        <div>
+            <p>
+                <strong>Output:</strong>
+            </p>
+            <img id="output" style="border: none; outline: none;" />
         </div>
         <script>
             const resizeForm = document.getElementById('resize-form');
@@ -66,7 +81,8 @@
             const imageHeightInput = document.getElementById('image-height');
             const projectSelect = document.getElementById('project-select');
             const outputImage = document.getElementById('output');
-
+            const apiEndpoint = document.getElementById('api-endpoint');
+            const resizeTitle = document.getElementById('resize-title');
             const getMinWidth = () => parseInt(imageWidthInput.getAttribute('min'));
             const getMaxWidth = () => parseInt(imageWidthInput.getAttribute('max'));
             const getMinHeight = () => parseInt(imageHeightInput.getAttribute('min'));
@@ -74,18 +90,25 @@
             const getWidth = () => parseInt(imageWidthInput.value);
             const getHeight = () => parseInt(imageHeightInput.value);
 
-            outputImage.width = getWidth();
-            outputImage.height = getHeight();
-            imageWidthInput.addEventListener('input', () => {
+            const ENDPOINT = '/api/image/resize';
+
+            const updateUI = () => {
                 outputImage.width = getWidth();
-            });
-            imageHeightInput.addEventListener('input', () => {
                 outputImage.height = getHeight();
-            });
+                apiEndpoint.textContent = getApiEndpoint();
+                resizeTitle.textContent = ENDPOINT;
+            }
 
-            resizeForm.addEventListener('submit', (event) => {
-                event.preventDefault();
+            updateUI()
+            imageWidthInput.addEventListener('input', updateUI);
+            imageHeightInput.addEventListener('input', updateUI);
+            projectSelect.addEventListener('change', updateUI);
+            imageSrcInput.addEventListener('input', updateUI);
 
+
+
+
+            const getApiEndpoint = () => {
                 const projectID = projectSelect.value;
                 const imageURL = imageSrcInput.value;
                 const width = getWidth();
@@ -94,10 +117,15 @@
                 params.set('url', imageURL);
                 params.set('width', width.toString());
                 params.set('height', height.toString());
-                params.set('projectID', projectID);
-                const url = '/api/image/resize?' + params.toString();
-                console.log(url);
-                fetch(url)
+                params.set('projectID', projectID ?? "");
+                const endpoint = ENDPOINT + '?' + params.toString();
+                return endpoint;
+            }
+
+            resizeForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const endpoint = getApiEndpoint();
+                fetch(endpoint)
                     .then(response => response.blob())
                     .then(blob => {
                         const image = new Image();

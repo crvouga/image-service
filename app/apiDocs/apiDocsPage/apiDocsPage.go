@@ -1,9 +1,9 @@
-package imagePlaygroundPage
+package apiDocsPage
 
 import (
+	"imageresizerservice/app/apiDocs/apiDocsRoutes"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/imagePlayground/imagePlaygroundRoutes"
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/page"
@@ -12,11 +12,11 @@ import (
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc(imagePlaygroundRoutes.ImagePlaygroundPage, Respond(ac))
+	mux.HandleFunc(apiDocsRoutes.ApiDocsPage, Respond(ac))
 }
 
 type Data struct {
-	BackURL          string
+	HomeURL          string
 	Projects         []project.Project
 	CreateProjectURL string
 }
@@ -24,7 +24,7 @@ type Data struct {
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := Data{
-			BackURL:          homeRoutes.HomePage,
+			HomeURL:          homeRoutes.HomePage,
 			Projects:         []project.Project{},
 			CreateProjectURL: projectRoutes.ToCreateProject(),
 		}
