@@ -103,8 +103,7 @@
 
         resizeForm.addEventListener('submit', (event) => {
             event.preventDefault();
-            const endpoint = getApiEndpoint();
-            outputImage.src = endpoint;
+            outputImage.src = getApiEndpoint();
         });
     </script>
 </section>
