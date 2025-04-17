@@ -83,12 +83,11 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 }
 
 func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
-	req := reqCtx.FromHttpRequest(ac, r)
-	logger := req.Logger
+	rc := reqCtx.FromHttpRequest(ac, r)
+	logger := rc.Logger
 
 	logger.Info("handling project delete request")
 
-	// Handle form submission
 	if err := r.ParseForm(); err != nil {
 		logger.Error("failed to parse form", "error", err)
 		errorPage.New(errors.New("failed to parse form")).Redirect(w, r)
@@ -109,42 +108,49 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get existing project
+	err = deleteProject(ac, &rc, projectIDVar)
+	if err != nil {
+		logger.Error("failed to delete project", "error", err)
+		errorPage.New(err).Redirect(w, r)
+		return
+	}
+
+	logger.Info("project deleted successfully", "projectID", projectIDVar)
+	http.Redirect(w, r, projectRoutes.ToListProjects(), http.StatusSeeOther)
+}
+
+func deleteProject(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx, projectIDVar projectID.ProjectID) error {
+	logger := rc.Logger
+
 	uow, err := ac.UowFactory.Begin()
 	if err != nil {
 		logger.Error("failed to begin transaction", "error", err)
-		errorPage.New(errors.New("failed to delete project")).Redirect(w, r)
-		return
+		return errors.New("failed to delete project")
 	}
 	defer uow.Rollback()
 
 	existingProject, err := ac.ProjectDB.GetByID(projectIDVar)
 	if err != nil {
-		logger.Error("project not found", "projectID", projectIDMaybe, "error", err)
-		errorPage.New(errors.New("project not found")).Redirect(w, r)
-		return
+		logger.Error("project not found", "projectID", projectIDVar, "error", err)
+		return errors.New("project not found")
 	}
 
 	if existingProject == nil {
-		logger.Error("project not found", "projectID", projectIDMaybe)
-		errorPage.New(errors.New("project not found")).Redirect(w, r)
-		return
+		logger.Error("project not found", "projectID", projectIDVar)
+		return errors.New("project not found")
 	}
 
 	logger.Info("deleting project", "projectID", projectIDVar)
 
 	if err = ac.ProjectDB.ZapByID(uow, projectIDVar); err != nil {
 		logger.Error("failed to delete project", "error", err)
-		errorPage.New(errors.New("failed to delete project")).Redirect(w, r)
-		return
+		return errors.New("failed to delete project")
 	}
 
 	if err = uow.Commit(); err != nil {
 		logger.Error("failed to commit transaction", "error", err)
-		errorPage.New(errors.New("failed to delete project")).Redirect(w, r)
-		return
+		return errors.New("failed to delete project")
 	}
 
-	logger.Info("project deleted successfully", "projectID", projectIDVar)
-	http.Redirect(w, r, projectRoutes.ToListProjects(), http.StatusSeeOther)
+	return nil
 }
