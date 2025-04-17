@@ -5,6 +5,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
+	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/confirmationPage"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/successPage"
@@ -79,5 +80,9 @@ func handleGet(w http.ResponseWriter, r *http.Request) {
 		ConfirmText: "Claim",
 		CancelURL:   homeRoutes.HomePage,
 		CancelText:  "Cancel",
+		Breadcrumbs: []breadcrumbs.Breadcrumb{
+			{Label: "Home", Href: homeRoutes.HomePage},
+			{Label: "Claim Admin"},
+		},
 	}.Redirect(w, r)
 }

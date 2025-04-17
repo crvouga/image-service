@@ -4,6 +4,7 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
+	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/users/logout/logoutRoutes"
 	"imageresizerservice/app/users/userAccount"
@@ -19,9 +20,9 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 
 type Data struct {
 	LogoutURL   string
-	HomeURL     string
 	UserSession *userSession.UserSession
 	UserAccount *userAccount.UserAccount
+	Breadcrumbs []breadcrumbs.Breadcrumb
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -32,7 +33,10 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			UserSession: rc.UserSession,
 			UserAccount: rc.UserAccount,
 			LogoutURL:   logoutRoutes.Logout,
-			HomeURL:     homeRoutes.HomePage,
+			Breadcrumbs: []breadcrumbs.Breadcrumb{
+				{Label: "Home", Href: homeRoutes.HomePage},
+				{Label: "Account"},
+			},
 		}
 
 		page.Respond(data, static.GetSiblingPath("accountPage.html"))(w, r)

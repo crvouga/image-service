@@ -8,6 +8,7 @@ import (
 	"imageresizerservice/app/projects/project"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/notFoundPage"
 	"imageresizerservice/app/ui/page"
@@ -21,8 +22,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 
 type Data struct {
 	Project     *project.Project
-	HomeURL     string
-	ProjectsURL string
+	Breadcrumbs []breadcrumbs.Breadcrumb
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -77,9 +77,12 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		logger.Info("project found", "projectID", projectIDMaybe)
 
 		data := Data{
-			HomeURL:     homeRoutes.HomePage,
-			ProjectsURL: projectRoutes.ListProjects,
-			Project:     project.EnsureComputed(),
+			Project: project.EnsureComputed(),
+			Breadcrumbs: []breadcrumbs.Breadcrumb{
+				{Label: "Home", Href: homeRoutes.HomePage},
+				{Label: "Projects", Href: projectRoutes.ListProjects},
+				{Label: project.EnsureComputed().Name.String()},
+			},
 		}
 
 		logger.Info("rendering project page")

@@ -9,6 +9,7 @@ import (
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/project/projectName"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
@@ -33,8 +34,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 type Data struct {
 	Project     *project.Project
-	ProjectsURL string
-	HomeURL     string
+	Breadcrumbs []breadcrumbs.Breadcrumb
 }
 
 func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
@@ -77,9 +77,13 @@ func respondGet(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := Data{
-		Project:     project.EnsureComputed(),
-		ProjectsURL: projectRoutes.ToListProjects(),
-		HomeURL:     homeRoutes.HomePage,
+		Project: project.EnsureComputed(),
+		Breadcrumbs: []breadcrumbs.Breadcrumb{
+			{Label: "Home", Href: homeRoutes.HomePage},
+			{Label: "Projects", Href: projectRoutes.ListProjects},
+			{Label: project.EnsureComputed().Name.String(), Href: project.EnsureComputed().URL},
+			{Label: "Edit"},
+		},
 	}
 
 	page.Respond(data, static.GetSiblingPath("editProject.html"))(w, r)

@@ -4,6 +4,8 @@ import (
 	"errors"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
+	"imageresizerservice/app/home/homeRoutes"
+	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/confirmationPage"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/successPage"
@@ -44,6 +46,11 @@ func respondGet(w http.ResponseWriter, r *http.Request) {
 		ConfirmText: "Logout",
 		CancelURL:   userAccountRoutes.UserAccountPage,
 		CancelText:  "Cancel",
+		Breadcrumbs: []breadcrumbs.Breadcrumb{
+			{Label: "Home", Href: homeRoutes.HomePage},
+			{Label: "Account", Href: userAccountRoutes.UserAccountPage},
+			{Label: "Logout"},
+		},
 	}.Render(w, r)
 }
 

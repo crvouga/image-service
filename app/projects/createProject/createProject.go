@@ -9,6 +9,7 @@ import (
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/project/projectName"
 	"imageresizerservice/app/projects/projectRoutes"
+	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/library/static"
@@ -21,8 +22,7 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 }
 
 type Data struct {
-	HomeURL     string
-	ProjectsURL string
+	Breadcrumbs []breadcrumbs.Breadcrumb
 }
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
@@ -37,8 +37,11 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 func respondGet(w http.ResponseWriter, r *http.Request) {
 	data := Data{
-		HomeURL:     homeRoutes.HomePage,
-		ProjectsURL: projectRoutes.ListProjects,
+		Breadcrumbs: []breadcrumbs.Breadcrumb{
+			{Label: "Home", Href: homeRoutes.HomePage},
+			{Label: "Projects", Href: projectRoutes.ListProjects},
+			{Label: "Create"},
+		},
 	}
 	page.Respond(data, static.GetSiblingPath("createProject.html"))(w, r)
 }

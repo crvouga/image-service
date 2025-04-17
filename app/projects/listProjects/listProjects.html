@@ -1,13 +1,7 @@
 {{define "page"}}
 {{ template "header" . }}
 <main class="container">
-
-    <nav aria-label="breadcrumb">
-        <ul>
-            <li><a href="{{.HomeURL}}">Home</a></li>
-            <li>Projects</li>
-        </ul>
-    </nav>
+    {{ template "breadcrumbs" . }}
 
     <nav>
         <ul>

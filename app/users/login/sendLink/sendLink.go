@@ -3,7 +3,6 @@ package sendLink
 import (
 	"errors"
 	"net/http"
-	"net/url"
 	"sort"
 	"strings"
 
@@ -24,10 +23,7 @@ import (
 )
 
 type Data struct {
-	Action     string
-	EmailError string
-	Email      string
-	JsPath     string
+	Email string
 }
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
@@ -40,9 +36,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		// Handle GET request - render the form
 		if r.Method == http.MethodGet {
 			data := Data{
-				Action:     loginRoutes.SendLinkPage,
-				Email:      r.URL.Query().Get("Email"),
-				EmailError: r.URL.Query().Get("ErrorEmail"),
+				Email: r.URL.Query().Get("Email"),
 			}
 
 			page.Respond(data, static.GetSiblingPath("sendLink.html"))(w, r)
@@ -52,10 +46,12 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		// Handle POST request - process the form
 		if r.Method == http.MethodPost {
 			if err := r.ParseForm(); err != nil {
-				RedirectError(w, r, RedirectErrorArgs{
-					Email:      "",
-					EmailError: "Unable to parse form",
-				})
+				errorPage.ErrorPage{
+					Headline: "Error",
+					Body:     "Unable to parse form",
+					NextURL:  loginRoutes.ToSendLink(""),
+					NextText: "Back",
+				}.Redirect(w, r)
 				return
 			}
 
@@ -65,10 +61,12 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 			errSent := SendLink(ac, &rc, emailInput)
 
 			if errSent != nil {
-				RedirectError(w, r, RedirectErrorArgs{
-					Email:      emailInput,
-					EmailError: errSent.Error(),
-				})
+				errorPage.ErrorPage{
+					Headline: "Error",
+					Body:     "Unable to send link: " + errSent.Error(),
+					NextURL:  loginRoutes.ToSendLink(emailInput),
+					NextText: "Back",
+				}.Redirect(w, r)
 				return
 			}
 
@@ -177,15 +175,6 @@ func toLatestLoginLink(ac *appCtx.AppCtx, ctx *reqCtx.ReqCtx) *link.Link {
 type RedirectErrorArgs struct {
 	Email      string
 	EmailError string
-}
-
-func RedirectError(w http.ResponseWriter, r *http.Request, args RedirectErrorArgs) {
-	u, _ := url.Parse(loginRoutes.SendLinkPage)
-	q := u.Query()
-	q.Set("Email", args.Email)
-	q.Set("ErrorEmail", args.EmailError)
-	u.RawQuery = q.Encode()
-	http.Redirect(w, r, u.String(), http.StatusSeeOther)
 }
 
 func Redirect(w http.ResponseWriter, r *http.Request) {
