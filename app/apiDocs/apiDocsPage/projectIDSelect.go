@@ -4,7 +4,6 @@ import (
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/projects/project"
-	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/users/userID"
 	"net/http"
@@ -13,14 +12,15 @@ import (
 type ProjectIDSelect struct {
 	Projects         []*project.Project
 	CreateProjectURL string
-	ProjectID        projectID.ProjectID
+	ProjectID        string
 }
 
 func GetProjectIDSelect(ac *appCtx.AppCtx, r *http.Request) ProjectIDSelect {
 	rc := reqCtx.FromHttpRequest(ac, r)
+
 	return ProjectIDSelect{
 		Projects:         getProjects(ac, rc.UserSession.UserID),
-		ProjectID:        projectID.ProjectID(r.URL.Query().Get("projectID")),
+		ProjectID:        r.URL.Query().Get("projectID"),
 		CreateProjectURL: projectRoutes.ToCreateProject(),
 	}
 }

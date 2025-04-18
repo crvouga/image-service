@@ -15,6 +15,10 @@ func New(id string) SessionID {
 	return SessionID(id)
 }
 
+func (s SessionID) String() string {
+	return string(s)
+}
+
 // WithSessionIDCookie is a middleware that ensures a sessionID cookie exists.
 // If the cookie is missing, it creates a new one with a random UUID.
 func WithSessionIDCookie(next http.Handler) http.Handler {

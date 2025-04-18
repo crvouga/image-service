@@ -19,7 +19,6 @@
             } else {
                 currentUrl.searchParams.delete('projectID');
             }
-            // Use window.location.href instead of pushState to reload the page
             window.location.href = currentUrl.toString();
         });
     </script>
