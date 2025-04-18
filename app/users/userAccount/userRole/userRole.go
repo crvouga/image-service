@@ -48,3 +48,10 @@ func ParseRole(s string) (Role, error) {
 	}
 	return role, nil
 }
+
+func Ensure(r Role) Role {
+	if !r.IsValid() {
+		return Standard
+	}
+	return r
+}
