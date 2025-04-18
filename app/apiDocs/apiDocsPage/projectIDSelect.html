@@ -1,6 +1,6 @@
 {{define "projectIDSelect"}}
 <div>
-    <label for="project-select">Project: <span class="required">*</span></label>
+    <label for="project-select">projectID: <span class="required">*</span></label>
     <select id="project-select" name="projectID" required {{if not .ProjectIDSelect.Projects}}aria-invalid="true"
         {{end}}>
         <option value="">Select a project</option>
