@@ -10,15 +10,15 @@ import (
 	"net/http"
 )
 
-type ProjectSelect struct {
+type ProjectIDSelect struct {
 	Projects         []*project.Project
 	CreateProjectURL string
 	ProjectID        projectID.ProjectID
 }
 
-func GetProjectSelect(ac *appCtx.AppCtx, r *http.Request) ProjectSelect {
+func GetProjectIDSelect(ac *appCtx.AppCtx, r *http.Request) ProjectIDSelect {
 	rc := reqCtx.FromHttpRequest(ac, r)
-	return ProjectSelect{
+	return ProjectIDSelect{
 		Projects:         getProjects(ac, rc.UserSession.UserID),
 		ProjectID:        projectID.ProjectID(r.URL.Query().Get("projectID")),
 		CreateProjectURL: projectRoutes.ToCreateProject(),

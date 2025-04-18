@@ -28,15 +28,15 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		switch endpoint {
 		case api.EndpointApiImageResize:
 			type Data struct {
-				PageHeader    pageHeader.PageHeader
-				Breadcrumbs   []breadcrumbs.Breadcrumb
-				ProjectSelect ProjectSelect
-				Endpoint      string
+				PageHeader      pageHeader.PageHeader
+				Breadcrumbs     []breadcrumbs.Breadcrumb
+				ProjectIDSelect ProjectIDSelect
+				Endpoint        string
 			}
 
 			data := Data{
-				Endpoint:      api.EndpointApiImageResize,
-				ProjectSelect: GetProjectSelect(ac, r),
+				Endpoint:        api.EndpointApiImageResize,
+				ProjectIDSelect: GetProjectIDSelect(ac, r),
 				PageHeader: pageHeader.PageHeader{
 					Title:   api.EndpointApiImageResize,
 					Actions: []pageHeader.Action{},
@@ -48,7 +48,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 				},
 			}
 
-			page.Respond(data, static.GetSiblingPath("apiImageResizer.html"), static.GetSiblingPath("projectSelect.html"))(w, r)
+			page.Respond(data, static.GetSiblingPath("apiImageResizer.html"), static.GetSiblingPath("projectIDSelect.html"))(w, r)
 			return
 		default:
 
