@@ -1,32 +1,20 @@
 {{define "header"}}
+<header class="container">
+    {{template "icon-image" }}
+    <style>
+        .icon-image {
+            width: 32px;
+            height: 32px;
+            margin-right: 12px;
+        }
+    </style>
+    <strong>Image Service</strong>
+</header>
 <style>
-    header>nav>ul {
+    header {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        font-size: 1.25rem;
-    }
-
-    header>nav>ul>li {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    header>nav>ul>li>.icon-image {
-        width: 1.5em;
-        height: 1.5em;
-        margin-right: 0.5em;
     }
 </style>
-<header class="container">
-    <nav>
-        <ul>
-            <li>
-                {{template "icon-image" }}
-                <strong>Image Service</strong>
-            </li>
-        </ul>
-    </nav>
-</header>
 {{end}}

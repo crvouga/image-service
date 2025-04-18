@@ -1,0 +1,34 @@
+{{define "projectSelect"}}
+<div>
+    <label for="project-select">Project: <span class="required">*</span></label>
+    <select id="project-select" name="projectID" required {{if not .ProjectSelect.Projects}}aria-invalid="true" {{end}}>
+        <option value="">Select a project</option>
+        {{range .ProjectSelect.Projects}}
+        <option value="{{.ID}}" {{if eq .ID $.ProjectSelect.ProjectID}}selected{{end}}>
+            {{.Name}}
+        </option>
+        {{end}}
+    </select>
+    <script>
+        document.getElementById('project-select').addEventListener('change', (e) => {
+            const projectID = e.target.value;
+            const currentUrl = new URL(window.location.href);
+            if (projectID) {
+                currentUrl.searchParams.set('projectID', projectID);
+            } else {
+                currentUrl.searchParams.delete('projectID');
+            }
+            // Use window.location.href instead of pushState to reload the page
+            window.location.href = currentUrl.toString();
+        });
+    </script>
+    {{if .ProjectSelect.Projects}}
+
+    {{else}}
+    <small class="warning" id="project-select-helper">
+        No projects have been created yet. Please <a href="{{.ProjectSelect.CreateProjectURL}}">create a project</a>
+        first.
+    </small>
+    {{end}}
+</div>
+{{end}}

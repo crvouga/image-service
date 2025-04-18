@@ -1,14 +1,18 @@
 {
   "link:139314ebe54d00213dea9218d3978704": "{\"ID\":\"139314ebe54d00213dea9218d3978704\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T17:42:24.427543-07:00\",\"UsedAt\":\"2025-04-17T17:42:36.165591-07:00\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\"}",
   "link:3bf71ba17594e8756200ff48d41ecf15": "{\"ID\":\"3bf71ba17594e8756200ff48d41ecf15\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T13:23:58.992404-07:00\",\"UsedAt\":\"2025-04-17T13:24:01.69638-07:00\",\"SessionID\":\"d564ad0b6aa2769211f8e263759a7b73\"}",
-  "link:index:linkIDsBySessionID:7a3ae254a06108834227bd1c0eece06d": "[\"139314ebe54d00213dea9218d3978704\"]",
+  "link:d2e9eaa95fddfd07f88a3309ac5fa47d": "{\"ID\":\"d2e9eaa95fddfd07f88a3309ac5fa47d\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T18:19:10.694313-07:00\",\"UsedAt\":\"2025-04-17T18:19:12.564683-07:00\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\"}",
+  "link:index:linkIDsBySessionID:7a3ae254a06108834227bd1c0eece06d": "[\"139314ebe54d00213dea9218d3978704\",\"d2e9eaa95fddfd07f88a3309ac5fa47d\"]",
   "link:index:linkIDsBySessionID:d564ad0b6aa2769211f8e263759a7b73": "[\"3bf71ba17594e8756200ff48d41ecf15\"]",
-  "project:index:projectIDsByCreatedByUserID:eb432243e2d7efa6ad722511ea7d15ae": "",
-  "userAccount:eb432243e2d7efa6ad722511ea7d15ae": "{\"UserID\":\"eb432243e2d7efa6ad722511ea7d15ae\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T13:24:01.704866-07:00\",\"UpdatedAt\":\"2025-04-17T17:42:36.16717-07:00\",\"Role\":\"\",\"IsRoleAdmin\":false,\"IsRoleStandard\":false}",
+  "project:68752b1de22cbb3321ee5a433810ec66": "{\"ID\":\"68752b1de22cbb3321ee5a433810ec66\",\"CreatedByUserID\":\"eb432243e2d7efa6ad722511ea7d15ae\",\"CreatedAt\":\"2025-04-17T17:45:36.612875-07:00\",\"UpdatedAt\":\"2025-04-17T18:20:25.132217-07:00\",\"Name\":\"moviefinder.app123\",\"AllowedDomains\":null,\"URL\":\"\",\"EditURL\":\"\",\"DeleteURL\":\"\",\"AllowedDomainsString\":\"\"}",
+  "project:index:projectIDsByCreatedByUserID:eb432243e2d7efa6ad722511ea7d15ae": ",68752b1de22cbb3321ee5a433810ec66",
+  "userAccount:eb432243e2d7efa6ad722511ea7d15ae": "{\"UserID\":\"eb432243e2d7efa6ad722511ea7d15ae\",\"EmailAddress\":\"crvouga@gmail.com\",\"CreatedAt\":\"2025-04-17T13:24:01.704866-07:00\",\"UpdatedAt\":\"2025-04-17T18:19:43.199115-07:00\",\"Role\":\"ADMIN\",\"IsRoleAdmin\":false,\"IsRoleStandard\":false}",
   "userAccount:index:userIDByEmailAddress:crvouga@gmail.com": "eb432243e2d7efa6ad722511ea7d15ae",
   "userAccount:index:userIDsByRole:": "[\"eb432243e2d7efa6ad722511ea7d15ae\"]",
+  "userAccount:index:userIDsByRole:ADMIN": "[\"eb432243e2d7efa6ad722511ea7d15ae\"]",
   "userSession:3059062ed50e6a1b936809c2d407b485": "{\"ID\":\"3059062ed50e6a1b936809c2d407b485\",\"UserID\":\"eb432243e2d7efa6ad722511ea7d15ae\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\",\"CreatedAt\":\"2025-04-17T17:42:36.167786-07:00\",\"EndedAt\":\"0001-01-01T00:00:00Z\"}",
   "userSession:36207e2e0ce6f0d640f0f0b5e14dcab7": "{\"ID\":\"36207e2e0ce6f0d640f0f0b5e14dcab7\",\"UserID\":\"eb432243e2d7efa6ad722511ea7d15ae\",\"SessionID\":\"d564ad0b6aa2769211f8e263759a7b73\",\"CreatedAt\":\"2025-04-17T13:24:01.707008-07:00\",\"EndedAt\":\"0001-01-01T00:00:00Z\"}",
-  "userSession:index:userSessionIDBySessionID:7a3ae254a06108834227bd1c0eece06d": "3059062ed50e6a1b936809c2d407b485",
+  "userSession:d32f41b6a39c5eaedda60fc332d2902f": "{\"ID\":\"d32f41b6a39c5eaedda60fc332d2902f\",\"UserID\":\"eb432243e2d7efa6ad722511ea7d15ae\",\"SessionID\":\"7a3ae254a06108834227bd1c0eece06d\",\"CreatedAt\":\"2025-04-17T18:19:12.567043-07:00\",\"EndedAt\":\"0001-01-01T00:00:00Z\"}",
+  "userSession:index:userSessionIDBySessionID:7a3ae254a06108834227bd1c0eece06d": "d32f41b6a39c5eaedda60fc332d2902f",
   "userSession:index:userSessionIDBySessionID:d564ad0b6aa2769211f8e263759a7b73": "36207e2e0ce6f0d640f0f0b5e14dcab7"
 }

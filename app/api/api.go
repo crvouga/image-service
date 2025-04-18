@@ -5,6 +5,10 @@ import (
 	"net/http"
 )
 
+const (
+	EndpointApiImageResize = "/api/image/resize"
+)
+
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
-	mux.HandleFunc("/api/image/resize", ApiImageResize(ac))
+	mux.HandleFunc(EndpointApiImageResize, ApiImageResize(ac))
 }

@@ -20,14 +20,22 @@ func Respond(pageData any, templatePaths ...string) http.HandlerFunc {
 		// Add any additional template paths
 		allTemplatePaths = append(allTemplatePaths, templatePaths...)
 
-		tmpl, err := template.ParseFiles(allTemplatePaths...)
+		// Define function map for templates
+		funcMap := template.FuncMap{}
+
+		// Create template with function map
+		tmpl, err := template.New("page.html").Funcs(funcMap).ParseFiles(allTemplatePaths...)
 		if err != nil {
 			errStr := err.Error()
 			http.Error(w, errStr, http.StatusInternalServerError)
 			return
 		}
 
-		if err := tmpl.Execute(w, pageData); err != nil {
+		// Set content type header
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		// Execute the root template which will include all others
+		if err := tmpl.ExecuteTemplate(w, "page.html", pageData); err != nil {
 			errStr := err.Error()
 			http.Error(w, errStr, http.StatusInternalServerError)
 		}

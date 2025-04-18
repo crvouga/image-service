@@ -1,14 +1,13 @@
 package apiDocsPage
 
 import (
+	"imageresizerservice/app/api"
+	"imageresizerservice/app/apiDocs/apiDocsRoutes"
 	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
 
 	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/projects/project"
-	"imageresizerservice/app/projects/projectRoutes"
 	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/errorPage"
+	"imageresizerservice/app/ui/mainMenu"
 	"imageresizerservice/app/ui/page"
 	"imageresizerservice/app/ui/pageHeader"
 	"imageresizerservice/library/static"
@@ -19,38 +18,70 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc("/api-docs", Respond(ac))
 }
 
-type Data struct {
-	Projects         []*project.Project
-	CreateProjectURL string
-	PageHeader       pageHeader.PageHeader
-	Breadcrumbs      []breadcrumbs.Breadcrumb
-}
+const (
+	PageTitle = "HTTP API Docs"
+)
 
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		rc := reqCtx.FromHttpRequest(ac, r)
+		endpoint := r.URL.Query().Get("endpoint")
+		switch endpoint {
+		case api.EndpointApiImageResize:
+			type Data struct {
+				PageHeader    pageHeader.PageHeader
+				Breadcrumbs   []breadcrumbs.Breadcrumb
+				ProjectSelect ProjectSelect
+				Endpoint      string
+			}
 
-		projects, err := ac.ProjectDB.GetByCreatedByUserID(rc.UserSession.UserID)
+			data := Data{
+				Endpoint:      api.EndpointApiImageResize,
+				ProjectSelect: GetProjectSelect(ac, r),
+				PageHeader: pageHeader.PageHeader{
+					Title:   api.EndpointApiImageResize,
+					Actions: []pageHeader.Action{},
+				},
+				Breadcrumbs: []breadcrumbs.Breadcrumb{
+					{Label: "Home", Href: homeRoutes.HomePage},
+					{Label: PageTitle, Href: apiDocsRoutes.ApiDocsPage},
+					{Label: api.EndpointApiImageResize},
+				},
+			}
 
-		if err != nil {
-			errorPage.New(err).Redirect(w, r)
+			page.Respond(data, static.GetSiblingPath("apiImageResizer.html"), static.GetSiblingPath("projectSelect.html"))(w, r)
 			return
+		default:
+
+			type Data struct {
+				PageHeader             pageHeader.PageHeader
+				Breadcrumbs            []breadcrumbs.Breadcrumb
+				MainMenu               mainMenu.MainMenu
+				EndpointApiImageResize string
+			}
+
+			data := Data{
+				PageHeader: pageHeader.PageHeader{
+					Title:   PageTitle,
+					Actions: []pageHeader.Action{},
+				},
+				Breadcrumbs: []breadcrumbs.Breadcrumb{
+					{Label: "Home", Href: homeRoutes.HomePage},
+					{Label: PageTitle},
+				},
+				MainMenu: mainMenu.MainMenu{
+					Items: []mainMenu.MainMenuItem{
+						{
+							Label:       api.EndpointApiImageResize,
+							URL:         apiDocsRoutes.ToApiDocsPage(api.EndpointApiImageResize),
+							Description: "Resize an image",
+						},
+					},
+				},
+			}
+
+			page.Respond(data, static.GetSiblingPath("apiDocsPage.html"))(w, r)
 		}
 
-		data := Data{
-			Projects:         projects,
-			CreateProjectURL: projectRoutes.ToCreateProject(),
-			Breadcrumbs: []breadcrumbs.Breadcrumb{
-				{Label: "Home", Href: homeRoutes.HomePage},
-				{Label: "API Docs"},
-			},
-			PageHeader: pageHeader.PageHeader{
-				Title:   "API Docs",
-				Actions: []pageHeader.Action{},
-			},
-		}
-
-		page.Respond(data, static.GetSiblingPath("apiDocsPage.html"), "./app/api/apiImageResizer.html")(w, r)
 	}
 }
 

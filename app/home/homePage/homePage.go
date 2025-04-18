@@ -21,6 +21,10 @@ func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {
 	mux.HandleFunc(homeRoutes.HomePage, Respond(ac))
 }
 
+const (
+	PageTitle = "Home"
+)
+
 type Data struct {
 	PageHeader pageHeader.PageHeader
 	MainMenu   mainMenu.MainMenu
@@ -50,8 +54,8 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 					URL:         userAccountRoutes.UserAccountPage,
 				},
 				{
-					Label:       "API Docs",
-					Description: "View the API documentation",
+					Label:       "HTTP API Docs",
+					Description: "View the documentation for the HTTP API",
 					URL:         apiDocsRoutes.ApiDocsPage,
 				},
 			},
@@ -73,7 +77,7 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 
 		data := Data{
 			PageHeader: pageHeader.PageHeader{
-				Title: "Home",
+				Title: PageTitle,
 			},
 			MainMenu: mainMenuData,
 		}
