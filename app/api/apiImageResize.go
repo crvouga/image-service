@@ -3,6 +3,9 @@ package api
 import (
 	"fmt"
 	"image"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"imageresizerservice/app/ctx/appCtx"
 	"imageresizerservice/app/projects/project/projectID"
 	"imageresizerservice/library/imageExt"
@@ -12,15 +15,15 @@ import (
 
 // ImageResizeParams defines all available query parameters for the image resize API
 type ImageResizeParams struct {
-	URL       string `query:"url" doc:"URL of the image to resize" required:"true"`
+	ImageURL  string `query:"imageURL" doc:"URL of the image to resize" required:"true"`
 	Width     int    `query:"width" doc:"Width in pixels (1-2000)" min:"1" max:"2000"`
 	Height    int    `query:"height" doc:"Height in pixels (1-2000)" min:"1" max:"2000"`
 	ProjectID string `query:"projectID" doc:"Project identifier" required:"true"`
 }
 
 func (params *ImageResizeParams) validate() error {
-	if params.URL == "" {
-		return fmt.Errorf("url parameter is required")
+	if params.ImageURL == "" {
+		return fmt.Errorf("imageURL parameter is required")
 	}
 	if params.ProjectID == "" {
 		return fmt.Errorf("projectID parameter is required")
@@ -43,7 +46,7 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 		}
 
 		params := ImageResizeParams{
-			URL:       r.URL.Query().Get("url"),
+			ImageURL:  r.URL.Query().Get("imageURL"),
 			Width:     parseIntOrZero(r.URL.Query().Get("width")),
 			Height:    parseIntOrZero(r.URL.Query().Get("height")),
 			ProjectID: r.URL.Query().Get("projectID"),
@@ -60,23 +63,35 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 			return
 		}
 
-		fmt.Println("resizedImg", resizedImg)
-		fmt.Println("format", format)
-
 		// Set content type based on image format
-		// w.Header().Set("Content-Type", "image/"+format)
-		// w.Header().Set("Cache-Control", "public, max-age=86400") // Cache for 24 hours
+		w.Header().Set("Content-Type", "image/"+string(format))
+		w.Header().Set("Cache-Control", "public, max-age=86400") // Cache for 24 hours
 
-		// // Encode and send the resized image
-		// if err := encodeImage(w, resizedImg, format); err != nil {
-		// 	http.Error(w, "Failed to encode image: "+err.Error(), http.StatusInternalServerError)
-		// 	return
-		// }
+		// Encode and send the resized image
+		if err := encodeImage(w, resizedImg, format); err != nil {
+			http.Error(w, "Failed to encode image: "+err.Error(), http.StatusInternalServerError)
+			return
+		}
+	}
+}
+
+// encodeImage encodes the image in the specified format and writes it to the response
+func encodeImage(w http.ResponseWriter, img image.Image, format imageExt.Format) error {
+	switch format {
+	case imageExt.JPEG:
+		return jpeg.Encode(w, img, &jpeg.Options{Quality: 85})
+	case imageExt.PNG:
+		return png.Encode(w, img)
+	case imageExt.GIF:
+		return gif.Encode(w, img, nil)
+	default:
+		// Default to JPEG if format is unknown
+		return jpeg.Encode(w, img, &jpeg.Options{Quality: 85})
 	}
 }
 
 // processImageResize handles the core image resizing logic separate from HTTP concerns
-func processImageResize(ac *appCtx.AppCtx, params ImageResizeParams) (image.Image, string, error) {
+func processImageResize(ac *appCtx.AppCtx, params ImageResizeParams) (image.Image, imageExt.Format, error) {
 	if err := params.validate(); err != nil {
 		return nil, "", fmt.Errorf("invalid parameters: %w", err)
 	}
@@ -96,7 +111,7 @@ func processImageResize(ac *appCtx.AppCtx, params ImageResizeParams) (image.Imag
 	fmt.Println("project", project)
 
 	// Fetch the image
-	resp, err := http.Get(params.URL)
+	resp, err := http.Get(params.ImageURL)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to fetch image: %w", err)
 	}
@@ -107,12 +122,11 @@ func processImageResize(ac *appCtx.AppCtx, params ImageResizeParams) (image.Imag
 	}
 
 	// Decode the image
-	img, format, err := imageExt.Decode(resp.Body, params.URL)
+	img, format, err := imageExt.Decode(resp.Body, params.ImageURL)
 	if err != nil {
 		return nil, "", fmt.Errorf("failed to decode image: %w", err)
 	}
 
-	fmt.Println("img", img)
 	fmt.Println("format", format)
 
 	// Resize the image

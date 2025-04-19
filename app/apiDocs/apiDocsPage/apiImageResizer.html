@@ -8,8 +8,8 @@
             <div>
                 {{ template "projectIDSelect" . }}
                 <div>
-                    <label for="image-src">imageURL: <span class="required">*</span></label>
-                    <input type="url" id="image-src" name="imageUrl" placeholder="Enter image URL" required />
+                    <label for="image-url">imageURL: <span class="required">*</span></label>
+                    <input type="url" id="image-url" name="imageUrl" placeholder="Enter image URL" required />
                 </div>
                 <div>
                     <label for="image-width">width: <span class="required">*</span></label>
@@ -22,7 +22,7 @@
                         max="1000" value="400" required />
                 </div>
                 <div>
-                    <button type="submit" id="resize-button">POST</button>
+                    <button type="submit">SUBMIT</button>
                 </div>
             </div>
         </form>
@@ -36,17 +36,24 @@
         </div>
         <div>
             <p>
+                <strong>Input:</strong>
+            </p>
+            <img id="input" style="border: none; outline: none;" />
+        </div>
+        <div>
+            <p>
                 <strong>Output:</strong>
             </p>
             <img id="output" style="border: none; outline: none;" />
         </div>
         <script>
             const form = document.getElementById('form');
-            const imageSrcInput = document.getElementById('image-src');
+            const imageURLInput = document.getElementById('image-url');
             const imageWidthInput = document.getElementById('image-width');
             const imageHeightInput = document.getElementById('image-height');
             const projectIDSelect = document.getElementById('project-select');
             const outputImage = document.getElementById('output');
+            const inputImage = document.getElementById('input');
             const apiEndpoint = document.getElementById('api-endpoint');
             const resizeTitle = document.getElementById('resize-title');
             const getMinWidth = () => parseInt(imageWidthInput.getAttribute('min'));
@@ -59,7 +66,7 @@
             const ENDPOINT = '{{.Endpoint}}';
             const getApiEndpoint = () => {
                 const projectID = projectIDSelect.value;
-                const imageURL = imageSrcInput.value;
+                const imageURL = imageURLInput.value;
                 const width = getWidth();
                 const height = getHeight();
                 const params = new URLSearchParams();
@@ -75,6 +82,7 @@
             const updateUI = () => {
                 outputImage.width = getWidth();
                 outputImage.height = getHeight();
+                inputImage.src = imageURLInput.value;
                 apiEndpoint.textContent = getApiEndpoint();
 
             }
@@ -83,7 +91,7 @@
             imageWidthInput.addEventListener('input', updateUI);
             imageHeightInput.addEventListener('input', updateUI);
             projectIDSelect.addEventListener('change', updateUI);
-            imageSrcInput.addEventListener('input', updateUI);
+            imageURLInput.addEventListener('input', updateUI);
 
 
             form.addEventListener('submit', (event) => {

@@ -9,15 +9,13 @@ import (
 
 // Resize resizes an input image to the specified width and height.
 // It returns the resized image.
-func Resize(img image.Image, width, height int) image.Image {
-	// Create a new RGBA image with the target dimensions
+func Resize(img image.Image, width int, height int) image.Image {
 	dst := ResizeWithAlgorithm(img, width, height, Bilinear)
-
 	return dst
 }
 
 // ResizeWithAlgorithm resizes an image using a specified algorithm.
-func ResizeWithAlgorithm(img image.Image, width, height int, algorithm ResizeAlgorithm) image.Image {
+func ResizeWithAlgorithm(img image.Image, width int, height int, algorithm ResizeAlgorithm) image.Image {
 	dst := image.NewRGBA(image.Rect(0, 0, width, height))
 
 	switch algorithm {
@@ -26,7 +24,6 @@ func ResizeWithAlgorithm(img image.Image, width, height int, algorithm ResizeAlg
 	case Bilinear:
 		resizeBilinear(dst, img)
 	default:
-		// Default to bilinear
 		resizeBilinear(dst, img)
 	}
 

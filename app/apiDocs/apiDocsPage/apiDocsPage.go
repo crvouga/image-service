@@ -4,7 +4,7 @@ import (
 	"imageresizerservice/app/api"
 	"imageresizerservice/app/apiDocs/apiDocsRoutes"
 	"imageresizerservice/app/ctx/appCtx"
-
+	"imageresizerservice/app/ctx/reqCtx"
 	"imageresizerservice/app/home/homeRoutes"
 	"imageresizerservice/app/ui/breadcrumbs"
 	"imageresizerservice/app/ui/mainMenu"
@@ -25,6 +25,7 @@ const (
 func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		endpoint := r.URL.Query().Get("endpoint")
+		rc := reqCtx.FromHttpRequest(ac, r)
 		switch endpoint {
 		case api.EndpointApiImageResize:
 			type Data struct {
@@ -32,10 +33,12 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 				Breadcrumbs     []breadcrumbs.Breadcrumb
 				ProjectIDSelect ProjectIDSelect
 				Endpoint        string
+				ExampleImageURL string
 			}
 
 			data := Data{
 				Endpoint:        api.EndpointApiImageResize,
+				ExampleImageURL: rc.BaseURL + "dog.jpeg",
 				ProjectIDSelect: GetProjectIDSelect(ac, r),
 				PageHeader: pageHeader.PageHeader{
 					Title:   api.EndpointApiImageResize,

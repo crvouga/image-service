@@ -12,7 +12,7 @@ import (
 var ErrFileNotFound = errors.New("file not found")
 var ErrInvalidSuffix = errors.New("invalid suffix")
 
-var whitelistSuffix = []string{".js", ".css", ".html"}
+var whitelistSuffix = []string{".js", ".css", ".html", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".ico", ".webp", ".bmp"}
 
 func hasValidSuffix(requestPath string) bool {
 	for _, suffix := range whitelistSuffix {
