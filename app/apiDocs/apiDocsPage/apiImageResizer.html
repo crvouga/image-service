@@ -36,15 +36,17 @@
         </div>
         <div>
             <p>
-                <strong>Input:</strong>
+                <strong>Input:</strong> <span id="original-size"></span>
             </p>
-            <img id="input" style="border: none; outline: none;" />
+            <img id="input"
+                style="border: none; outline: none; max-width: 600px; max-height: 600px; width: auto; height: auto;" />
         </div>
         <div>
             <p>
                 <strong>Output:</strong>
             </p>
-            <img id="output" style="border: none; outline: none;" />
+            <img id="output"
+                style="border: none; outline: none; max-width: 600px; max-height: 600px; width: auto; height: auto;" />
         </div>
         <script>
             const form = document.getElementById('form');
@@ -56,6 +58,7 @@
             const inputImage = document.getElementById('input');
             const apiEndpoint = document.getElementById('api-endpoint');
             const resizeTitle = document.getElementById('resize-title');
+            const originalSizeSpan = document.getElementById('original-size');
             const getMinWidth = () => parseInt(imageWidthInput.getAttribute('min'));
             const getMaxWidth = () => parseInt(imageWidthInput.getAttribute('max'));
             const getMinHeight = () => parseInt(imageHeightInput.getAttribute('min'));
@@ -78,21 +81,25 @@
                 return endpoint;
             }
 
-
             const updateUI = () => {
                 outputImage.width = getWidth();
                 outputImage.height = getHeight();
-                inputImage.src = imageURLInput.value;
+                if (inputImage.src !== imageURLInput.value) {
+                    inputImage.src = imageURLInput.value;
+                    outputImage.src = '';
+                }
                 apiEndpoint.textContent = getApiEndpoint();
-
+                if (inputImage.naturalWidth && inputImage.naturalHeight) {
+                    originalSizeSpan.textContent = `(Original size: ${inputImage.naturalWidth}x${inputImage.naturalHeight}px)`;
+                }
             }
 
             updateUI()
             imageWidthInput.addEventListener('input', updateUI);
             imageHeightInput.addEventListener('input', updateUI);
             projectIDSelect.addEventListener('change', updateUI);
+            inputImage.addEventListener('load', updateUI);
             imageURLInput.addEventListener('input', updateUI);
-
 
             form.addEventListener('submit', (event) => {
                 event.preventDefault();
