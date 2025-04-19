@@ -11,14 +11,14 @@ const (
 	SuccessRoute = "/success"
 )
 
-type SuccessPageData struct {
+type SuccessPage struct {
 	Headline string
 	Body     string
 	NextURL  string
 	NextText string
 }
 
-func (d SuccessPageData) Redirect(w http.ResponseWriter, r *http.Request) {
+func (d SuccessPage) Redirect(w http.ResponseWriter, r *http.Request) {
 	u, _ := url.Parse(SuccessRoute)
 	q := u.Query()
 	q.Set("headline", d.Headline)
@@ -29,8 +29,8 @@ func (d SuccessPageData) Redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, u.String(), http.StatusSeeOther)
 }
 
-func New(message string, nextURL string, nextText string) *SuccessPageData {
-	return &SuccessPageData{
+func New(message string, nextURL string, nextText string) *SuccessPage {
+	return &SuccessPage{
 		Headline: "Success",
 		Body:     message,
 		NextURL:  nextURL,
@@ -45,7 +45,7 @@ func Router(mux *http.ServeMux) {
 func Respond() http.HandlerFunc {
 	htmlPath := static.GetSiblingPath("successPage.html")
 	return func(w http.ResponseWriter, r *http.Request) {
-		data := SuccessPageData{
+		data := SuccessPage{
 			Headline: r.URL.Query().Get("headline"),
 			Body:     r.URL.Query().Get("body"),
 			NextURL:  r.URL.Query().Get("nextURL"),

@@ -9,6 +9,7 @@ import (
 	"imageresizerservice/app/ui/confirmationPage"
 	"imageresizerservice/app/ui/errorPage"
 	"imageresizerservice/app/ui/successPage"
+	"imageresizerservice/app/users/login/loginRoutes"
 	"imageresizerservice/app/users/logout/logoutRoutes"
 	"imageresizerservice/app/users/userAccount/userAccountRoutes"
 	"imageresizerservice/app/users/userSession"
@@ -62,7 +63,12 @@ func respondPost(ac *appCtx.AppCtx, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	successPage.New("You have been logged out", "/", "Login").Redirect(w, r)
+	successPage.SuccessPage{
+		Headline: "Logged out",
+		Body:     "You have been successfully logged out",
+		NextURL:  loginRoutes.SendLinkPage,
+		NextText: "Login",
+	}.Redirect(w, r)
 }
 
 func Logout(ac *appCtx.AppCtx, rc *reqCtx.ReqCtx) error {

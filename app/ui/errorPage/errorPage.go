@@ -29,6 +29,11 @@ func (d ErrorPage) Redirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, u.String(), http.StatusFound)
 }
 
+func (d ErrorPage) Render(w http.ResponseWriter, r *http.Request) {
+	htmlPath := static.GetSiblingPath("errorPage.html")
+	page.Respond(d, htmlPath)(w, r)
+}
+
 func New(err error) *ErrorPage {
 	return &ErrorPage{
 		Headline: "Error",
@@ -43,15 +48,13 @@ func Router(mux *http.ServeMux) {
 }
 
 func Respond() http.HandlerFunc {
-	htmlPath := static.GetSiblingPath("errorPage.html")
+
 	return func(w http.ResponseWriter, r *http.Request) {
-		data := ErrorPage{
+		ErrorPage{
 			Headline: r.URL.Query().Get("headline"),
 			Body:     r.URL.Query().Get("body"),
 			NextURL:  r.URL.Query().Get("nextURL"),
 			NextText: r.URL.Query().Get("nextText"),
-		}
-
-		page.Respond(data, htmlPath)(w, r)
+		}.Render(w, r)
 	}
 }

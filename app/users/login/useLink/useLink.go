@@ -36,10 +36,10 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == http.MethodGet {
 			confirmationPage.ConfirmationPage{
-				Headline:    "Login",
+				Headline:    "Use login link",
 				Body:        "Use this link to login to your account",
 				ConfirmURL:  loginRoutes.UseLinkPage,
-				ConfirmText: "Login",
+				ConfirmText: "Use link",
 				CancelURL:   homeRoutes.HomePage,
 				CancelText:  "Cancel",
 				HiddenForm: map[string]string{
@@ -65,7 +65,12 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 				return
 			}
 
-			successPage.New("Login successful", homeRoutes.HomePage, "Home").Redirect(w, r)
+			successPage.SuccessPage{
+				Headline: "Logged in",
+				Body:     "You have been successfully logged in",
+				NextURL:  homeRoutes.HomePage,
+				NextText: "Home",
+			}.Redirect(w, r)
 			return
 		}
 
