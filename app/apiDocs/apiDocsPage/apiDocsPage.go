@@ -56,10 +56,9 @@ func Respond(ac *appCtx.AppCtx) http.HandlerFunc {
 		default:
 
 			type Data struct {
-				PageHeader             pageHeader.PageHeader
-				Breadcrumbs            []breadcrumbs.Breadcrumb
-				MainMenu               mainMenu.MainMenu
-				EndpointApiImageResize string
+				PageHeader  pageHeader.PageHeader
+				Breadcrumbs []breadcrumbs.Breadcrumb
+				MainMenu    mainMenu.MainMenu
 			}
 
 			data := Data{
