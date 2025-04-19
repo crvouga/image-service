@@ -10,7 +10,70 @@ import (
 // Resize resizes an input image to the specified width and height.
 // It returns the resized image.
 func Resize(img image.Image, width int, height int) image.Image {
-	dst := ResizeWithAlgorithm(img, width, height, Bilinear)
+	return ResizeWithMode(img, width, height, Contain)
+}
+
+// ResizeWithMode resizes an image using a specified mode to maintain aspect ratio
+func ResizeWithMode(img image.Image, width int, height int, mode ResizeMode) image.Image {
+	srcBounds := img.Bounds()
+	srcW := srcBounds.Dx()
+	srcH := srcBounds.Dy()
+
+	// Calculate aspect ratios
+	srcAspect := float64(srcW) / float64(srcH)
+	dstAspect := float64(width) / float64(height)
+
+	var dstW, dstH int
+	var offsetX, offsetY int
+
+	switch mode {
+	case Stretch:
+		dstW = width
+		dstH = height
+		offsetX = 0
+		offsetY = 0
+	case Contain:
+		if srcAspect > dstAspect {
+			// Source is wider than destination
+			dstW = width
+			dstH = int(float64(width) / srcAspect)
+			offsetX = 0
+			offsetY = (height - dstH) / 2
+		} else {
+			// Source is taller than destination
+			dstH = height
+			dstW = int(float64(height) * srcAspect)
+			offsetX = (width - dstW) / 2
+			offsetY = 0
+		}
+	case Cover:
+		if srcAspect > dstAspect {
+			// Source is wider than destination
+			dstH = height
+			dstW = int(float64(height) * srcAspect)
+			offsetX = (width - dstW) / 2
+			offsetY = 0
+		} else {
+			// Source is taller than destination
+			dstW = width
+			dstH = int(float64(width) / srcAspect)
+			offsetX = 0
+			offsetY = (height - dstH) / 2
+		}
+	}
+
+	// Create destination image with padding
+	dst := image.NewRGBA(image.Rect(0, 0, width, height))
+
+	// Fill with transparent background
+	draw.Draw(dst, dst.Bounds(), image.Transparent, image.Point{}, draw.Src)
+
+	// Resize the image
+	resized := ResizeWithAlgorithm(img, dstW, dstH, Bilinear)
+
+	// Draw the resized image with offset
+	draw.Draw(dst, image.Rect(offsetX, offsetY, offsetX+dstW, offsetY+dstH), resized, image.Point{}, draw.Src)
+
 	return dst
 }
 

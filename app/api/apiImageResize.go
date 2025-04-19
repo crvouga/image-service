@@ -77,6 +77,16 @@ func ApiImageResize(ac *appCtx.AppCtx) http.HandlerFunc {
 
 // encodeImage encodes the image in the specified format and writes it to the response
 func encodeImage(w http.ResponseWriter, img image.Image, format imageExt.Format) error {
+	// Check if the image has any transparency
+	hasTransparency := imageExt.HasTransparency(img)
+
+	// Use PNG if the image has transparency or if it's in Contain mode
+	if hasTransparency {
+		w.Header().Set("Content-Type", "image/png")
+		return png.Encode(w, img)
+	}
+
+	// Otherwise use the original format
 	switch format {
 	case imageExt.JPEG:
 		return jpeg.Encode(w, img, &jpeg.Options{Quality: 85})
@@ -85,7 +95,6 @@ func encodeImage(w http.ResponseWriter, img image.Image, format imageExt.Format)
 	case imageExt.GIF:
 		return gif.Encode(w, img, nil)
 	default:
-		// Default to JPEG if format is unknown
 		return jpeg.Encode(w, img, &jpeg.Options{Quality: 85})
 	}
 }

@@ -6,7 +6,7 @@
         <option value="">Select a project</option>
         {{range .ProjectIDSelect.Projects}}
         <option value="{{.ID}}" {{if eq .ID $.ProjectIDSelect.ProjectID}}selected{{end}}>
-            {{.Name}}
+            {{.Name}} ({{.ID}})
         </option>
         {{end}}
     </select>
