@@ -1,12 +1,12 @@
 package projects
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/projects/createProject"
-	"imageresizerservice/app/projects/deleteProject"
-	"imageresizerservice/app/projects/editProject"
-	"imageresizerservice/app/projects/listProjects"
-	"imageresizerservice/app/projects/projectPage"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/projects/createProject"
+	"imageService/app/projects/deleteProject"
+	"imageService/app/projects/editProject"
+	"imageService/app/projects/listProjects"
+	"imageService/app/projects/projectPage"
 
 	"net/http"
 )

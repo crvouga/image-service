@@ -1,9 +1,9 @@
 package userAccount
 
 import (
-	"imageresizerservice/app/users/userAccount/userRole"
-	"imageresizerservice/app/users/userID"
-	"imageresizerservice/library/email/emailAddress"
+	"imageService/app/users/userAccount/userRole"
+	"imageService/app/users/userID"
+	"imageService/library/email/emailAddress"
 	"time"
 )
 

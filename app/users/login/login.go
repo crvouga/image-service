@@ -3,9 +3,9 @@ package login
 import (
 	"net/http"
 
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/users/login/sendLink"
-	"imageresizerservice/app/users/login/useLink"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/users/login/sendLink"
+	"imageService/app/users/login/useLink"
 )
 
 func Router(mux *http.ServeMux, ac *appCtx.AppCtx) {

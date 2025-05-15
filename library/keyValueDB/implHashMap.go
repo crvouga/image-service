@@ -1,7 +1,7 @@
 package keyValueDB
 
 import (
-	"imageresizerservice/library/uow"
+	"imageService/library/uow"
 	"sync"
 )
 

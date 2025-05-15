@@ -2,15 +2,15 @@ package deleteProject
 
 import (
 	"errors"
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/projects/project"
-	"imageresizerservice/app/projects/project/projectID"
-	"imageresizerservice/app/projects/projectRoutes"
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/confirmationPage"
-	"imageresizerservice/app/ui/errorPage"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/projects/project"
+	"imageService/app/projects/project/projectID"
+	"imageService/app/projects/projectRoutes"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/confirmationPage"
+	"imageService/app/ui/errorPage"
 	"net/http"
 )
 

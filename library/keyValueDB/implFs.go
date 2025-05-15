@@ -2,7 +2,7 @@ package keyValueDB
 
 import (
 	"encoding/json"
-	"imageresizerservice/library/uow"
+	"imageService/library/uow"
 	"os"
 	"path/filepath"
 	"sort"

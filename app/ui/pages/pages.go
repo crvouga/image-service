@@ -1,10 +1,10 @@
 package pages
 
 import (
-	"imageresizerservice/app/ui/confirmationPage"
-	"imageresizerservice/app/ui/errorPage"
-	"imageresizerservice/app/ui/notFoundPage"
-	"imageresizerservice/app/ui/successPage"
+	"imageService/app/ui/confirmationPage"
+	"imageService/app/ui/errorPage"
+	"imageService/app/ui/notFoundPage"
+	"imageService/app/ui/successPage"
 	"net/http"
 )
 

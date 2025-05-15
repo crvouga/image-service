@@ -3,8 +3,8 @@ package keyValueDB
 import (
 	"testing"
 
-	"imageresizerservice/library/sqlite"
-	"imageresizerservice/library/uow"
+	"imageService/library/sqlite"
+	"imageService/library/uow"
 )
 
 type Fixture struct {

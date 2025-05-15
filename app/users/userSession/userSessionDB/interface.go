@@ -1,9 +1,9 @@
 package userSessionDB
 
 import (
-	"imageresizerservice/app/users/userSession"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/userSession"
+	"imageService/library/sessionID"
+	"imageService/library/uow"
 )
 
 type UserSessionDB interface {

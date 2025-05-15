@@ -1,7 +1,7 @@
 package email
 
 import (
-	"imageresizerservice/library/email/emailAddress"
+	"imageService/library/email/emailAddress"
 )
 
 type Email struct {

@@ -1,16 +1,16 @@
 package listProjects
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/projects/project"
-	"imageresizerservice/app/projects/projectRoutes"
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/errorPage"
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/ui/pageHeader"
-	"imageresizerservice/library/static"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/projects/project"
+	"imageService/app/projects/projectRoutes"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/errorPage"
+	"imageService/app/ui/page"
+	"imageService/app/ui/pageHeader"
+	"imageService/library/static"
 	"net/http"
 )
 

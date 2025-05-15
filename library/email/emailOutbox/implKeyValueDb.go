@@ -3,9 +3,9 @@ package emailOutbox
 import (
 	"encoding/json"
 	"errors"
-	"imageresizerservice/library/email/email"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/uow"
+	"imageService/library/email/email"
+	"imageService/library/keyValueDB"
+	"imageService/library/uow"
 )
 
 type ImplKeyValueDB struct {

@@ -2,8 +2,8 @@ package uow
 
 import (
 	"database/sql"
-	"imageresizerservice/library/uow/uowInMemory"
-	"imageresizerservice/library/uow/uowSql"
+	"imageService/library/uow/uowInMemory"
+	"imageService/library/uow/uowSql"
 )
 
 type Uow struct {

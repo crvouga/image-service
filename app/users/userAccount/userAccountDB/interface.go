@@ -1,11 +1,11 @@
 package userAccountDB
 
 import (
-	"imageresizerservice/app/users/userAccount"
-	"imageresizerservice/app/users/userAccount/userRole"
-	"imageresizerservice/app/users/userID"
-	"imageresizerservice/library/email/emailAddress"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/userAccount"
+	"imageService/app/users/userAccount/userRole"
+	"imageService/app/users/userID"
+	"imageService/library/email/emailAddress"
+	"imageService/library/uow"
 )
 
 type UserAccountDB interface {

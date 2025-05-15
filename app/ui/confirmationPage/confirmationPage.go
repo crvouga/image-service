@@ -1,9 +1,9 @@
 package confirmationPage
 
 import (
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/library/static"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/page"
+	"imageService/library/static"
 	"net/http"
 	"net/url"
 	"strings"

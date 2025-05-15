@@ -2,17 +2,17 @@ package logout
 
 import (
 	"errors"
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/confirmationPage"
-	"imageresizerservice/app/ui/errorPage"
-	"imageresizerservice/app/ui/successPage"
-	"imageresizerservice/app/users/login/loginRoutes"
-	"imageresizerservice/app/users/logout/logoutRoutes"
-	"imageresizerservice/app/users/userAccount/userAccountRoutes"
-	"imageresizerservice/app/users/userSession"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/confirmationPage"
+	"imageService/app/ui/errorPage"
+	"imageService/app/ui/successPage"
+	"imageService/app/users/login/loginRoutes"
+	"imageService/app/users/logout/logoutRoutes"
+	"imageService/app/users/userAccount/userAccountRoutes"
+	"imageService/app/users/userSession"
 	"net/http"
 )
 

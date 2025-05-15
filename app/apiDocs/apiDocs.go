@@ -1,8 +1,8 @@
 package apiDocs
 
 import (
-	"imageresizerservice/app/apiDocs/apiDocsPage"
-	"imageresizerservice/app/ctx/appCtx"
+	"imageService/app/apiDocs/apiDocsPage"
+	"imageService/app/ctx/appCtx"
 
 	"net/http"
 )

@@ -6,9 +6,9 @@ import (
 	"image/gif"
 	"image/jpeg"
 	"image/png"
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/projects/project/projectID"
-	"imageresizerservice/library/imageExt"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/projects/project/projectID"
+	"imageService/library/imageExt"
 	"net/http"
 	"strconv"
 )

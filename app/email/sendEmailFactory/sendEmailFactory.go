@@ -1,8 +1,8 @@
 package sendEmailFactory
 
 import (
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/library/email/sendEmail"
+	"imageService/app/ctx/reqCtx"
+	"imageService/library/email/sendEmail"
 )
 
 func IsConfigured() bool {

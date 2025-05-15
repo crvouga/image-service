@@ -1,8 +1,8 @@
 package home
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/home/homePage"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/home/homePage"
 
 	"net/http"
 )

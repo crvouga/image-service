@@ -3,14 +3,14 @@ package appCtx
 import (
 	"database/sql"
 
-	"imageresizerservice/app/projects/project/projectDB"
-	"imageresizerservice/app/users/login/link/linkDB"
-	"imageresizerservice/app/users/userAccount/userAccountDB"
-	"imageresizerservice/app/users/userSession/userSessionDB"
-	"imageresizerservice/library/email/emailOutbox"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/sqlite"
-	"imageresizerservice/library/uow"
+	"imageService/app/projects/project/projectDB"
+	"imageService/app/users/login/link/linkDB"
+	"imageService/app/users/userAccount/userAccountDB"
+	"imageService/app/users/userSession/userSessionDB"
+	"imageService/library/email/emailOutbox"
+	"imageService/library/keyValueDB"
+	"imageService/library/sqlite"
+	"imageService/library/uow"
 	"log/slog"
 )
 

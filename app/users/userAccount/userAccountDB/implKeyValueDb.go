@@ -2,12 +2,12 @@ package userAccountDB
 
 import (
 	"encoding/json"
-	"imageresizerservice/app/users/userAccount"
-	"imageresizerservice/app/users/userAccount/userRole"
-	"imageresizerservice/app/users/userID"
-	"imageresizerservice/library/email/emailAddress"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/userAccount"
+	"imageService/app/users/userAccount/userRole"
+	"imageService/app/users/userID"
+	"imageService/library/email/emailAddress"
+	"imageService/library/keyValueDB"
+	"imageService/library/uow"
 	"time"
 )
 

@@ -4,13 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"imageresizerservice/app/users/userID"
-	"imageresizerservice/app/users/userSession"
-	"imageresizerservice/app/users/userSession/userSessionID"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/sqlite"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/userID"
+	"imageService/app/users/userSession"
+	"imageService/app/users/userSession/userSessionID"
+	"imageService/library/keyValueDB"
+	"imageService/library/sessionID"
+	"imageService/library/sqlite"
+	"imageService/library/uow"
 )
 
 type Fixture struct {

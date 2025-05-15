@@ -1,11 +1,11 @@
 package apiDocsPage
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/projects/project"
-	"imageresizerservice/app/projects/projectRoutes"
-	"imageresizerservice/app/users/userID"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/projects/project"
+	"imageService/app/projects/projectRoutes"
+	"imageService/app/users/userID"
 	"net/http"
 )
 

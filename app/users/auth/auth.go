@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
 	"net/http"
 )
 

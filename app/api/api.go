@@ -1,7 +1,7 @@
 package api
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
+	"imageService/app/ctx/appCtx"
 	"net/http"
 )
 

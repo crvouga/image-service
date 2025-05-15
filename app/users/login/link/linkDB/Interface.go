@@ -1,10 +1,10 @@
 package linkDB
 
 import (
-	"imageresizerservice/app/users/login/link"
-	"imageresizerservice/app/users/login/link/linkID"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/login/link"
+	"imageService/app/users/login/link/linkID"
+	"imageService/library/sessionID"
+	"imageService/library/uow"
 )
 
 type LinkDB interface {

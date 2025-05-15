@@ -1,7 +1,7 @@
 package main
 
 import (
-	"imageresizerservice/app"
+	"imageService/app"
 
 	"log"
 	"net/http"

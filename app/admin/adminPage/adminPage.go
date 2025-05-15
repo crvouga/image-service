@@ -1,13 +1,13 @@
 package adminPage
 
 import (
-	"imageresizerservice/app/admin/adminRoutes"
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/ui/pageHeader"
-	"imageresizerservice/library/static"
+	"imageService/app/admin/adminRoutes"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/page"
+	"imageService/app/ui/pageHeader"
+	"imageService/library/static"
 	"net/http"
 )
 

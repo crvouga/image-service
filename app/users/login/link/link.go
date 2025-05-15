@@ -1,9 +1,9 @@
 package link
 
 import (
-	"imageresizerservice/app/users/login/link/linkID"
-	"imageresizerservice/library/email/emailAddress"
-	"imageresizerservice/library/sessionID"
+	"imageService/app/users/login/link/linkID"
+	"imageService/library/email/emailAddress"
+	"imageService/library/sessionID"
 	"time"
 )
 

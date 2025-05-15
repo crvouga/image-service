@@ -1,16 +1,16 @@
 package apiDocsPage
 
 import (
-	"imageresizerservice/app/api"
-	"imageresizerservice/app/apiDocs/apiDocsRoutes"
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/mainMenu"
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/ui/pageHeader"
-	"imageresizerservice/library/static"
+	"imageService/app/api"
+	"imageService/app/apiDocs/apiDocsRoutes"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/mainMenu"
+	"imageService/app/ui/page"
+	"imageService/app/ui/pageHeader"
+	"imageService/library/static"
 	"net/http"
 )
 

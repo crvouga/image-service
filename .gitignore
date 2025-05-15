@@ -2,4 +2,5 @@ tmp
 .lsp
 .clj*
 __*
-imageresizerservice
+imageService
+main

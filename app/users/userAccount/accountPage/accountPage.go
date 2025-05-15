@@ -1,17 +1,17 @@
 package accountPage
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/ui/pageHeader"
-	"imageresizerservice/app/users/logout/logoutRoutes"
-	"imageresizerservice/app/users/userAccount"
-	"imageresizerservice/app/users/userAccount/userAccountRoutes"
-	"imageresizerservice/app/users/userSession"
-	"imageresizerservice/library/static"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/page"
+	"imageService/app/ui/pageHeader"
+	"imageService/app/users/logout/logoutRoutes"
+	"imageService/app/users/userAccount"
+	"imageService/app/users/userAccount/userAccountRoutes"
+	"imageService/app/users/userSession"
+	"imageService/library/static"
 	"net/http"
 )
 

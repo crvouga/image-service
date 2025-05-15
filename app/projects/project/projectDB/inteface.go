@@ -1,10 +1,10 @@
 package projectDB
 
 import (
-	"imageresizerservice/app/projects/project"
-	"imageresizerservice/app/projects/project/projectID"
-	"imageresizerservice/app/users/userID"
-	"imageresizerservice/library/uow"
+	"imageService/app/projects/project"
+	"imageService/app/projects/project/projectID"
+	"imageService/app/users/userID"
+	"imageService/library/uow"
 )
 
 type ProjectDB interface {

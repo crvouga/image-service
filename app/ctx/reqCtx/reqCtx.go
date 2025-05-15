@@ -1,12 +1,12 @@
 package reqCtx
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/users/userAccount"
-	"imageresizerservice/app/users/userSession"
-	"imageresizerservice/library/httpRequest"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/traceID"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/users/userAccount"
+	"imageService/app/users/userSession"
+	"imageService/library/httpRequest"
+	"imageService/library/sessionID"
+	"imageService/library/traceID"
 	"log/slog"
 	"net/http"
 )

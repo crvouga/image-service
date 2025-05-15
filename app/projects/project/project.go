@@ -1,10 +1,10 @@
 package project
 
 import (
-	"imageresizerservice/app/projects/project/projectID"
-	"imageresizerservice/app/projects/project/projectName"
-	"imageresizerservice/app/projects/projectRoutes"
-	"imageresizerservice/app/users/userID"
+	"imageService/app/projects/project/projectID"
+	"imageService/app/projects/project/projectName"
+	"imageService/app/projects/projectRoutes"
+	"imageService/app/users/userID"
 	"net/url"
 	"strings"
 	"time"

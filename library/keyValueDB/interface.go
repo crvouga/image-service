@@ -1,6 +1,6 @@
 package keyValueDB
 
-import "imageresizerservice/library/uow"
+import "imageService/library/uow"
 
 type KeyValueDB interface {
 	// Get retrieves a value by key. Returns nil if key not found.

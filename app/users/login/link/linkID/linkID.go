@@ -1,6 +1,6 @@
 package linkID
 
-import "imageresizerservice/library/id"
+import "imageService/library/id"
 
 type LinkID string
 

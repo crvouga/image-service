@@ -1,9 +1,9 @@
 package admin
 
 import (
-	"imageresizerservice/app/admin/adminPage"
-	"imageresizerservice/app/admin/claimAdmin"
-	"imageresizerservice/app/ctx/appCtx"
+	"imageService/app/admin/adminPage"
+	"imageService/app/admin/claimAdmin"
+	"imageService/app/ctx/appCtx"
 	"net/http"
 )
 

@@ -2,10 +2,10 @@ package userSessionDB
 
 import (
 	"encoding/json"
-	"imageresizerservice/app/users/userSession"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/userSession"
+	"imageService/library/keyValueDB"
+	"imageService/library/sessionID"
+	"imageService/library/uow"
 )
 
 type ImplKeyValueDB struct {

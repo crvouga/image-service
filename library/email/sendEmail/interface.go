@@ -1,8 +1,8 @@
 package sendEmail
 
 import (
-	"imageresizerservice/library/email/email"
-	"imageresizerservice/library/uow"
+	"imageService/library/email/email"
+	"imageService/library/uow"
 )
 
 type SendEmail interface {

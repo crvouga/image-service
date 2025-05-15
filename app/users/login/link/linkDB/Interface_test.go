@@ -3,13 +3,13 @@ package linkDB
 import (
 	"testing"
 
-	"imageresizerservice/app/users/login/link"
-	"imageresizerservice/app/users/login/link/linkID"
-	"imageresizerservice/library/email/emailAddress"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/sqlite"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/login/link"
+	"imageService/app/users/login/link/linkID"
+	"imageService/library/email/emailAddress"
+	"imageService/library/keyValueDB"
+	"imageService/library/sessionID"
+	"imageService/library/sqlite"
+	"imageService/library/uow"
 )
 
 type Fixture struct {

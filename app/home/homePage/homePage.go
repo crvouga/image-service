@@ -1,19 +1,19 @@
 package homePage
 
 import (
-	"imageresizerservice/app/admin/adminRoutes"
-	"imageresizerservice/app/apiDocs/apiDocsRoutes"
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/projects/projectRoutes"
-	"imageresizerservice/app/ui/errorPage"
-	"imageresizerservice/app/ui/mainMenu"
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/app/ui/pageHeader"
-	"imageresizerservice/app/users/userAccount/userAccountRoutes"
-	"imageresizerservice/app/users/userAccount/userRole"
-	"imageresizerservice/library/static"
+	"imageService/app/admin/adminRoutes"
+	"imageService/app/apiDocs/apiDocsRoutes"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/projects/projectRoutes"
+	"imageService/app/ui/errorPage"
+	"imageService/app/ui/mainMenu"
+	"imageService/app/ui/page"
+	"imageService/app/ui/pageHeader"
+	"imageService/app/users/userAccount/userAccountRoutes"
+	"imageService/app/users/userAccount/userRole"
+	"imageService/library/static"
 	"net/http"
 )
 

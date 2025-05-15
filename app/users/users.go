@@ -1,10 +1,10 @@
 package users
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/users/login"
-	"imageresizerservice/app/users/logout"
-	"imageresizerservice/app/users/userAccount/accountPage"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/users/login"
+	"imageService/app/users/logout"
+	"imageService/app/users/userAccount/accountPage"
 	"net/http"
 )
 

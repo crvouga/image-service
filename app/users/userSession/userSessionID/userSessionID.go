@@ -1,6 +1,6 @@
 package userSessionID
 
-import "imageresizerservice/library/id"
+import "imageService/library/id"
 
 type UserSessionID string
 

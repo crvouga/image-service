@@ -1,17 +1,17 @@
 package claimAdmin
 
 import (
-	"imageresizerservice/app/admin/adminRoutes"
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/ctx/reqCtx"
-	"imageresizerservice/app/home/homeRoutes"
-	"imageresizerservice/app/ui/breadcrumbs"
-	"imageresizerservice/app/ui/confirmationPage"
-	"imageresizerservice/app/ui/errorPage"
-	"imageresizerservice/app/ui/successPage"
+	"imageService/app/admin/adminRoutes"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/ctx/reqCtx"
+	"imageService/app/home/homeRoutes"
+	"imageService/app/ui/breadcrumbs"
+	"imageService/app/ui/confirmationPage"
+	"imageService/app/ui/errorPage"
+	"imageService/app/ui/successPage"
 
-	"imageresizerservice/app/users/userAccount"
-	"imageresizerservice/app/users/userAccount/userRole"
+	"imageService/app/users/userAccount"
+	"imageService/app/users/userAccount/userRole"
 	"net/http"
 )
 

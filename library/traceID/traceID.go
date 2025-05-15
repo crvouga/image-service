@@ -1,7 +1,7 @@
 package traceID
 
 import (
-	"imageresizerservice/library/id"
+	"imageService/library/id"
 	"net/http"
 )
 

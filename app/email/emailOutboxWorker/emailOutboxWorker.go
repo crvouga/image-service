@@ -1,8 +1,8 @@
 package emailOutboxWorker
 
 import (
-	"imageresizerservice/app/ctx/appCtx"
-	"imageresizerservice/app/email/sendEmailFactory"
+	"imageService/app/ctx/appCtx"
+	"imageService/app/email/sendEmailFactory"
 	"log"
 	"time"
 )

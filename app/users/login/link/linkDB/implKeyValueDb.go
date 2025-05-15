@@ -2,11 +2,11 @@ package linkDB
 
 import (
 	"encoding/json"
-	"imageresizerservice/app/users/login/link"
-	"imageresizerservice/app/users/login/link/linkID"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/sessionID"
-	"imageresizerservice/library/uow"
+	"imageService/app/users/login/link"
+	"imageService/app/users/login/link/linkID"
+	"imageService/library/keyValueDB"
+	"imageService/library/sessionID"
+	"imageService/library/uow"
 )
 
 type ImplKeyValueDB struct {

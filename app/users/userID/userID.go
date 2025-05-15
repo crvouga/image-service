@@ -1,6 +1,6 @@
 package userID
 
-import "imageresizerservice/library/id"
+import "imageService/library/id"
 
 type UserID string
 

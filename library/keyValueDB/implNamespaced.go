@@ -2,7 +2,7 @@ package keyValueDB
 
 import (
 	"fmt"
-	"imageresizerservice/library/uow"
+	"imageService/library/uow"
 )
 
 // ImplNamespaced implements the KeyValueDB interface by wrapping another KeyValueDB

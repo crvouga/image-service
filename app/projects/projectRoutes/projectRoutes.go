@@ -2,7 +2,7 @@ package projectRoutes
 
 import (
 	"fmt"
-	"imageresizerservice/app/projects/project/projectID"
+	"imageService/app/projects/project/projectID"
 )
 
 const (

@@ -2,7 +2,7 @@ package projectID
 
 import (
 	"errors"
-	"imageresizerservice/library/id"
+	"imageService/library/id"
 )
 
 type ProjectID string

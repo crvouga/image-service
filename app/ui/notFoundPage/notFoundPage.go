@@ -1,8 +1,8 @@
 package notFoundPage
 
 import (
-	"imageresizerservice/app/ui/page"
-	"imageresizerservice/library/static"
+	"imageService/app/ui/page"
+	"imageService/library/static"
 	"net/http"
 	"net/url"
 )

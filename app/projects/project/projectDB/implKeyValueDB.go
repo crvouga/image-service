@@ -2,11 +2,11 @@ package projectDB
 
 import (
 	"encoding/json"
-	"imageresizerservice/app/projects/project"
-	"imageresizerservice/app/projects/project/projectID"
-	"imageresizerservice/app/users/userID"
-	"imageresizerservice/library/keyValueDB"
-	"imageresizerservice/library/uow"
+	"imageService/app/projects/project"
+	"imageService/app/projects/project/projectID"
+	"imageService/app/users/userID"
+	"imageService/library/keyValueDB"
+	"imageService/library/uow"
 	"strings"
 	"time"
 )
