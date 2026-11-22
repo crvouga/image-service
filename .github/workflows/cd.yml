@@ -10,8 +10,13 @@ env:
   IMAGE_NAME: crvouga/image-service
   IMAGE_TAG: latest
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build-and-push:
+    timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
